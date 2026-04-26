@@ -9,11 +9,3 @@ export async function GET() {
 
     return Response.json(data)
 }
-
-export async function getRole() : Promise<any[]> {
-    const { data, error } = await supabase.from('role').select()
-    if (error) {
-        console.error(error.message)
-    }
-    return data ?? []
-}
