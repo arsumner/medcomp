@@ -1,40 +1,63 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef} from "@tanstack/react-table"
 
 export type UserEntry = {
-    id: string
+  submissionid: number
+  base_rate: number
+  pay_type: string
+  years_experience: number
+  submitted_at: string
+  Role: {
     profession: string
-    hospital: string
+    title: string
+  }
+  Hospital: {
+    name: string
     city: string
     state: string
-    salary: number
-    createdAt: string
+  }
 }
 
 export const columns: ColumnDef<UserEntry>[] = [
   {
-    accessorKey: "profession",
+    accessorKey: "Role.profession",
     header: "Profession",
   },
   {
-    accessorKey: "hospital",
+    accessorKey: "Role.title",
+    header: "Title",
+  },
+    {
+    accessorKey: "base_rate",
+    header: "Salary",
+  },
+  {
+    accessorKey: "pay_type",
+    header: "Pay Type",
+  },
+    {
+    accessorKey: "years_experience",
+    header: "Years of Experience",
+  },
+  {
+    accessorKey: "Hospital.name",
     header: "Hospital",
   },
   {
-    accessorKey: "city",
+    accessorKey: "Hospital.city",
     header: "City",
   },
     {
-    accessorKey: "state",
+    accessorKey: "Hospital.state",
     header: "State",
   },
     {
-    accessorKey: "salary",
-    header: "Salary",
+    accessorKey: "pay_type",
+    header: "Hourly/Salary",
   },
-    {
-    accessorKey: "createdAt",
-    header: "Date posted",
+  {
+    accessorKey: "submitted_at",
+    header: "Submitted",
   }
 ]
