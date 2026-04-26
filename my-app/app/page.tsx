@@ -31,7 +31,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-[#0A0F1E]">
-      <Navbar />
+
       <Hero />
 
       <section className="px-8 pb-20">
