@@ -10,7 +10,7 @@ export type UserEntry = {
   submitted_at: string
   Role: {
     profession: string
-    title: string
+    department: string
   }
   Hospital: {
     name: string
@@ -25,8 +25,8 @@ export const columns: ColumnDef<UserEntry>[] = [
     header: "Profession",
   },
   {
-    accessorKey: "Role.title",
-    header: "Title",
+    accessorKey: "Role.department",
+    header: "Department",
   },
     {
     accessorKey: "base_rate",
