@@ -2,28 +2,19 @@ import Navbar from "./components/navbar"
 import Hero from "./components/hero"
 import { columns, UserEntry } from "./components/table/columns"
 import Table from "./components/table/dataTable"
+import { supabase } from '@/lib/supabase'
 
-async function getData(): Promise<UserEntry[]> {
-  return [
-    {
-      id: "1",
-      profession: "Registered Nurse",
-      hospital: "Brooklyn Methodist",
-      city: "Brooklyn",
-      state: "New York",
-      salary: 120000,
-      createdAt: "02-01-2026",
-    },
-    {
-      id: "2",
-      profession: "Registered Nurse",
-      hospital: "Brooklyn Methodist",
-      city: "Brooklyn",
-      state: "New York",
-      salary: 118000,
-      createdAt: "02-15-2026",
-    },
-  ]
+async function getData() {
+  const { data, error } = await supabase.from('Submission').select(`
+    *, Role(profession, title),
+    Hospital (name, city, state)
+    `).order('submitted_at', {ascending: false}).limit(15)
+
+  if (error) {
+    console.error(error.message)
+    return []
+  }
+  return data
 }
 
 export default async function Home() {
