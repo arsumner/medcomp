@@ -12,15 +12,22 @@ export default function Navbar() {
       
 
       <div className="flex items-center gap-8">
+
         <Link href="/profession" className="text-[#9CA3AF] hover:text-[#0D9488] 
           transition-colors duration-200 text-sm font-medium tracking-wide uppercase">
           Professions
+        </Link>
+
+        <Link href="/state" className="text-[#9CA3AF] hover:text-[#0D9488] 
+          transition-colors duration-200 text-sm font-medium tracking-wide uppercase">
+          Search by State
         </Link>
 
         <Link href="/explore" className="text-[#9CA3AF] hover:text-[#0D9488] transition-colors duration-200
           text-sm font-medium tracking-wide uppercase">
           Explore
         </Link>
+
       </div>
 
 
