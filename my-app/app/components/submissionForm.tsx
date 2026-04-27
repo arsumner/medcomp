@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import { professions } from '../data/professions'
 import { departments } from '../data/departments'
-import { states } from '../data/states'
 import HospitalSearch from './hospitalSearch'
 
 export default function SubmissionForm() {
@@ -13,11 +12,18 @@ export default function SubmissionForm() {
   const [hospital, setHospital] = useState('')
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
-  const [years_experience, setYearsExperiene] = useState('')
+  const [years_experience, setYearsExperience] = useState('')
+  const [night_diff, setNightDiff] = useState('')
+  const [certification_pay, setCertificationPay] = useState('')
+  const [charge_diff, setChargeDiff] = useState('')
+  const [evening_diff, setEveningDiff] = useState('')
+  const [signon_bonus, setSignonBonus] = useState('')
+  const [preceptor_pay, setPreceptorPay] = useState('')
 
   return (
     <form className="flex flex-col gap-6 max-w-2xl mx-auto">
 
+        {/*Role */}
       <div> 
         <select 
           value={profession}
@@ -30,6 +36,7 @@ export default function SubmissionForm() {
             ))}
           </select>
 
+        {/* Department */}
           <select 
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
@@ -42,8 +49,15 @@ export default function SubmissionForm() {
           </select>
       </div>
 
-{/* Years of experience*/}
+        {/* Years of experience */}
+        <input
+          className="bg-[#111827] text-white px-4 py-3 rounded-l-full border border-[#1F2937] outline-none"
+          value={years_experience}
+          onChange={(e) => setYearsExperience(e.target.value)}
+          placeholder="3"
+        />
 
+        {/* Base Rate */}
         <input
           className="bg-[#111827] text-white px-4 py-3 rounded-l-full border border-[#1F2937] outline-none"
           value={baseRate}
@@ -69,21 +83,45 @@ export default function SubmissionForm() {
           setState(state)
         }} 
       />
-      
-      <div>
-          <select 
-          value={state}
-          onChange={(e) => setState(e.target.value)}
+
+      {/* Differentials */}
+        <input
           className="bg-[#111827] text-white px-4 py-3 rounded-l-full border border-[#1F2937] outline-none"
-        >
-          <option value="">Select a State</option>
-            {states.map((p) => (
-              <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
-      </div>
-      
-      
+          value={preceptor_pay}
+          onChange={(e) => setPreceptorPay(e.target.value)}
+          placeholder="2.50"
+        />
+        <input
+          className="bg-[#111827] text-white px-4 py-3 rounded-l-full border border-[#1F2937] outline-none"
+          value={certification_pay}
+          onChange={(e) => setCertificationPay(e.target.value)}
+          placeholder="1.25"
+        />
+        <input
+          className="bg-[#111827] text-white px-4 py-3 rounded-l-full border border-[#1F2937] outline-none"
+          value={night_diff}
+          onChange={(e) => setNightDiff(e.target.value)}
+          placeholder="2.70"
+        />
+        <input
+          className="bg-[#111827] text-white px-4 py-3 rounded-l-full border border-[#1F2937] outline-none"
+          value={evening_diff}
+          onChange={(e) => setEveningDiff(e.target.value)}
+          placeholder="2.00"
+        />
+        <input
+          className="bg-[#111827] text-white px-4 py-3 rounded-l-full border border-[#1F2937] outline-none"
+          value={charge_diff}
+          onChange={(e) => setChargeDiff(e.target.value)}
+          placeholder="2.50"
+        /> 
+        <input
+          className="bg-[#111827] text-white px-4 py-3 rounded-l-full border border-[#1F2937] outline-none"
+          value={signon_bonus}
+          onChange={(e) => setSignonBonus(e.target.value)}
+          placeholder="2.50"
+        />
+
 
       <button type="submit">Submit</button>
     </form>
