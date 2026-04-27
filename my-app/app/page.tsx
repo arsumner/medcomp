@@ -2,7 +2,7 @@ import Navbar from "./components/navbar"
 import Hero from "./components/hero"
 import { columns, UserEntry } from "./components/table/columns"
 import Table from "./components/table/dataTable"
-import { supabase } from '@/lib/supabase'
+import { supabase } from '../lib/supabase'
 
 async function getData() {
   const { data, error } = await supabase.from('Submission').select(`
