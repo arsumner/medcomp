@@ -10,7 +10,10 @@ export default function SubmissionForm() {
   const [department, setDepartment] = useState('')
   const [baseRate, setBaseRate] = useState('')
   const [payType, setPayType] = useState('hourly_staff')
+  const [hospital, setHospital] = useState('')
+  const [city, setCity] = useState('')
   const [state, setState] = useState('')
+  const [years_experience, setYearsExperiene] = useState('')
 
   return (
     <form className="flex flex-col gap-6 max-w-2xl mx-auto">
@@ -26,9 +29,7 @@ export default function SubmissionForm() {
               <option key={p} value={p}>{p}</option>
             ))}
           </select>
-      </div>
-      
-      <div>
+
           <select 
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
@@ -40,6 +41,8 @@ export default function SubmissionForm() {
             ))}
           </select>
       </div>
+
+{/* Years of experience*/}
 
         <input
           className="bg-[#111827] text-white px-4 py-3 rounded-l-full border border-[#1F2937] outline-none"
@@ -59,7 +62,13 @@ export default function SubmissionForm() {
 
       
       {/* Hospital Information */}
-      <HospitalSearch/>
+      <HospitalSearch 
+        onSelect={(hospital, city, state) => {
+          setHospital(hospital)
+          setCity(city)
+          setState(state)
+        }} 
+      />
       
       <div>
           <select 
