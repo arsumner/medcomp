@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { professions } from '../data/professions'
 import { departments } from '../data/departments'
 import { states } from '../data/states'
+import HospitalSearch from './hospitalSearch'
 
 export default function SubmissionForm() {
   const [profession, setProfession] = useState('')
@@ -58,6 +59,7 @@ export default function SubmissionForm() {
 
       
       {/* Hospital Information */}
+      <HospitalSearch/>
       
       <div>
           <select 
