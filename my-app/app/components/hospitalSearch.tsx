@@ -65,7 +65,7 @@ export default function HospitalSearch({ onSelect }: HospitalSearchProps) {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Search hospital..."
-        className="w-full bg-[#111827] text-white px-4 py-3 border border-[#1F2937] outline-none rounded-lg"
+        className="w-full bg-white text-[#111827] px-4 py-3 border border-[#E5E7EB] rounded-lg outline-none focus:border-[#0D9488] transition-colors duration-200 placeholder-[#9CA3AF]"
       />
       {open && suggestions.length > 0 && (
         <ul className="absolute z-10 w-full bg-[#111827] border border-[#1F2937] rounded-lg mt-1">
