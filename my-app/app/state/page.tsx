@@ -1,5 +1,4 @@
 import Link from "next/link"
-import { states } from "../data/states"
 
 function toSlug(state: string) {
   return state.toLowerCase().replace(/\s+/g, "-")
