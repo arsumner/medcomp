@@ -1,7 +1,13 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../../../lib/supabase';
 
-export async function GET() {
-    const { data, error } = await supabase.from('Hospital').select()
+export async function GET(request: Request) {
+    const {searchParams} = new URL(request.url)
+    const name = searchParams.get('name')
+    let query = supabase.from('Hospital').select()
+    if (name) {
+        query = query.eq('name', name)
+    }
+    const { data, error } = await query
 
     if (error) {
         return Response.json({ error: error.message}, { status: 500})
