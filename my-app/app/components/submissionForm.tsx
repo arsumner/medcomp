@@ -11,6 +11,7 @@ const altLabelClass = "text-[#6B7280] text-sm leading-relaxed mb-2 block"
 const sectionClass = "bg-white border border-[#E5E7EB] rounded-2xl p-6 flex flex-col gap-5 shadow-sm"
 
 export default function SubmissionForm() {
+
   const [profession, setProfession] = useState('')
   const [department, setDepartment] = useState('')
   const [baseRate, setBaseRate] = useState('')
@@ -27,9 +28,83 @@ export default function SubmissionForm() {
   const [preceptor_pay, setPreceptorPay] = useState('')
 
   const baseRateLabel = payType === 'salary' ? 'Annual Salary ($)' : payType === 'travel' ? 'Weekly Rate ($)' : 'Hourly Rate ($/hr)'
+  const allProfessions = Object.values(professions).flat()
+
+
+  async function handleSubmit(event:React.FormEvent) {
+    event.preventDefault()
+
+    if (!profession || !department || !baseRate || !payType || !hospital || !city || !state) {
+      alert('Please fill out all required fields')
+      return
+    }
+
+    const hospitalResponse = await fetch(`/api/hospitals?name=${encodeURIComponent(hospital)}`)
+    const hospitalData = await hospitalResponse.json()
+
+    let hospitalid
+    if (hospitalData.length > 0) {
+      hospitalid = hospitalData[0].hospitalid
+    } else {
+      const newHospital = await fetch('/api/hospitals', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: hospital, city, state })
+      })
+      const newHospitalData = await newHospital.json()
+      hospitalid = newHospitalData[0].hospitalid
+
+    }
+
+    const roleResponse = await fetch(`/api/roles?profession=${encodeURIComponent(profession)}&department=${encodeURIComponent(department)}`)
+    const roleData = await roleResponse.json()
+
+    let roleid
+    if (roleData.length > 0) {
+      roleid = roleData[0].roleid
+    } else {
+      const newRole = await fetch('/api/roles', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ profession, department })
+      })
+      const newRoleData = await newRole.json()
+      roleid = newRoleData[0].roleid
+    } 
+
+    const response = await fetch('/api/submissions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        pay_type: payType,
+        base_rate: baseRate,
+        hospitalid,
+        roleid,
+        years_experience: parseInt(years_experience),
+        night_diff: night_diff ? parseFloat(night_diff) : null,
+        certification_pay: certification_pay ? parseFloat(certification_pay) : null,
+        charge_diff: charge_diff ? parseFloat(charge_diff) : null,
+        evening_diff: evening_diff ? parseFloat(evening_diff) : null,
+        signon_bonus: signon_bonus ? parseFloat(signon_bonus) : null,
+        preceptor_pay: preceptor_pay ? parseFloat(preceptor_pay) : null
+      })
+    })
+
+    if (response.ok) {
+      alert('Submission successful! Thank you for contributing to our community.')
+    } else {
+      alert('Submission failed. Please try again later.')
+    }
+  }
 
   return (
-    <form className="flex flex-col gap-8 max-w-2xl mx-auto w-full">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-8 max-w-2xl mx-auto w-full">
 
       {/* Role */}
       <div className={sectionClass}>
@@ -45,11 +120,12 @@ export default function SubmissionForm() {
             value={profession}
             onChange={(e) => setProfession(e.target.value)}
             className={selectClass}
+            required
           >
             <option value="">Select Profession</option>
-            {professions.map((p) => (
-              <option key={p} value={p}>{p}</option>
-            ))}
+              {allProfessions.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
           </select>
         </div>
 
@@ -59,6 +135,7 @@ export default function SubmissionForm() {
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
             className={selectClass}
+            required
           >
             <option value="">Select Department</option>
             {departments.map((p) => (
@@ -115,12 +192,13 @@ export default function SubmissionForm() {
             value={payType}
             onChange={(e) => setPayType(e.target.value)}
             className={selectClass}
+            required
           >
             <option value="hourly_staff">Hourly</option>
             <option value="salary">Salary</option>
             <option value="travel">Travel (weekly)</option>
           </select>
-        </div>
+          </div>
 
         <div>
           <label className={labelClass}>{baseRateLabel}</label>
@@ -173,8 +251,7 @@ export default function SubmissionForm() {
 
       <button
         type="submit"
-        className="w-full bg-[#0D9488] hover:bg-[#0F766E] text-white py-4 rounded-full font-semibold text-lg tracking-wide transition-colors duration-200"
-      >
+        className="w-full bg-[#0D9488] hover:bg-[#0F766E] text-white py-4 rounded-full font-semibold text-lg tracking-wide transition-colors duration-200">
         Submit Your Salary
       </button>
     </form>
