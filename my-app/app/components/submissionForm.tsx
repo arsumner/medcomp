@@ -33,6 +33,7 @@ export default function SubmissionForm() {
 
   async function handleSubmit(event:React.FormEvent) {
     event.preventDefault()
+    console.log({ profession, department, baseRate, payType, hospital, city, state })
 
     if (!profession || !department || !baseRate || !payType || !hospital || !city || !state) {
       alert('Please fill out all required fields')
@@ -83,7 +84,7 @@ export default function SubmissionForm() {
       },
       body: JSON.stringify({
         pay_type: payType,
-        base_rate: baseRate,
+        base_rate: parseFloat(baseRate),
         hospitalid,
         roleid,
         years_experience: parseInt(years_experience),
@@ -153,7 +154,6 @@ export default function SubmissionForm() {
             onChange={(e) => setYearsExperience(e.target.value)}
             placeholder="e.g. 3"
             type="number"
-            min="0"
           />
         </div>
       </div>
@@ -208,15 +208,10 @@ export default function SubmissionForm() {
             onChange={(e) => setBaseRate(e.target.value)}
             placeholder={payType === 'salary' ? '85000' : payType === 'travel' ? '2800' : '48.50'}
             type="number"
+            step=".01"
             min="0"
           />
         </div>
-
-          <div>
-            <label className={labelClass}>Sign-on Bonus</label>
-            <label className={altLabelClass}>Sign-on bonuses can be split in increments. Enter the total sign-on bonus you will receive.</label>
-            <input className={inputClass} value={signon_bonus} onChange={(e) => setSignonBonus(e.target.value)} placeholder="5000" type="number" min="0" />
-          </div>
       </div>
 
       {/* Differentials */}
@@ -228,23 +223,28 @@ export default function SubmissionForm() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Preceptor Pay</label>
-            <input className={inputClass} value={preceptor_pay} onChange={(e) => setPreceptorPay(e.target.value)} placeholder="2.50" type="number" min="0" />
+            <input className={inputClass} value={preceptor_pay} onChange={(e) => setPreceptorPay(e.target.value)} placeholder="2.50" type="number" min="0" step=".01" />
           </div>
           <div>
             <label className={labelClass}>Certification Pay</label>
-            <input className={inputClass} value={certification_pay} onChange={(e) => setCertificationPay(e.target.value)} placeholder="1.25" type="number" min="0" />
+            <input className={inputClass} value={certification_pay} onChange={(e) => setCertificationPay(e.target.value)} placeholder="1.25" type="number" min="0" step=".01" />
           </div>
           <div>
             <label className={labelClass}>Night Differential</label>
-            <input className={inputClass} value={night_diff} onChange={(e) => setNightDiff(e.target.value)} placeholder="2.70" type="number" min="0" />
+            <input className={inputClass} value={night_diff} onChange={(e) => setNightDiff(e.target.value)} placeholder="2.70" type="number" min="0" step=".01" />
           </div>
           <div>
             <label className={labelClass}>Evening Differential</label>
-            <input className={inputClass} value={evening_diff} onChange={(e) => setEveningDiff(e.target.value)} placeholder="2.00" type="number" min="0" />
+            <input className={inputClass} value={evening_diff} onChange={(e) => setEveningDiff(e.target.value)} placeholder="2.00" type="number" min="0" step=".01" />
           </div>
           <div>
             <label className={labelClass}>Charge Differential</label>
-            <input className={inputClass} value={charge_diff} onChange={(e) => setChargeDiff(e.target.value)} placeholder="2.50" type="number" min="0" />
+            <input className={inputClass} value={charge_diff} onChange={(e) => setChargeDiff(e.target.value)} placeholder="2.50" type="number" min="0" step=".01" />
+          </div>
+          <div>
+            <label className={labelClass}>Sign-on Bonus</label>
+            <label className={altLabelClass}>Sign-on bonuses can be split in increments. Enter the total sign-on bonus offered.</label>
+            <input className={inputClass} value={signon_bonus} onChange={(e) => setSignonBonus(e.target.value)} placeholder="5000" type="number" min="0" />
           </div>
         </div>
       </div>
