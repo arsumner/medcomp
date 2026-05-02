@@ -50,11 +50,11 @@ export default function HospitalSearch({ onSelect }: HospitalSearchProps) {
 
     const components = place.addressComponents ?? []
     const city = 
-      components.find(c => c.types.includes('locality'))?.longText ??
-      components.find(c => c.types.includes('sublocality'))?.longText ??
-      components.find(c => c.types.includes('neighborhood'))?.longText ??
-      components.find(c => c.types.includes('administrative_area_level_2'))?.longText ??
-      ''
+    components.find(c => c.types.includes('locality'))?.longText ??
+    components.find(c => c.types.includes('sublocality'))?.longText ??
+    components.find(c => c.types.includes('neighborhood'))?.longText ??
+    components.find(c => c.types.includes('administrative_area_level_2'))?.longText ??
+    ''
     const state = components.find(c => c.types.includes('administrative_area_level_1'))?.longText ?? ''
     const hospital = place.displayName ?? ''
 
