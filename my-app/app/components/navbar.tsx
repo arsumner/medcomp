@@ -5,10 +5,10 @@ export default function Navbar() {
     <nav className="w-full bg-[#0A0F1E] border-b border-[#1F2937] px-8 py-4                  
       flex items-center justify-between">
 
-      <span className="text-white text-xl font-bold tracking-widest uppercase
+      <Link href="/" className="text-white text-xl font-bold tracking-widest uppercase
         bg-gradient-to-r from-[#0D9488] to-white bg-clip-text text-transparent">
         MedComp
-      </span>
+      </Link>
       
 
       <div className="flex items-center gap-8">
@@ -18,9 +18,9 @@ export default function Navbar() {
           Professions
         </Link>
 
-        <Link href="/state" className="text-[#9CA3AF] hover:text-[#0D9488] 
+        <Link href="/location" className="text-[#9CA3AF] hover:text-[#0D9488] 
           transition-colors duration-200 text-sm font-medium tracking-wide uppercase">
-          Search by State
+          Search by Location
         </Link>
 
         <Link href="/explore" className="text-[#9CA3AF] hover:text-[#0D9488] transition-colors duration-200
