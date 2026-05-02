@@ -1,47 +1,92 @@
-import { columns, UserEntry } from "./columns"
-import { DataTable } from "./table"
+"use client"
 
-async function getData(): Promise<UserEntry[]> {
-  // Fetch data from your API here.
-  return [
-    {
-    id: "1",
-    profession: "Registered Nurse",
-    hospital: "Brooklyn Methodist",
-    city: "Brooklyn",
-    state: "New York",
-    salary: 120000,
-    createdAt: "02-01-2026"
-    },
-    {
-    id: "2",
-    profession: "Registered Nurse",
-    hospital: "Brooklyn Methodist",
-    city: "Brooklyn",
-    state: "New York",
-    salary: 120000,
-    createdAt: "02-01-2026"
-    },
-  ]
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
 }
 
-export default async function Table() {
-  const data = await getData()
+export default function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   return (
-    <main className="min-h-screen bg-[#0A0F1E] px-8 py-16">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white">
-            Check out recent salaries from our community
-          </h1>
-          <p className="mt-3 text-lg text-[#9CA3AF]">
-            Explore submitted salaries by profession, hospital, city, and state.
-          </p>
-        </div>
+    <div className="w-full overflow-hidden rounded-2xl border border-[#1F2937] bg-[#0A0F1E] shadow-xl">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow
+              key={headerGroup.id}
+              className="border-[#1F2937] bg-[#111827] hover:bg-[#111827]"
+            >
+              {headerGroup.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className="px-6 py-4 text-sm font-semibold uppercase tracking-wide text-[#9CA3AF]"
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
 
-        <DataTable columns={columns} data={data} />
-      </div>
-    </main>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+                className="border-[#1F2937] transition-colors hover:bg-[#111827]/70"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className="px-6 py-5 text-sm text-white"
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className="h-24 text-center text-[#9CA3AF]"
+              >
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   )
 }

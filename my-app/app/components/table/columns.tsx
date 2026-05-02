@@ -1,6 +1,6 @@
 "use client"
 
-import { ColumnDef} from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table"
 
 export type UserEntry = {
   submissionid: number
@@ -21,43 +21,52 @@ export type UserEntry = {
 
 export const columns: ColumnDef<UserEntry>[] = [
   {
-    accessorKey: "Role.profession",
+    accessorKey: "role.profession",
     header: "Profession",
   },
   {
-    accessorKey: "Role.department",
+    accessorKey: "role.department",
     header: "Department",
   },
-    {
-    accessorKey: "base_rate",
-    header: "Salary",
-  },
   {
-    accessorKey: "pay_type",
-    header: "Pay Type",
+    id: "compensation",
+    header: "Compensation",
+    cell: ({ row }) => {
+      const rate = row.original.base_rate
+      const type = row.original.pay_type
+
+      const formatted = type === 'salary'
+        ? `$${rate.toLocaleString()}/yr`
+        : type === 'travel'
+        ? `$${rate.toLocaleString()}/wk`
+        : `$${rate.toLocaleString()}/hr`
+
+      return <span>{formatted}</span>
+    }
   },
     {
     accessorKey: "years_experience",
     header: "Years of Experience",
   },
   {
-    accessorKey: "Hospital.name",
+    accessorKey: "hospital.name",
     header: "Hospital",
   },
   {
-    accessorKey: "Hospital.city",
-    header: "City",
-  },
-    {
-    accessorKey: "Hospital.state",
-    header: "State",
-  },
-    {
-    accessorKey: "pay_type",
-    header: "Hourly/Salary",
+    id: "location",
+    header: "Location",
+    cell: ({ row }) => {
+      const city = row.original.hospital?.city
+      const state = row.original.hospital?.state
+      return <span>{city}, {state}</span>
+    }
   },
   {
-    accessorKey: "submitted_at",
-    header: "Submitted",
+    id: "submitted_at",
+    header: "Date",
+    cell: ({ row }) => {
+      const date = new Date(row.original.submitted_at)
+      return <span>{date.toLocaleDateString('en-US')}</span>
+    }
   }
 ]
