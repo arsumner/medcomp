@@ -1,11 +1,11 @@
-import { supabase } from '../../../lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const profession = searchParams.get('profession')
     const department = searchParams.get('department')
 
-    let query = supabase.from('Role').select('*')
+    let query = supabase.from('role').select('*')
 
     if (profession) {
         query = query.eq('profession', profession)
@@ -26,7 +26,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     const body = await request.json()
-    const { data, error } = await supabase.from('Role').insert([
+    const { data, error } = await supabase.from('role').insert([
         { profession: body.profession, department: body.department }
     ]).select()
 
