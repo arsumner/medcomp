@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { states } from "../data/states"
 
@@ -13,9 +14,10 @@ export default function Locations() {
   const [topStates, setTopStates] = useState<string[]>([])
   const [topCities, setTopCities] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
-    fetch('/api/locations')
+    fetch('/api/location')
       .then(r => r.json())
       .then(({ topStates, topCities }) => {
         setTopStates(topStates)
@@ -32,34 +34,54 @@ export default function Locations() {
     c.toLowerCase().includes(query.toLowerCase())
   )
 
+  function handleSearch() {
+    if (!query) return
+    if (tab === 'states') {
+      router.push(`/state/${toSlug(query)}`)
+    } else {
+      router.push(`/city/${toSlug(query)}`)
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') handleSearch()
+  }
+
   return (
     <main className="min-h-screen bg-[#F9FAFB]">
 
-      {/* Header */}
-      <section className="bg-[#0A0F1E] px-8 py-16">
-        <div className="mx-auto max-w-5xl">
-          <p className="text-xs uppercase tracking-widest text-[#0D9488] font-semibold mb-3">
+      <div className="relative bg-[#0A0F1E] px-8 py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#0D948820_0%,_transparent_70%)] pointer-events-none" />
+        <div className="relative z-10 mx-auto max-w-5xl">
+          <div className="inline-flex items-center gap-2 bg-[#0D9488]/10 border border-[#0D9488]/30 text-[#0D9488] text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0D9488] animate-pulse" />
             Salary Transparency
-          </p>
-          <h1 className="text-4xl font-bold text-white tracking-tight mb-3">
+          </div>
+          <h1 className="text-5xl font-bold text-white tracking-tight mb-4">
             Browse by Location
           </h1>
-          <p className="text-[#9CA3AF] text-base max-w-lg mb-8">
+          <p className="text-[#9CA3AF] text-lg max-w-lg leading-relaxed mb-8">
             Explore salary data by state or city across the U.S.
           </p>
 
-          <div className="max-w-md">
+          <div className="max-w-md flex">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder={tab === 'states' ? "Search for a state..." : "Search for a city..."}
-              className="w-full bg-[#111827] text-white px-5 py-3 rounded-full border border-[#1F2937] outline-none focus:border-[#0D9488] transition-colors duration-200 placeholder-[#4B5563]"
+              className="flex-1 bg-[#111827] text-white px-5 py-3 rounded-l-full border border-[#1F2937] outline-none focus:border-[#0D9488] transition-colors duration-200 placeholder-[#4B5563]"
             />
+            <button
+              onClick={handleSearch}
+              className="bg-[#0D9488] hover:bg-[#0F766E] text-white px-6 py-3 rounded-r-full font-semibold text-sm transition-colors duration-200"
+            >
+              Search
+            </button>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Tabs + Content */}
       <section className="px-8 py-12">
         <div className="mx-auto max-w-5xl">
 
