@@ -21,17 +21,17 @@ export default async function Home() {
   const data = await getData()
 
   return (
-    <main className="min-h-screen bg-[#0A0F1E]">
+    <main className="min-h-screen bg-[#F9FAFB]">
 
       <Hero />
 
-      <section className="px-8 pb-20">
-        <div className="w-full">
+      <section className="px-8 py-16 bg-[#F9FAFB]">
+        <div className="mx-auto max-w-7xl">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-white">
+            <h2 className="text-3xl font-bold text-[#0A0F1E]">
               Recent Salary Submissions
             </h2>
-            <p className="mt-2 text-[#9CA3AF]">
+            <p className="mt-2 text-[#6B7280]">
               Real healthcare salary insights from professionals across the U.S.
             </p>
           </div>
