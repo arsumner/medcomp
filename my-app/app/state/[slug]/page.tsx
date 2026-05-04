@@ -1,7 +1,9 @@
 import { supabase } from '@/lib/supabase'
-import DataTable from '../../components/table/dataTable'
+import DataTable from '../../components/table/homeTable'
 import { columns } from '../../components/table/columns'
 import Link from 'next/link'
+
+export const dynamic = 'force-dynamic'
 
 function formatState(slug: string) {
   return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
