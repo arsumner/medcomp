@@ -58,30 +58,36 @@ export const columns: ColumnDef<UserEntry>[] = [
     header: "Differentials",
     cell: ({ row }) => {
       const diffs = [
-        { label: 'Night', value: row.original.night_diff },
-        { label: 'Evening', value: row.original.evening_diff },
-        { label: 'Charge', value: row.original.charge_diff },
-        { label: 'Preceptor', value: row.original.preceptor_pay },
-        { label: 'Cert', value: row.original.certification_pay },
+        { label: "Night", value: row.original.night_diff },
+        { label: "Evening", value: row.original.evening_diff },
+        { label: "Charge", value: row.original.charge_diff },
+        { label: "Preceptor", value: row.original.preceptor_pay },
+        { label: "Cert", value: row.original.certification_pay },
       ].filter(d => d.value)
 
-      if (diffs.length === 0) return <span className="text-xs text-[#4B5563]">—</span>
+      if (diffs.length === 0) {
+        return <span className="text-sm text-[#94A3B8]">None</span>
+      }
 
       return (
-        <div className="flex flex-wrap gap-1">
+        <div className="flex max-w-xs flex-wrap gap-1.5">
           {diffs.map(d => (
             <span
               key={d.label}
-              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-[#F0FDFA] text-[#0D9488] border border-[#99F6E4]"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#BFDBFE] bg-[#EFF6FF] px-2.5 py-1 text-xs font-medium text-[#1E3A8A]"
             >
-              {d.label} +${d.value}
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-[#2563EB]">
+                +
+              </span>
+              <span>{d.label}</span>
+              <span className="font-semibold">${d.value}</span>
             </span>
           ))}
         </div>
       )
     }
   },
-  {
+    {
     accessorKey: "years_experience",
     header: "Exp.",
   },
