@@ -1,5 +1,5 @@
 import Link from "next/link"
-import SubmissionForm from '../components/submissionForm'
+import SubmissionForm from '../components/forms/submissionForm'
 
 export default async function Submit() {
 
