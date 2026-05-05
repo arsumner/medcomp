@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from '../app/components/navbar'
+import Navbar from './components/layout/navbar'
 import Script from 'next/script'
+import Footer from './components/layout/footer'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +28,10 @@ children,
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body>
+      <body suppressHydrationWarning>
         {/* Google Places API */}
         <Script
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_KEY}&libraries=places&loading=async`}
@@ -37,7 +39,8 @@ children,
         />
         <Navbar />
         <main>{children}</main>
-        </body>
+        <Footer />
+      </body>
     </html>
   );
 }
