@@ -1,10 +1,14 @@
 import { supabase } from '@/lib/supabase'
-import DataTable from '../../components/table/dataTable'
-import { columns } from '../../components/table/columns'
+import TableWithFilters from '../../components/table/filtersTable'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 function formatState(slug: string) {
-  return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+  return slug
+    .split('-')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
 }
 
 function percentile(arr: number[], p: number) {
@@ -27,9 +31,12 @@ async function getStateData(slug: string) {
     .eq('hospital.state', state)
     .order('submitted_at', { ascending: false })
 
-  if (error || !data) return { submissions: [], p25: 0, p75: 0, p90: 0 }
+  if (error || !data) {
+    return { submissions: [], p25: 0, p75: 0, p90: 0, state }
+  }
 
   const rates = data.map(d => d.base_rate).filter(Boolean)
+
   return {
     submissions: data,
     p25: percentile(rates, 25),
@@ -44,55 +51,142 @@ export default async function StatePage({ params }: { params: Promise<{ slug: st
   const { submissions, p25, p75, p90, state } = await getStateData(slug)
 
   return (
-    <main className="min-h-screen bg-[#F9FAFB]">
-      <section className="bg-[#0A0F1E] px-8 py-16">
-        <div className="mx-auto max-w-5xl">
-          <p className="text-xs uppercase tracking-widest text-[#0D9488] font-semibold mb-3">
-            Salary Data
-          </p>
-          <h1 className="text-4xl font-bold text-white tracking-tight mb-3">
-            {state}
-          </h1>
-          <p className="text-[#9CA3AF] text-base max-w-lg mb-6">
-            Real compensation data submitted by healthcare professionals in {state}.
-          </p>
-          <Link
-            href="/submit"
-            className="bg-[#0D9488] hover:bg-[#0F766E] text-white px-6 py-3 rounded-full font-semibold text-sm transition-colors duration-200"
-          >
-            Submit Your Salary
-          </Link>
+    <main className="min-h-screen bg-[#F8FAFC]">
+
+      <section className="relative overflow-hidden border-b border-[#E2E8F0] bg-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_#EEF2FF_0%,_transparent_36%)] pointer-events-none" />
+
+        <div className="relative z-10 mx-auto max-w-7xl px-6 py-14 md:px-8 md:py-16">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+
+            <div className="max-w-3xl">
+              <div className="mb-5 inline-flex items-center rounded-full border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-2 text-xs font-medium text-[#475569]">
+                State salary data
+              </div>
+
+              <h1 className="text-4xl font-semibold tracking-tight text-[#0F172A] md:text-6xl">
+                Healthcare salaries in {state}
+              </h1>
+
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#64748B] md:text-lg">
+                Compare what healthcare workers across {state} are actually earning—based on real, anonymous submissions.
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#64748B]">
+                <span className="rounded-full border border-[#E2E8F0] bg-white px-4 py-2">
+                  {submissions.length} submissions
+                </span>
+                <span className="rounded-full border border-[#E2E8F0] bg-white px-4 py-2">
+                  Anonymous data
+                </span>
+                <span className="rounded-full border border-[#E2E8F0] bg-white px-4 py-2">
+                  Healthcare-specific roles
+                </span>
+              </div>
+            </div>
+
+            <Link
+              href="/submit"
+              className="inline-flex w-fit items-center justify-center rounded-xl bg-[#4C6FFF] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#3B5BDB]"
+            >
+              Submit your salary
+            </Link>
+
+          </div>
         </div>
       </section>
 
-      <section className="px-8 py-10">
-        <div className="mx-auto max-w-5xl grid grid-cols-3 gap-6">
+      <section className="mx-auto max-w-7xl px-6 py-8 md:px-8">
+        <div className="grid gap-4 md:grid-cols-3">
           {[
-            { label: '25th Percentile', value: p25 },
-            { label: '75th Percentile', value: p75 },
-            { label: '90th Percentile', value: p90 },
-          ].map(({ label, value }) => (
-            <div key={label} className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm text-center">
-              <p className="text-xs uppercase tracking-widest text-[#9CA3AF] font-semibold mb-2">{label}</p>
-              <p className="text-3xl font-bold text-[#0A0F1E]">${value.toLocaleString()}</p>
+            { label: "25th percentile", value: p25, description: "Lower range" },
+            { label: "75th percentile", value: p75, description: "Higher range" },
+            { label: "90th percentile", value: p90, description: "Top reported pay" },
+          ].map(({ label, value, description }) => (
+            <div
+              key={label}
+              className="rounded-[1.5rem] border border-[#E2E8F0] bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.04)]"
+            >
+              <p className="text-sm font-medium text-[#64748B]">{label}</p>
+
+              <div className="mt-3 flex items-end gap-1">
+                <p className="text-4xl font-semibold tracking-tight text-[#0F172A]">
+                  ${value.toLocaleString()}
+                </p>
+                <span className="mb-1.5 text-sm text-[#94A3B8]">/hr</span>
+              </div>
+
+              <p className="mt-3 text-sm text-[#64748B]">{description}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="px-8 pb-16">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-xl font-bold text-[#0A0F1E] mb-6">Recent Submissions</h2>
-          {submissions.length > 0 ? (
-            <DataTable columns={columns} data={submissions} />
-          ) : (
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-12 text-center shadow-sm">
-              <p className="text-[#9CA3AF] text-base">No submissions yet for {state}.</p>
-              <Link href="/submit" className="mt-4 inline-block text-[#0D9488] font-semibold hover:underline">
-                Be the first to submit →
-              </Link>
+      <section className="mx-auto max-w-7xl px-6 pb-8 md:px-8">
+        <div className="relative overflow-hidden rounded-[2rem] border border-[#E2E8F0] bg-gradient-to-br from-[#F8FAFC] to-[#EEF2FF] p-6 md:p-8">
+          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#4C6FFF]/10 blur-2xl" />
+
+          <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+
+            <div className="max-w-2xl">
+              <p className="text-sm font-medium text-[#4C6FFF]">
+                Contribute anonymously
+              </p>
+
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#0F172A]">
+                Help healthcare workers in {state} understand fair pay.
+              </h2>
+
+              <p className="mt-3 text-sm leading-relaxed text-[#64748B]">
+                Most people don’t know if they’re underpaid. Your submission helps create transparency across hospitals, roles, and experience levels.
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-3 text-sm text-[#64748B]">
+                <span className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1.5">
+                  Anonymous
+                </span>
+                <span className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1.5">
+                  Takes ~2 minutes
+                </span>
+              </div>
             </div>
-          )}
+
+            <Link
+              href="/submit"
+              className="inline-flex items-center justify-center rounded-xl bg-[#4C6FFF] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[#3B5BDB]"
+            >
+              Submit anonymously
+            </Link>
+
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 pb-16 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="rounded-[2rem] border border-[#E2E8F0] bg-white p-5 shadow-[0_24px_70px_rgba(15,23,42,0.06)] md:p-8">
+
+            <div className="mb-6 pb-6 border-b border-[#E2E8F0]">
+              <p className="text-sm font-medium text-[#4C6FFF]">
+                Recent submissions
+              </p>
+
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#0F172A]">
+                Latest salary data from {state}
+              </h2>
+
+              <p className="mt-2 text-sm leading-relaxed text-[#64748B]">
+                Browse recent anonymous compensation submissions from healthcare workers in this state.
+              </p>
+            </div>
+
+            <TableWithFilters
+              submissions={submissions}
+              count={submissions.length}
+              emptyMessage={`Be the first to share your salary for ${state}.`}
+            />
+
+          </div>
         </div>
       </section>
 
