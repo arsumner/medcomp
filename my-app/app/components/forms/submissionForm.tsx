@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { professions } from '../../data/professions'
 import { departments } from '../../data/departments'
+import { useRouter } from 'next/navigation'
 import HospitalSearch from './../forms/hospitalSearch'
 
 const inputClass = "w-full bg-white text-[#111827] px-4 py-3 border border-[#E5E7EB] rounded-lg outline-none focus:border-[#0D9488] transition-colors duration-200 placeholder-[#9CA3AF]"
@@ -26,6 +27,7 @@ export default function SubmissionForm() {
   const [evening_diff, setEveningDiff] = useState('')
   const [signon_bonus, setSignonBonus] = useState('')
   const [preceptor_pay, setPreceptorPay] = useState('')
+  const router = useRouter()
 
   const baseRateLabel = payType === 'salary' ? 'Annual Salary ($)' : payType === 'travel' ? 'Weekly Rate ($)' : 'Hourly Rate ($/hr)'
   const allProfessions = Object.values(professions).flat()
@@ -98,7 +100,7 @@ export default function SubmissionForm() {
     })
 
     if (response.ok) {
-      alert('Submission successful! Thank you for contributing to our community.')
+      router.push('/submit/thankyou')
     } else {
       alert('Submission failed. Please try again later.')
     }
