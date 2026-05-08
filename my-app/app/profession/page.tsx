@@ -20,7 +20,7 @@ export default async function Profession() {
         <div className="relative z-10 mx-auto grid max-w-7xl gap-10 px-6 py-14 md:px-8 md:py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <div className="mb-5 inline-flex items-center rounded-full border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-2 text-xs font-medium text-[#475569]">
-              Healthcare salary transparency
+              Accurate data for 60+ healthcare professions
             </div>
 
             <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-[#0F172A] md:text-6xl">
@@ -28,7 +28,7 @@ export default async function Profession() {
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#64748B] md:text-lg">
-              Explore anonymous compensation data across nursing, allied health, pharmacy, lab, imaging, healthcare IT, and more.
+              
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#64748B]">
