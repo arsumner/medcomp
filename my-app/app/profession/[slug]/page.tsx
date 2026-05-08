@@ -1,4 +1,3 @@
-import { columns } from '../../components/table/columns'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import FilterTable from '../../components/table/filtersTable'
@@ -23,9 +22,12 @@ async function getProfessionData(slug: string) {
     .eq('role.slug', slug)
     .order('submitted_at', { ascending: false })
 
-  if (error || !data) return { submissions: [], p25: 0, p75: 0, p90: 0, count: 0 }
+  if (error || !data) {
+    return { submissions: [], p25: 0, p75: 0, p90: 0, count: 0 }
+  }
 
   const rates = data.map(d => d.base_rate).filter(Boolean)
+
   return {
     submissions: data,
     p25: percentile(rates, 25),
@@ -48,7 +50,7 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-14 md:px-8 md:py-16">
           <div className="mb-6 flex items-center gap-2 text-sm text-[#64748B]">
             <Link href="/profession" className="hover:text-[#4C6FFF]">
-              Professions
+              Roles
             </Link>
             <span>/</span>
             <span className="capitalize text-[#0F172A]">{professionName}</span>
@@ -57,26 +59,26 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <div className="mb-5 inline-flex items-center rounded-full border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-2 text-xs font-medium text-[#475569]">
-                Healthcare salary data
+                Pay information for this role
               </div>
 
               <h1 className="text-4xl font-semibold capitalize tracking-tight text-[#0F172A] md:text-6xl">
-                {professionName} salaries
+                Browse {professionName} Salaries
               </h1>
 
               <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#64748B] md:text-lg">
-                Compare anonymous compensation data from healthcare professionals across hospitals, locations, and experience levels.
+                See what people in this role are reporting across hospitals, cities, states, and experience levels.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#64748B]">
                 <span className="rounded-full border border-[#E2E8F0] bg-white px-4 py-2">
-                  {count} submissions
+                  {count} pay report{count === 1 ? '' : 's'}
                 </span>
                 <span className="rounded-full border border-[#E2E8F0] bg-white px-4 py-2">
-                  Anonymous data
+                  Anonymous
                 </span>
                 <span className="rounded-full border border-[#E2E8F0] bg-white px-4 py-2">
-                  Healthcare-specific roles
+                  Healthcare workers only
                 </span>
               </div>
             </div>
@@ -85,7 +87,7 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
               href="/submit"
               className="inline-flex w-fit items-center justify-center rounded-xl bg-[#4C6FFF] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#3B5BDB]"
             >
-              Submit your salary
+              Share your pay
             </Link>
           </div>
         </div>
@@ -94,9 +96,21 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
       <section className="mx-auto max-w-7xl px-6 py-8 md:px-8">
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            { label: '25th percentile', value: p25, description: 'Lower range' },
-            { label: '75th percentile', value: p75, description: 'Higher range' },
-            { label: '90th percentile', value: p90, description: 'Top reported pay' },
+            {
+              label: 'Lower range',
+              value: p25,
+              description: 'About 25% of reports are at or below this rate.',
+            },
+            {
+              label: 'Higher range',
+              value: p75,
+              description: 'About 75% of reports are at or below this rate.',
+            },
+            {
+              label: 'Top reported pay',
+              value: p90,
+              description: 'A look at the higher end of reported pay.',
+            },
           ].map(({ label, value, description }) => (
             <div
               key={label}
@@ -111,7 +125,9 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
                 <span className="mb-1.5 text-sm text-[#94A3B8]">/hr</span>
               </div>
 
-              <p className="mt-3 text-sm text-[#64748B]">{description}</p>
+              <p className="mt-3 text-sm leading-relaxed text-[#64748B]">
+                {description}
+              </p>
             </div>
           ))}
         </div>
@@ -119,43 +135,38 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
 
       <section className="mx-auto max-w-7xl px-6 pb-10 md:px-8">
         <div className="relative overflow-hidden rounded-[2rem] border border-[#E2E8F0] bg-gradient-to-br from-[#F8FAFC] to-[#EEF2FF] p-6 md:p-8">
-
-          <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-[#4C6FFF]/10 blur-2xl" />
+          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#4C6FFF]/10 blur-2xl" />
 
           <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-
             <div className="max-w-2xl">
               <p className="text-sm font-medium text-[#4C6FFF]">
-                Contribute anonymously
+                Help the next person in your role
               </p>
 
               <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#0F172A]">
-                Help others understand what fair pay looks like.
+                Share what you earn, anonymously.
               </h2>
 
               <p className="mt-3 text-sm leading-relaxed text-[#64748B]">
-                Most healthcare workers don’t know if they’re underpaid. Your submission helps create transparency across roles, hospitals, and locations.
+                Pay is easier to understand when more people share. Your report helps other {professionName}s compare offers, plan their next move, and know when something is off.
               </p>
 
               <div className="mt-4 flex flex-wrap gap-3 text-sm text-[#64748B]">
-                <span className="rounded-full bg-white px-3 py-1.5 border border-[#E2E8F0]">
-                  Anonymous
+                <span className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1.5">
+                  No name shown
                 </span>
-                <span className="rounded-full bg-white px-3 py-1.5 border border-[#E2E8F0]">
+                <span className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1.5">
                   Takes ~2 minutes
                 </span>
               </div>
             </div>
 
-            <div className="flex-shrink-0">
-              <Link
-                href="/submit"
-                className="inline-flex items-center justify-center rounded-xl bg-[#4C6FFF] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[#3B5BDB]"
-              >
-                Submit your salary
-              </Link>
-            </div>
-
+            <Link
+              href="/submit"
+              className="inline-flex items-center justify-center rounded-xl bg-[#4C6FFF] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[#3B5BDB]"
+            >
+              Share your pay
+            </Link>
           </div>
         </div>
       </section>
@@ -165,7 +176,7 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
           <FilterTable
             submissions={submissions}
             count={count}
-            emptyMessage="Be the first to share your salary for this profession."
+            emptyMessage={`Be the first to share pay information for ${professionName}.`}
           />
         </div>
       </section>

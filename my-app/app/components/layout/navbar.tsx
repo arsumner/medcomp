@@ -27,11 +27,11 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-7 md:flex">
           <Link href="/profession" className="text-sm font-medium text-[#64748B] hover:text-[#0F172A] transition-colors">
-            Professions
+            Search by Profession
           </Link>
 
-          <Link href="/locations" className="text-sm font-medium text-[#64748B] hover:text-[#0F172A] transition-colors">
-            Locations
+          <Link href="/location" className="text-sm font-medium text-[#64748B] hover:text-[#0F172A] transition-colors">
+            Search by Location
           </Link>
 
           <div
@@ -62,50 +62,14 @@ export default function Navbar() {
                   
                   <div className="px-4 pb-2 pt-3">
                     <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">
-                      Explore
+                      COMING SOON
                     </p>
                     <p className="mt-1 text-sm text-[#64748B]">
-                      Compare healthcare pay from different angles.
+                      Cost of living calculator, pay trends, and more coming soon.
                     </p>
                   </div>
 
-                  {[
-                    {
-                      href: "/explore/ranking",
-                      title: "Rankings",
-                      description: "Top paying hospitals, states, and cities.",
-                    },
-                    {
-                      href: "/explore/experience",
-                      title: "Experience & professions",
-                      description: "Salary progression and profession insights.",
-                    },
-                    {
-                      href: "/explore/calculator",
-                      title: "Cost of living calculator",
-                      description: "Compare true take-home pay after tax and COL.",
-                    },
-                  ].map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setExploreOpen(false)}
-                      className="group flex items-center justify-between gap-4 rounded-2xl px-4 py-3 transition hover:bg-[#F8FAFC]"
-                    >
-                      <div>
-                        <p className="text-sm font-semibold text-[#0F172A] group-hover:text-[#4C6FFF]">
-                          {item.title}
-                        </p>
-                        <p className="mt-0.5 text-xs leading-relaxed text-[#64748B]">
-                          {item.description}
-                        </p>
-                      </div>
 
-                      <span className="text-sm text-[#94A3B8] transition group-hover:translate-x-0.5 group-hover:text-[#4C6FFF]">
-                        →
-                      </span>
-                    </Link>
-                  ))}
                 </div>
               </div>
             )}
