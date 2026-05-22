@@ -41,26 +41,38 @@ export default function HospitalSearch({ onSelect }: HospitalSearchProps) {
     return () => clearTimeout(timer)
   }, [input])
 
-  const handleSelect = async (suggestion: google.maps.places.AutocompleteSuggestion) => {
-    const placePrediction = suggestion.placePrediction
-    const place = placePrediction.toPlace()
-    await place.fetchFields({ fields: ['displayName', 'addressComponents'] })
+const handleSelect = async ( suggestion: google.maps.places.AutocompleteSuggestion ) => {
+  const placePrediction = suggestion.placePrediction
 
-    const components = place.addressComponents ?? []
-    const city = 
+  if (!placePrediction) {
+    console.error('No place prediction found for this suggestion.')
+    return
+  }
+
+  const place = placePrediction.toPlace()
+
+  await place.fetchFields({fields: ['displayName', 'addressComponents'],})
+
+  const components = place.addressComponents ?? []
+
+  const city =
     components.find(c => c.types.includes('locality'))?.longText ??
     components.find(c => c.types.includes('sublocality'))?.longText ??
     components.find(c => c.types.includes('neighborhood'))?.longText ??
     components.find(c => c.types.includes('administrative_area_level_2'))?.longText ??
     ''
-    const state = components.find(c => c.types.includes('administrative_area_level_1'))?.longText ?? ''
-    const hospital = place.displayName ?? ''
 
-    setInput(hospital)
-    setSuggestions([])
-    setOpen(false)
-    onSelect(hospital, city, state)
-  }
+  const state =
+    components.find(c => c.types.includes('administrative_area_level_1'))?.longText ?? ''
+
+  const hospital =
+    place.displayName ?? placePrediction.text?.toString() ?? ''
+
+  setInput(hospital)
+  setSuggestions([])
+  setOpen(false)
+  onSelect(hospital, city, state)
+}
 
   return (
     <div ref={ref} className="relative">
@@ -71,17 +83,25 @@ export default function HospitalSearch({ onSelect }: HospitalSearchProps) {
         className="w-full bg-white text-[#111827] px-4 py-3 border border-[#E5E7EB] rounded-lg outline-none focus:border-[#0D9488] transition-colors duration-200 placeholder-[#9CA3AF]"
       />
       {open && suggestions.length > 0 && (
-        <ul className="absolute z-10 w-full bg-[#111827] border border-[#1F2937] rounded-lg mt-1">
-          {suggestions.map((s, i) => (
-            <li
-              key={i}
-              onClick={() => handleSelect(s)}
-              className="px-4 py-2 text-white hover:bg-[#1F2937] cursor-pointer"
-            >
-              <strong>{s.placePrediction.mainText.toString()}</strong>
-              <span className="text-[#9CA3AF] ml-2 text-sm">{s.placePrediction.secondaryText?.toString()}</span>
-            </li>
-          ))}
+        <ul className="absolute z-10 mt-1 w-full rounded-lg border border-[#1F2937] bg-[#111827]">
+          {suggestions.map((s, i) => {
+            const placePrediction = s.placePrediction
+
+            if (!placePrediction) return null
+
+            return (
+              <li
+                key={i}
+                onClick={() => handleSelect(s)}
+                className="cursor-pointer px-4 py-2 text-white hover:bg-[#1F2937]"
+              >
+                <strong>{placePrediction.mainText?.toString() ?? 'Unknown place'}</strong>
+                <span className="ml-2 text-sm text-[#9CA3AF]">
+                  {placePrediction.secondaryText?.toString() ?? ''}
+                </span>
+              </li>
+            )
+          })}
         </ul>
       )}
     </div>

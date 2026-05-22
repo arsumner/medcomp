@@ -80,11 +80,17 @@ export default function LocationsClient({ topStates, topCities, initialMapData }
         })
 
         setPlaceSuggestions(
-          result.suggestions.map(s => ({
-            name: s.placePrediction.mainText.toString(),
-            fullText: s.placePrediction.text.toString(),
-          }))
-        )
+            result.suggestions.map((s) => {
+              const placePrediction = s.placePrediction
+
+              if (!placePrediction) return null
+
+                return {
+                  name: placePrediction.mainText?.toString() ?? '',
+                  fullText: placePrediction.text?.toString() ?? '',
+                }
+              }).filter((s): s is { name: string; fullText: string } => s !== null)
+      )
 
         setShowDropdown(true)
       } catch {

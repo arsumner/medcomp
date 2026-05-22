@@ -9,20 +9,34 @@ export function usePlacesAutocomplete(input: string, type: 'hospital' | 'city') 
       return
     }
 
-    const fetchSuggestions = async () => {
-      try {
-        const { AutocompleteSuggestion } = await google.maps.importLibrary('places') as google.maps.PlacesLibrary
-        const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
-          input,
-          includedPrimaryTypes: type === 'hospital' ? ['hospital'] : ['locality'],
-        })
-        setSuggestions(suggestions.map(s => s.placePrediction.mainText.toString()))
-      } catch {
-        setSuggestions([])
-      }
-    }
+  const fetchSuggestions = async () => {
+        try {
+          const { AutocompleteSuggestion } =
+            await google.maps.importLibrary('places') as google.maps.PlacesLibrary
 
-    const timer = setTimeout(fetchSuggestions, 300)
+          const { suggestions } =
+            await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+              input,
+              includedPrimaryTypes: type === 'hospital' ? ['hospital'] : ['locality'],
+            })
+
+          setSuggestions(
+            suggestions
+              .map((s) => {
+                const placePrediction = s.placePrediction
+
+                if (!placePrediction) return null
+
+                return placePrediction.mainText?.toString() ?? null
+              })
+              .filter((s): s is string => s !== null)
+          )
+        } catch {
+          setSuggestions([])
+        }
+      }
+
+  const timer = setTimeout(fetchSuggestions, 300)
     return () => clearTimeout(timer)
   }, [input, type])
 
