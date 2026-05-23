@@ -21,7 +21,7 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b border-[#E2E8F0] bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-4">
 
-        <Link href="/" className="text-xl font-semibold tracking-tight text-[#0F172A]">
+        <Link href="/" className="text-2xl font-semibold tracking-tight text-[#0F172A]">
           MedComp
         </Link>
 
