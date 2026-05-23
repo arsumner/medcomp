@@ -2,6 +2,8 @@ import Hero from "./components/home/hero"
 import { columns } from "./components/table/columns"
 import DataTable from "./components/table/homeTable"
 import { supabase } from "../src/lib/supabase"
+import FeatureWalkthrough from "./components/featureWalkthrough"
+
 
 export const dynamic = "force-dynamic"
 
@@ -76,6 +78,7 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      <FeatureWalkthrough />
     </main>
   )
 }
