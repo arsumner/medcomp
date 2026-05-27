@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { professions } from '../../data/professions'
-import DataTable from '../table/homeTable'
+import DataTable from '../table/filtersTable'
 import { columns } from '../table/columns'
 
 const allProfessions = ['All Professions', ...Object.values(professions).flat()]
