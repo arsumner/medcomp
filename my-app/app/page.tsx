@@ -48,6 +48,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-[#F8FAFC]">
       <Hero totalReports={totalReports} />
+      <FeatureWalkthrough />
 
       <section className="px-6 pb-24 pt-4 md:px-8">
         <div className="mx-auto max-w-7xl">
@@ -78,7 +79,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-      <FeatureWalkthrough />
     </main>
   )
 }
