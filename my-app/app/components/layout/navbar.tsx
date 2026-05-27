@@ -78,7 +78,7 @@ export default function Navbar() {
 
         <Link
           href="/submit"
-          className="rounded-xl bg-[#4C6FFF] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3B5BDB]"
+          className="rounded-xl bg-[#071A3D] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#102A5C]"
         >
           Submit your salary
         </Link>
