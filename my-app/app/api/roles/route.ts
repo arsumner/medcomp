@@ -58,11 +58,11 @@ export async function GET(request: Request) {
     const stateMap: Record<string, { total: number; count: number }> = {}
 
     for (const row of data ?? []) {
-      const rowProfession = (row.role as { profession: string } | null)?.profession
+      const rowProfession = (row.role as unknown as { profession: string } | null)?.profession
 
       if (profession && profession !== 'All Professions' && rowProfession !== profession) continue
 
-      const state = (row.hospital as { state: string } | null)?.state
+      const state = (row.hospital as unknown as { state: string } | null)?.state
       if (!state || row.base_rate == null) continue
 
       if (!stateMap[state]) stateMap[state] = { total: 0, count: 0 }
