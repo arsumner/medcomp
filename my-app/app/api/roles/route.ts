@@ -39,7 +39,47 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const profession = searchParams.get('profession')
   const department = searchParams.get('department')
+  const mapData = searchParams.get('mapData')
 
+  if (mapData === 'true') {
+    const { data, error } = await supabase
+      .from('submission')
+      .select(`
+        base_rate,
+        hospital:hospitalid ( state ),
+        role:roleid ( profession )
+      `)
+      .eq('is_active', true)
+
+    if (error) {
+      return Response.json({ error: error.message }, { status: 500 })
+    }
+
+    const stateMap: Record<string, { total: number; count: number }> = {}
+
+    for (const row of data ?? []) {
+      const rowProfession = (row.role as { profession: string } | null)?.profession
+
+      if (profession && profession !== 'All Professions' && rowProfession !== profession) continue
+
+      const state = (row.hospital as { state: string } | null)?.state
+      if (!state || row.base_rate == null) continue
+
+      if (!stateMap[state]) stateMap[state] = { total: 0, count: 0 }
+      stateMap[state].total += Number(row.base_rate)
+      stateMap[state].count += 1
+    }
+
+    const result = Object.entries(stateMap).map(([state, { total, count }]) => ({
+      state,
+      avg: Math.round((total / count) * 100) / 100,
+      count,
+    }))
+
+    return Response.json(result)
+  }
+
+  // Original role lookup logic
   let query = supabase.from('role').select('*')
 
   if (profession) {
