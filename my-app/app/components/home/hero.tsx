@@ -10,29 +10,73 @@ import { usePlacesAutocomplete } from '../../hooks/usePlacesAutocomplete'
 const allProfessions = Object.values(professions).flat()
 
 function toSlug(s: string) {
-  return s.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '')
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[()]/g, '')
 }
 
 type HeroProps = {
   totalReports: number
 }
 
+type SearchCategory = 'profession' | 'state' | 'city' | 'hospital'
+
+type CitySuggestion = {
+  name: string
+  fullText: string
+}
+
+type SearchSuggestion = {
+  key: string
+  label: string
+  value: string
+  routeValue: string
+}
+
+const searchOptions: {
+  value: SearchCategory
+  label: string
+  placeholder: string
+}[] = [
+  {
+    value: 'profession',
+    label: 'Role',
+    placeholder: 'Search RN, PA, CRNA, Radiology Tech…',
+  },
+  {
+    value: 'city',
+    label: 'City',
+    placeholder: 'Search Miami, Seattle, Brooklyn…',
+  },
+  {
+    value: 'state',
+    label: 'State',
+    placeholder: 'Search New York, California, Florida…',
+  },
+  {
+    value: 'hospital',
+    label: 'Hospital',
+    placeholder: 'Search Mount Sinai, Mayo Clinic…',
+  },
+]
+
 export default function Hero({ totalReports }: HeroProps) {
-  const [category, setCategory] = useState('profession')
+  const [category, setCategory] = useState<SearchCategory>('profession')
   const [query, setQuery] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [error, setError] = useState('')
+  const [citySuggestions, setCitySuggestions] = useState<CitySuggestion[]>([])
 
   const router = useRouter()
   const inputRef = useRef<HTMLDivElement>(null)
 
-  const goal = 1000
-  const progressPercent = Math.min((totalReports / goal) * 100, 100)
-  const remainingReports = Math.max(goal - totalReports, 0)
+  const activeSearch = searchOptions.find(option => option.value === category)
 
-  const placeSuggestions = usePlacesAutocomplete(
-    category === 'city' || category === 'hospital' ? query : '',
-    category as 'hospital' | 'city'
+  const hospitalSuggestions = usePlacesAutocomplete(
+    category === 'hospital' ? query : '',
+    'hospital'
   )
 
   useEffect(() => {
@@ -46,41 +90,121 @@ export default function Hero({ totalReports }: HeroProps) {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  function getSuggestions(): string[] {
+  useEffect(() => {
+    if (category !== 'city' || !query || query.length < 2) {
+      setCitySuggestions([])
+      return
+    }
+
+    const fetchCities = async () => {
+      try {
+        const { AutocompleteSuggestion } =
+          (await google.maps.importLibrary('places')) as google.maps.PlacesLibrary
+
+        const result = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+          input: query,
+          includedPrimaryTypes: ['locality'],
+        })
+
+        const suggestions = result.suggestions
+          .map((s) => {
+            const placePrediction = s.placePrediction
+
+            if (!placePrediction) return null
+
+            return {
+              name: placePrediction.mainText?.toString() ?? '',
+              fullText: placePrediction.text?.toString() ?? '',
+            }
+          })
+          .filter((s): s is CitySuggestion => {
+            return Boolean(s && s.name && s.fullText)
+          })
+
+        setCitySuggestions(suggestions)
+        setShowDropdown(true)
+      } catch {
+        setCitySuggestions([])
+      }
+    }
+
+    const timer = setTimeout(fetchCities, 300)
+    return () => clearTimeout(timer)
+  }, [query, category])
+
+  function getSuggestions(): SearchSuggestion[] {
     if (!query || query.length < 1) return []
 
     if (category === 'profession') {
       return allProfessions
         .filter(p => p.toLowerCase().includes(query.toLowerCase()))
-        .slice(0, 6)
+        .slice(0, 7)
+        .map(p => ({
+          key: p,
+          label: p,
+          value: p,
+          routeValue: p,
+        }))
     }
 
     if (category === 'state') {
       return states
         .filter(s => s.toLowerCase().includes(query.toLowerCase()))
-        .slice(0, 6)
+        .slice(0, 7)
+        .map(s => ({
+          key: s,
+          label: s,
+          value: s,
+          routeValue: s,
+        }))
     }
 
-    if (category === 'city' || category === 'hospital') {
-      return placeSuggestions.slice(0, 6)
+    if (category === 'city') {
+      return citySuggestions.slice(0, 7).map(city => {
+        const cityName = city.name.split(',')[0].trim()
+
+        return {
+          key: city.fullText,
+          label: city.fullText,
+          value: city.fullText,
+          routeValue: cityName,
+        }
+      })
+    }
+
+    if (category === 'hospital') {
+      return hospitalSuggestions.slice(0, 7).map(hospital => ({
+        key: hospital,
+        label: hospital,
+        value: hospital,
+        routeValue: hospital,
+      }))
     }
 
     return []
   }
 
-  function handleSelect(value: string) {
-    setQuery(value)
+  function handleCategoryChange(value: SearchCategory) {
+    setCategory(value)
+    setQuery('')
+    setError('')
+    setShowDropdown(false)
+    setCitySuggestions([])
+  }
+
+  function handleSelect(suggestion: SearchSuggestion) {
+    setQuery(suggestion.value)
     setError('')
     setShowDropdown(false)
 
     if (category === 'profession') {
-      router.push(`/profession/${toSlug(value)}`)
+      router.push(`/profession/${toSlug(suggestion.routeValue)}`)
     } else if (category === 'state') {
-      router.push(`/state/${toSlug(value)}`)
+      router.push(`/state/${toSlug(suggestion.routeValue)}`)
     } else if (category === 'city') {
-      router.push(`/city/${toSlug(value)}`)
+      router.push(`/city/${toSlug(suggestion.routeValue)}`)
     } else if (category === 'hospital') {
-      router.push(`/hospital/${toSlug(value)}`)
+      router.push(`/hospital/${toSlug(suggestion.routeValue)}`)
     }
   }
 
@@ -88,17 +212,19 @@ export default function Hero({ totalReports }: HeroProps) {
     setError('')
 
     if (!query.trim()) {
-      setError('Please enter a search term.')
+      setError('Start typing, then choose a result from the list.')
       return
     }
 
+    const currentSuggestions = getSuggestions()
+
     if (category === 'profession') {
-      const match = allProfessions.find(
-        p => p.toLowerCase() === query.toLowerCase()
+      const match = currentSuggestions.find(
+        s => s.value.toLowerCase() === query.toLowerCase()
       )
 
       if (!match) {
-        setError('Please select a valid profession from the dropdown.')
+        setError('Choose a role from the suggestions so we can take you to the right page.')
         return
       }
 
@@ -107,12 +233,12 @@ export default function Hero({ totalReports }: HeroProps) {
     }
 
     if (category === 'state') {
-      const match = states.find(
-        s => s.toLowerCase() === query.toLowerCase()
+      const match = currentSuggestions.find(
+        s => s.value.toLowerCase() === query.toLowerCase()
       )
 
       if (!match) {
-        setError('Please select a valid U.S. state from the dropdown.')
+        setError('Choose a state from the suggestions so we can take you to the right page.')
         return
       }
 
@@ -121,28 +247,32 @@ export default function Hero({ totalReports }: HeroProps) {
     }
 
     if (category === 'city') {
-      if (placeSuggestions.length === 0) {
-        setError('Please select a valid city from the dropdown.')
+      if (currentSuggestions.length === 0) {
+        setError('Choose a city from the suggestions so we can take you to the right page.')
         return
       }
 
-      const match = placeSuggestions.find(
-        s => s.toLowerCase() === query.toLowerCase()
-      ) || placeSuggestions[0]
+      const match =
+        currentSuggestions.find(
+          s =>
+            s.value.toLowerCase() === query.toLowerCase() ||
+            s.routeValue.toLowerCase() === query.toLowerCase()
+        ) || currentSuggestions[0]
 
       handleSelect(match)
       return
     }
 
     if (category === 'hospital') {
-      if (placeSuggestions.length === 0) {
-        setError('Please select a valid hospital from the dropdown.')
+      if (currentSuggestions.length === 0) {
+        setError('Choose a hospital from the suggestions so we can take you to the right page.')
         return
       }
 
-      const match = placeSuggestions.find(
-        s => s.toLowerCase() === query.toLowerCase()
-      ) || placeSuggestions[0]
+      const match =
+        currentSuggestions.find(
+          s => s.value.toLowerCase() === query.toLowerCase()
+        ) || currentSuggestions[0]
 
       handleSelect(match)
     }
@@ -155,41 +285,78 @@ export default function Hero({ totalReports }: HeroProps) {
   const currentSuggestions = getSuggestions()
 
   return (
-    <section className="relative overflow-hidden border-b border-[#E2E8F0] bg-[#FBFCFE] px-6 py-16 md:py-24">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_#EEF2FF_0%,_transparent_36%)] pointer-events-none" />
+    <section className="relative overflow-hidden border-b border-[#DDE8F0] bg-[#F7FBFC]">
+      <div className="pointer-events-none absolute left-[-260px] top-[-260px] h-[560px] w-[560px] rounded-full bg-[#DDF5F2] opacity-70 blur-3xl" />
+      <div className="pointer-events-none absolute right-[-260px] top-[-200px] h-[680px] w-[680px] rounded-full bg-[#D8EFFF] opacity-70 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-[-360px] left-1/2 h-[620px] w-[760px] -translate-x-1/2 rounded-full bg-[#F4F0E7] opacity-60 blur-3xl" />
 
-      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.08fr_0.92fr]">
-        <div className="max-w-3xl">
-          <p className="text-sm font-medium text-[#4C6FFF]">
-            Forging the path to pay transparency in healthcare. One salary at a time.
+      <div className="relative mx-auto flex min-h-[calc(100vh-72px)] max-w-7xl flex-col items-center px-5 pb-10 pt-14 text-center sm:px-6 lg:pt-16">
+        <div className="mx-auto max-w-5xl">
+          <p className="mx-auto mb-4 text-sm font-semibold uppercase tracking-[0.08em] text-[#64748B]">
+            Built by healthcare workers, for healthcare workers
           </p>
 
-          <h1 className="mt-5 text-4xl font-semibold leading-[1.04] tracking-tight text-[#0F172A] md:text-6xl">
-            Know your worth.
+          <h1 className="font-serif text-[46px] font-normal leading-[0.98] tracking-[-0.055em] text-[#07152F] sm:text-[64px] lg:text-[78px]">
+            See what your colleagues <br /> are actually making.
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#64748B]">
-            Search real pay reports by role, hospital, city, or state. Take the rumors, guesswork, and secrecy out of finding your next role, comparing offers, or planning a move.
+          <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-8 text-[#526174] sm:text-[18px]">
+            Anonymous pay info from nurses, PAs, CRNAs, and more. <br /> No account needed.
           </p>
+        </div>
 
-          <div ref={inputRef} className="relative z-20 mt-9 w-full max-w-3xl">
-            <div className="rounded-[1.75rem] border border-[#E2E8F0] bg-white p-3 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
-              <div className="flex flex-col gap-3 md:flex-row">
-                <select
-                  value={category}
-                  onChange={(e) => {
-                    setCategory(e.target.value)
-                    setQuery('')
-                    setError('')
-                    setShowDropdown(false)
-                  }}
-                  className="rounded-2xl bg-[#F8FAFC] px-4 py-4 text-sm font-medium text-[#334155] outline-none md:w-44"
-                >
-                  <option value="profession">Profession</option>
-                  <option value="state">State</option>
-                  <option value="city">City</option>
-                  <option value="hospital">Hospital</option>
-                </select>
+        <div ref={inputRef} className="relative z-30 mt-9 w-full max-w-4xl">
+          <div className="rounded-[34px] border border-[#BFD1DD] bg-white p-3 shadow-[0_30px_100px_rgba(6,24,58,0.20)] ring-1 ring-[#E8F0F5]">
+            <div className="mb-3 px-3 pt-1 text-left">
+              <p className="text-lg font-bold text-[#263B52]">
+                What do you want to compare?
+              </p>
+            </div>
+
+            <div className="grid grid-cols-4 gap-1 rounded-full border border-[#D8E5EA] bg-[#DDEBED] p-1 shadow-inner">
+              {searchOptions.map(option => {
+                const isActive = option.value === category
+
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleCategoryChange(option.value)}
+                    className={`rounded-full px-2 py-2.5 text-center text-[13px] font-bold transition sm:text-lg ${
+                      isActive
+                        ? 'bg-[#06183A] text-white shadow-[0_8px_20px_rgba(6,24,58,0.22)]'
+                        : 'text-[#4F6070] hover:bg-white/60 hover:text-[#06183A]'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="mt-3 flex flex-col gap-3 rounded-[27px] border border-[#BFD1DD] bg-[#F4F8FA] p-3 shadow-inner md:flex-row md:items-center">
+              <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[22px] bg-white px-3 shadow-sm md:bg-transparent md:shadow-none">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#DDF5F2] text-[#087A7B] ring-1 ring-[#BFE5E1]">
+                  <svg
+                    width="19"
+                    height="19"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M10.75 18.5a7.75 7.75 0 1 1 0-15.5 7.75 7.75 0 0 1 0 15.5Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="m16.5 16.5 4 4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
 
                 <input
                   value={query}
@@ -200,127 +367,60 @@ export default function Hero({ totalReports }: HeroProps) {
                   }}
                   onKeyDown={handleKeyDown}
                   onFocus={() => setShowDropdown(true)}
-                  placeholder={
-                    category === 'profession' ? 'Try Registered Nurse, PA, Rad Tech...' :
-                    category === 'state' ? 'Try New York, California...' :
-                    category === 'city' ? 'Try Miami, Seattle...' :
-                    'Try a hospital or health system...'
-                  }
-                  className="flex-1 rounded-2xl bg-[#F8FAFC] px-4 py-4 text-sm text-[#0F172A] outline-none placeholder:text-[#94A3B8]"
+                  placeholder={activeSearch?.placeholder}
+                  className="min-w-0 flex-1 bg-transparent py-4 text-[16px] font-medium text-[#101827] outline-none placeholder:text-[#7D8BA0]"
                 />
-
-                <button
-                  onClick={handleSearch}
-                  className="rounded-2xl bg-[#4C6FFF] px-7 py-4 text-sm font-semibold text-white transition hover:bg-[#3B5BDB]"
-                >
-                  Search pay
-                </button>
               </div>
+
+              <button
+                type="button"
+                onClick={handleSearch}
+                className="shrink-0 rounded-full bg-[#06183A] px-9 py-4 text-[18px] font-bold text-white shadow-[0_12px_30px_rgba(6,24,58,0.26)] transition hover:bg-[#102B62] focus:outline-none focus:ring-4 focus:ring-[#C8D8FF]"
+              >
+                Search
+              </button>
             </div>
-
-            {error && (
-              <p className="mt-2 px-2 text-left text-xs text-red-500">
-                {error}
-              </p>
-            )}
-
-            {showDropdown && currentSuggestions.length > 0 && (
-              <ul className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white text-left shadow-xl">
-                {currentSuggestions.map((s) => (
-                  <li
-                    key={s}
-                    onClick={() => handleSelect(s)}
-                    className="cursor-pointer px-5 py-3 text-sm text-[#334155] transition hover:bg-[#F1F5F9] hover:text-[#4C6FFF]"
-                  >
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
 
-          <div className="mt-8 max-w-2xl border-l-2 border-[#C7D2FE] pl-5">
-            <p className="text-sm leading-relaxed text-[#64748B]">
-              Not sure where to start? Try searching for your profession, then explore related roles, locations, and pay insights from there.
+          {error && (
+            <p className="mt-3 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-left text-sm text-red-600">
+              {error}
             </p>
-          </div>
+          )}
+
+          {showDropdown && currentSuggestions.length > 0 && (
+            <ul className="absolute z-50 mt-3 max-h-72 w-full overflow-auto rounded-3xl border border-[#C7D7E2] bg-white p-2 text-left shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
+              {currentSuggestions.map((suggestion) => (
+                <li
+                  key={suggestion.key}
+                  onClick={() => handleSelect(suggestion)}
+                  className="cursor-pointer rounded-2xl px-4 py-3 text-sm font-semibold text-[#334155] transition hover:bg-[#EEF8FA] hover:text-[#06183A]"
+                >
+                  {suggestion.label}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
-        <div className="rounded-[2rem] border border-[#E2E8F0] bg-white p-6 shadow-[0_14px_40px_rgba(15,23,42,0.04)] md:p-8">
-          <div className="border-b border-[#E2E8F0] pb-6">
-            <p className="text-sm font-medium text-[#4C6FFF]">
-              Work for a healthcare organization? We need you!
-            </p>
+        <div className="relative z-20 mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-medium text-[#5F6F80]">
+          <span>Search for higher paying roles</span>
+          <span className="h-1 w-1 rounded-full bg-[#B8C6D1]" />
+          <span>No need to login or signup</span>
+          <span className="h-1 w-1 rounded-full bg-[#B8C6D1]" />
+          <span>100% anonymous</span>
+        </div>
 
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#0F172A]">
-              Help us reach our goal of 1,000 anonymous pay reports.
-            </h2>
-
-            <p className="mt-3 text-sm leading-relaxed text-[#64748B]">
-              Every anonymous report makes the picture clearer for the next person comparing an offer, planning a move, or wondering if their pay is fair.
-            </p>
-          </div>
-
-          <div className="py-6">
-            <div className="flex items-end justify-between gap-6">
-              <div>
-                <p className="text-5xl font-semibold tracking-tight text-[#0F172A]">
-                  {totalReports.toLocaleString()}
-                </p>
-                <p className="mt-1 text-sm text-[#64748B]">
-                  pay reports shared
-                </p>
-              </div>
-
-              <div className="text-right">
-                <p className="text-sm font-semibold text-[#0F172A]">
-                  {Math.round(progressPercent)}%
-                </p>
-                <p className="mt-1 text-xs text-[#94A3B8]">
-                  of 1,000
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-5 h-3 w-full overflow-hidden rounded-full bg-[#EEF2FF]">
-              <div
-                className="h-full rounded-full bg-[#4C6FFF]"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-
-            <p className="mt-3 text-xs leading-relaxed text-[#94A3B8]">
-              {remainingReports.toLocaleString()} more reports to reach the first community goal.
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-[#F8FAFC] p-5">
-            <p className="text-sm font-medium text-[#0F172A]">
-              Your contribution can help others...
-            </p>
-
-            <div className="mt-4 space-y-3 text-sm leading-relaxed text-[#64748B]">
-              <p>
-                 negotiate for a higher salary.
-              </p>
-              <p>
-                decide between job offers with more confidence.
-              </p>
-              <p>
-                plan a move to a new city or hospital system with more clarity.
-              </p>
-            </div>
-          </div>
-
+        <div className="relative z-20 mt-6 flex flex-col items-center gap-3 sm:flex-row">
           <Link
             href="/submit"
-            className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-[#4C6FFF] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#3B5BDB]"
+            className="inline-flex items-center justify-center rounded-full border border-[#C8D6E0] bg-white px-6 py-3 text-sm font-bold text-[#06183A] shadow-sm transition hover:border-[#AFC1D0] hover:bg-[#F8FBFD] focus:outline-none focus:ring-4 focus:ring-[#DDEBFF]"
           >
-            Share your pay anonymously
+            Submit your current pay
           </Link>
 
-          <p className="mt-3 text-center text-xs text-[#94A3B8]">
-            No name shown. No account required.
+          <p className="max-w-md text-sm leading-6 text-[#7D8BA0]">
+            Every submission helps improve our community.
           </p>
         </div>
       </div>
