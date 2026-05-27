@@ -42,7 +42,7 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
   const { submissions, p25, p75, p90, count } = await getProfessionData(slug)
   const professionName = submissions[0]?.role.profession || slug.replace(/-/g, ' ')
 
-  return (
+return (
     <main className="min-h-screen bg-[#F8FAFC]">
       <section className="relative overflow-hidden border-b border-[#E2E8F0] bg-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_#EEF2FF_0%,_transparent_36%)] pointer-events-none" />
@@ -51,20 +51,20 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
           <div className="mb-6 flex items-center gap-2 text-sm text-[#64748B]">
             <Link href="/profession" className="hover:text-[#4C6FFF]">
               Roles
-            </Link>
+          </Link>
             <span>/</span>
             <span className="capitalize text-[#0F172A]">{professionName}</span>
-          </div>
+        </div>
 
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <div className="mb-5 inline-flex items-center rounded-full border border-[#E2E8F0] bg-[#F8FAFC] px-4 py-2 text-xs font-medium text-[#475569]">
                 Pay information for this role
-              </div>
+            </div>
 
               <h1 className="text-4xl font-semibold capitalize tracking-tight text-[#0F172A] md:text-6xl">
                 Browse {professionName} Salaries
-              </h1>
+            </h1>
 
               <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#64748B] md:text-lg">
                 See what people in this role are reporting across hospitals, cities, states, and experience levels.
@@ -73,7 +73,7 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
               <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#64748B]">
                 <span className="rounded-full border border-[#E2E8F0] bg-white px-4 py-2">
                   {count} pay report{count === 1 ? '' : 's'}
-                </span>
+                  </span>
                 <span className="rounded-full border border-[#E2E8F0] bg-white px-4 py-2">
                   Anonymous
                 </span>
@@ -89,9 +89,9 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
             >
               Share your pay
             </Link>
-          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
       <section className="mx-auto max-w-7xl px-6 py-8 md:px-8">
         <div className="grid gap-4 md:grid-cols-3">
@@ -130,8 +130,8 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
               </p>
             </div>
           ))}
-        </div>
-      </section>
+      </div>
+    </section>
 
       <section className="mx-auto max-w-7xl px-6 pb-10 md:px-8">
         <div className="relative overflow-hidden rounded-[2rem] border border-[#E2E8F0] bg-gradient-to-br from-[#F8FAFC] to-[#EEF2FF] p-6 md:p-8">
@@ -141,11 +141,11 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
             <div className="max-w-2xl">
               <p className="text-sm font-medium text-[#4C6FFF]">
                 Help the next person in your role
-              </p>
+            </p>
 
               <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#0F172A]">
                 Share what you earn, anonymously.
-              </h2>
+            </h2>
 
               <p className="mt-3 text-sm leading-relaxed text-[#64748B]">
                 Pay is easier to understand when more people share. Your report helps other {professionName}s compare offers, plan their next move, and know when something is off.
@@ -159,14 +159,14 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
                   Takes ~2 minutes
                 </span>
               </div>
-            </div>
+          </div>
 
-            <Link
-              href="/submit"
+          <Link
+            href="/submit"
               className="inline-flex items-center justify-center rounded-xl bg-[#4C6FFF] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[#3B5BDB]"
-            >
+          >
               Share your pay
-            </Link>
+          </Link>
           </div>
         </div>
       </section>
@@ -178,8 +178,8 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
             count={count}
             emptyMessage={`Be the first to share pay information for ${professionName}.`}
           />
-        </div>
-      </section>
-    </main>
-  )
+      </div>
+    </section>
+  </main>
+)
 }
