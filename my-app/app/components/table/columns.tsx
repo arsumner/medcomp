@@ -1,7 +1,7 @@
 "use client"
-
+ 
 import { ColumnDef } from "@tanstack/react-table"
-
+ 
 export type UserEntry = {
   submissionid: number
   base_rate: number
@@ -23,7 +23,15 @@ export type UserEntry = {
     state: string
   }
 }
-
+ 
+const diffStyles: Record<string, { bg: string; border: string; text: string; badge: string; badgeText: string }> = {
+  Night:     { bg: "bg-[#EEF2FF]", border: "border-[#C7D2FE]", text: "text-[#3730A3]", badge: "bg-[#C7D2FE]", badgeText: "text-[#3730A3]" },
+  Evening:   { bg: "bg-[#EEF2FF]", border: "border-[#C7D2FE]", text: "text-[#3730A3]", badge: "bg-[#C7D2FE]", badgeText: "text-[#3730A3]" },
+  Charge:    { bg: "bg-[#FEFCE8]", border: "border-[#FDE68A]", text: "text-[#92400E]", badge: "bg-[#FDE68A]", badgeText: "text-[#92400E]" },
+  Preceptor: { bg: "bg-[#F5F3FF]", border: "border-[#DDD6FE]", text: "text-[#5B21B6]", badge: "bg-[#DDD6FE]", badgeText: "text-[#5B21B6]" },
+  Cert:      { bg: "bg-[#F0FDF4]", border: "border-[#BBF7D0]", text: "text-[#14532D]", badge: "bg-[#BBF7D0]", badgeText: "text-[#14532D]" },
+}
+ 
 export const columns: ColumnDef<UserEntry>[] = [
   {
     id: "role",
@@ -58,36 +66,42 @@ export const columns: ColumnDef<UserEntry>[] = [
     header: "Differentials",
     cell: ({ row }) => {
       const diffs = [
-        { label: "Night", value: row.original.night_diff },
-        { label: "Evening", value: row.original.evening_diff },
-        { label: "Charge", value: row.original.charge_diff },
+        { label: "Night",     value: row.original.night_diff },
+        { label: "Evening",   value: row.original.evening_diff },
+        { label: "Charge",    value: row.original.charge_diff },
         { label: "Preceptor", value: row.original.preceptor_pay },
-        { label: "Cert", value: row.original.certification_pay },
+        { label: "Cert",      value: row.original.certification_pay },
       ].filter(d => d.value)
-
+ 
       if (diffs.length === 0) {
         return <span className="text-sm text-[#94A3B8]">None</span>
       }
-
+ 
       return (
         <div className="flex max-w-xs flex-wrap gap-1.5">
-          {diffs.map(d => (
-            <span
-              key={d.label}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#BFDBFE] bg-[#EFF6FF] px-2.5 py-1 text-xs font-medium text-[#1E3A8A]"
-            >
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-[#2563EB]">
-                +
+          {diffs.map(d => {
+            const s = diffStyles[d.label] ?? {
+              bg: "bg-[#F1F5F9]", border: "border-[#CBD5E1]", text: "text-[#475569]",
+              badge: "bg-[#CBD5E1]", badgeText: "text-[#475569]",
+            }
+            return (
+              <span
+                key={d.label}
+                className={`inline-flex items-center gap-1.5 rounded-full border ${s.border} ${s.bg} px-2.5 py-1 text-xs font-medium ${s.text}`}
+              >
+                <span className={`flex h-4 w-4 items-center justify-center rounded-full ${s.badge} text-[10px] font-semibold ${s.badgeText}`}>
+                  +
+                </span>
+                <span>{d.label}</span>
+                <span className="font-semibold">${d.value}</span>
               </span>
-              <span>{d.label}</span>
-              <span className="font-semibold">${d.value}</span>
-            </span>
-          ))}
+            )
+          })}
         </div>
       )
     }
   },
-    {
+  {
     accessorKey: "years_experience",
     header: "Exp.",
   },
@@ -117,15 +131,16 @@ export const columns: ColumnDef<UserEntry>[] = [
       const diffDays = Math.floor(diffHours / 24)
       const diffMonths = Math.floor(diffDays / 30)
       const diffYears = Math.floor(diffDays / 365)
-
+ 
       let label = ''
       if (diffHours < 1) label = 'Just now'
       else if (diffHours < 24) label = `${diffHours}h ago`
       else if (diffDays < 30) label = `${diffDays}d ago`
       else if (diffMonths < 12) label = `${diffMonths}mo ago`
       else label = `${diffYears}y ago`
-
+ 
       return <span className="text-sm text-[#6B7280]">{label}</span>
     }
   }
 ]
+ 
