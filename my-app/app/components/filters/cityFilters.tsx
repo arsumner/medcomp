@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { professions } from '../../data/professions'
-import DataTable from '../table/filtersTable'
+import TableWithFilters from '../table/filtersTable'
 import { columns } from '../table/columns'
 
 const allProfessions = ['All Professions', ...Object.values(professions).flat()]
@@ -85,15 +85,11 @@ export default function CityFilters({ submissions, count, city }: Props) {
         </div>
       </div>
 
-      {filtered.length > 0 ? (
-        <DataTable columns={columns} data={filtered} />
-      ) : (
+      <TableWithFilters submissions={submissions} count={count} />
         <div className="bg-white border border-[#E5E7EB] rounded-2xl p-16 text-center shadow-sm">
-          <p className="text-4xl mb-4">🔍</p>
           <p className="text-[#0A0F1E] font-semibold text-lg mb-2">No results found</p>
-          <p className="text-[#9CA3AF] text-sm">Try a different profession filter.</p>
+          <p className="text-[#9CA3AF] text-sm">Be the first to contribute to this portion of the community.</p>
         </div>
-      )}
     </>
   )
 }
