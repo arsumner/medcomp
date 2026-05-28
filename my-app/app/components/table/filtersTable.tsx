@@ -131,29 +131,12 @@ export default function TableWithFilters({
 }: Props) {
   const [sort, setSort] = useState('newest')
   const [professionFilter, setProfessionFilter] = useState('All')
-  const [hospitalFilter, setHospitalFilter] = useState('All')
   const [stateFilter, setStateFilter] = useState('All')
+  const [cityFilter, setCityFilter] = useState('All')
+  const [hospitalFilter, setHospitalFilter] = useState('All')
   const [minExperience, setMinExperience] = useState('')
   const [maxExperience, setMaxExperience] = useState('')
   const [page, setPage] = useState(1)
-
-  const professions = useMemo(() => {
-    return [
-      'All',
-      ...Array.from(
-        new Set(submissions.map((s) => s.role?.profession).filter(Boolean))
-      ).sort(),
-    ]
-  }, [submissions])
-
-  const hospitals = useMemo(() => {
-    return [
-      'All',
-      ...Array.from(
-        new Set(submissions.map((s) => s.hospital?.name).filter(Boolean))
-      ).sort(),
-    ]
-  }, [submissions])
 
   const states = useMemo(() => {
     return [
@@ -164,17 +147,62 @@ export default function TableWithFilters({
     ]
   }, [submissions])
 
+  const cities = useMemo(() => {
+    const source =
+      stateFilter === 'All'
+        ? submissions
+        : submissions.filter((s) => s.hospital?.state === stateFilter)
+
+    return [
+      'All',
+      ...Array.from(
+        new Set(source.map((s) => s.hospital?.city).filter(Boolean))
+      ).sort(),
+    ]
+  }, [submissions, stateFilter])
+
+  const hospitals = useMemo(() => {
+    let source = submissions
+
+    if (stateFilter !== 'All') {
+      source = source.filter((s) => s.hospital?.state === stateFilter)
+    }
+
+    if (cityFilter !== 'All') {
+      source = source.filter((s) => s.hospital?.city === cityFilter)
+    }
+
+    return [
+      'All',
+      ...Array.from(
+        new Set(source.map((s) => s.hospital?.name).filter(Boolean))
+      ).sort(),
+    ]
+  }, [submissions, stateFilter, cityFilter])
+
+  const professions = useMemo(() => {
+    return [
+      'All',
+      ...Array.from(
+        new Set(submissions.map((s) => s.role?.profession).filter(Boolean))
+      ).sort(),
+    ]
+  }, [submissions])
+
   const filtered = submissions.filter((s) => {
     const years = Number(s.years_experience)
 
     const matchesProfession =
       professionFilter === 'All' || s.role?.profession === professionFilter
 
-    const matchesHospital =
-      hospitalFilter === 'All' || s.hospital?.name === hospitalFilter
-
     const matchesState =
       stateFilter === 'All' || s.hospital?.state === stateFilter
+
+    const matchesCity =
+      cityFilter === 'All' || s.hospital?.city === cityFilter
+
+    const matchesHospital =
+      hospitalFilter === 'All' || s.hospital?.name === hospitalFilter
 
     const matchesMinExperience =
       minExperience === '' || years >= Number(minExperience)
@@ -184,8 +212,9 @@ export default function TableWithFilters({
 
     return (
       matchesProfession &&
-      matchesHospital &&
       matchesState &&
+      matchesCity &&
+      matchesHospital &&
       matchesMinExperience &&
       matchesMaxExperience
     )
@@ -226,8 +255,9 @@ export default function TableWithFilters({
 
   function clearFilters() {
     setProfessionFilter('All')
-    setHospitalFilter('All')
     setStateFilter('All')
+    setCityFilter('All')
+    setHospitalFilter('All')
     setMinExperience('')
     setMaxExperience('')
     setSort('newest')
@@ -236,8 +266,9 @@ export default function TableWithFilters({
 
   const hasActiveFilters =
     professionFilter !== 'All' ||
-    hospitalFilter !== 'All' ||
     stateFilter !== 'All' ||
+    cityFilter !== 'All' ||
+    hospitalFilter !== 'All' ||
     minExperience !== '' ||
     maxExperience !== '' ||
     sort !== 'newest'
@@ -291,15 +322,21 @@ export default function TableWithFilters({
               </span>
             )}
 
-            {hospitalFilter !== 'All' && (
-              <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">
-                Workplace: {hospitalFilter}
-              </span>
-            )}
-
             {stateFilter !== 'All' && (
               <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">
                 State: {stateFilter}
+              </span>
+            )}
+
+            {cityFilter !== 'All' && (
+              <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">
+                City: {cityFilter}
+              </span>
+            )}
+
+            {hospitalFilter !== 'All' && (
+              <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">
+                Workplace: {hospitalFilter}
               </span>
             )}
 
@@ -339,9 +376,9 @@ export default function TableWithFilters({
               Narrow your search
             </p>
             <p className="mt-1 text-xs leading-5 text-[#657686]">
-              Filter by role, experience level, and submission date.
+              Filter by state first, then city and workplace will update automatically.
             </p>
-        </div>
+          </div>
 
           {hasActiveFilters && (
             <button
@@ -356,29 +393,49 @@ export default function TableWithFilters({
 
         <div className="rounded-[1.5rem] border border-[#D4E4E8] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_10px_28px_rgba(7,17,38,0.035)]">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-            {professions.length > 2 && (
-              <div className="lg:col-span-1">
+
+            <div>
+              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">
+                State
+              </label>
+              <select
+                value={stateFilter}
+                onChange={(e) => {
+                  setStateFilter(e.target.value)
+                  setCityFilter('All')
+                  setHospitalFilter('All')
+                  resetPage()
+                }}
+                className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10"
+              >
+                {states.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+
+            {stateFilter !== 'All' && cities.length > 2 && (
+              <div>
                 <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">
-                  Role
+                  City
                 </label>
                 <select
-                  value={professionFilter}
+                  value={cityFilter}
                   onChange={(e) => {
-                    setProfessionFilter(e.target.value)
+                    setCityFilter(e.target.value)
+                    setHospitalFilter('All')
                     resetPage()
                   }}
                   className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10"
                 >
-                  {professions.map((p) => (
-                    <option key={p} value={p}>
-                      {p}
-                    </option>
+                  {cities.map((c) => (
+                    <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
               </div>
             )}
 
-            {hospitals.length > 2 && (
+            {stateFilter !== 'All' && hospitals.length > 2 && (
               <div className="lg:col-span-2">
                 <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">
                   Workplace
@@ -392,31 +449,27 @@ export default function TableWithFilters({
                   className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10"
                 >
                   {hospitals.map((h) => (
-                    <option key={h} value={h}>
-                      {h}
-                    </option>
+                    <option key={h} value={h}>{h}</option>
                   ))}
                 </select>
               </div>
             )}
 
-            {states.length > 2 && (
+            {professions.length > 2 && (
               <div>
                 <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">
-                  State
+                  Role
                 </label>
                 <select
-                  value={stateFilter}
+                  value={professionFilter}
                   onChange={(e) => {
-                    setStateFilter(e.target.value)
+                    setProfessionFilter(e.target.value)
                     resetPage()
                   }}
                   className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10"
                 >
-                  {states.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
+                  {professions.map((p) => (
+                    <option key={p} value={p}>{p}</option>
                   ))}
                 </select>
               </div>
