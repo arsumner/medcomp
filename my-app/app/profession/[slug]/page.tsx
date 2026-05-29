@@ -230,14 +230,16 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-sm font-semibold text-[#0F766E]">
-                Contribute anonymously
+                100% anonymous always
               </p>
 
               <h2 className="mt-2 font-serif text-3xl font-medium tracking-[-0.03em] text-[#071633]">
-                Help other {professionName}s compare pay with more confidence.
+                Calling all {professionName}s! Help grow our database by submitting your pay info.
               </h2>
 
               <p className="mt-3 max-w-2xl text-sm leading-6 text-[#64748B]">
+                This site is
+                100% community sourced. The more data we have, the better our peers can compare pay with more confidence.
                 Your submission helps build a clearer picture of hourly rates, differentials, and role-specific pay across the country.
               </p>
             </div>
@@ -246,7 +248,7 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
               href="/submit"
               className="inline-flex w-fit items-center justify-center rounded-full bg-[#071633] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#13284F]"
             >
-              Submit anonymously
+              Submit
             </Link>
           </div>
         </div>
@@ -256,6 +258,7 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
         <TableWithFilters
           submissions={submissions}
           count={count}
+          hideFilters={['profession']}
           emptyMessage={`Be the first to share pay information for ${professionName}.`}
         />
       </section>
