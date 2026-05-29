@@ -6,12 +6,12 @@ import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simp
 const geoUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json'
 
 function getColor(avg: number, min: number, max: number) {
-  if (!avg) return '#E2E8F0'
+  if (!avg) return '#E8E6E1'
 
   const ratio = max === min ? 0.5 : (avg - min) / (max - min)
 
-  const start = { r: 239, g: 246, b: 255 } // #EFF6FF
-  const end = { r: 76, g: 111, b: 255 } // #4C6FFF
+  const start = { r: 188, g: 222, b: 210 }
+  const end = { r: 14, g: 90, b: 80 }
 
   const r = Math.round(start.r - ratio * (start.r - end.r))
   const g = Math.round(start.g - ratio * (start.g - end.g))
@@ -41,10 +41,10 @@ export default function UsMap({ stateMap, min, max, onHover }: Props) {
   }
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full bg-[#F8F7F4]">
       <ComposableMap
         projection="geoAlbersUsa"
-        projectionConfig={{ scale: 860 }}
+        projectionConfig={{ scale: 920 }}
         style={{ width: '100%', height: '100%' }}
       >
         <ZoomableGroup>
@@ -53,7 +53,7 @@ export default function UsMap({ stateMap, min, max, onHover }: Props) {
               geographies.map((geo) => {
                 const stateName = geo.properties.name
                 const stateData = stateMap[stateName]
-                const color = stateData ? getColor(stateData.avg, min, max) : '#E2E8F0'
+                const color = stateData ? getColor(stateData.avg, min, max) : '#E8E6E1'
                 const hasData = Boolean(stateData)
 
                 return (
@@ -61,8 +61,8 @@ export default function UsMap({ stateMap, min, max, onHover }: Props) {
                     key={geo.rsmKey}
                     geography={geo}
                     fill={color}
-                    stroke="#FFFFFF"
-                    strokeWidth={0.8}
+                    stroke="#F5F4F1"
+                    strokeWidth={1.2}
                     onMouseEnter={(e) => {
                       if (hasData) {
                         onHover({
@@ -80,15 +80,17 @@ export default function UsMap({ stateMap, min, max, onHover }: Props) {
                     style={{
                       default: {
                         outline: 'none',
-                        transition: 'fill 180ms ease',
+                        transition: 'fill 200ms ease',
                       },
                       hover: {
                         outline: 'none',
-                        fill: hasData ? '#3B5BDB' : '#CBD5E1',
+                        fill: hasData ? '#0A5A50' : '#D4D1CA',
                         cursor: hasData ? 'pointer' : 'default',
+                        filter: hasData ? 'drop-shadow(0 2px 8px rgba(14,90,80,0.3))' : 'none',
                       },
                       pressed: {
                         outline: 'none',
+                        fill: hasData ? '#073D36' : '#D4D1CA',
                       },
                     }}
                   />
@@ -99,35 +101,32 @@ export default function UsMap({ stateMap, min, max, onHover }: Props) {
         </ZoomableGroup>
       </ComposableMap>
 
-      <div className="absolute bottom-4 right-4">
-        <div className="rounded-2xl border border-[#E2E8F0] bg-white/95 p-3 text-xs shadow-sm backdrop-blur-sm">
-          <div className="mb-2 flex items-center gap-2">
-            <div className="h-1.5 w-1.5 rounded-full bg-[#4C6FFF]" />
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
-              Avg hourly rate
-            </p>
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
+        <div className="flex items-center gap-5 rounded-2xl border border-[#E2E8EF] bg-white/95 px-6 py-3.5 shadow-[0_8px_24px_rgba(7,17,38,0.08)] backdrop-blur-sm">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-[rgb(188,222,210)]" />
+            <span className="text-sm font-medium text-[#8D9AA7]">
+              Lower pay · ${min.toFixed(0)}/hr
+            </span>
           </div>
+
+          <div
+            className="h-2 w-24 rounded-full"
+            style={{ background: 'linear-gradient(to right, rgb(188,222,210), rgb(14,90,80))' }}
+          />
 
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] text-[#94A3B8]">
-              ${min.toFixed(0)}
-            </span>
-
-            <div
-              className="h-2 w-28 rounded-full"
-              style={{
-                background: 'linear-gradient(to right, #EFF6FF, #4C6FFF)',
-              }}
-            />
-
-            <span className="font-mono text-[10px] text-[#94A3B8]">
-              ${max.toFixed(0)}
+            <div className="h-3 w-3 rounded-full bg-[rgb(14,90,80)]" />
+            <span className="text-sm font-medium text-[#8D9AA7]">
+              Higher pay · ${max.toFixed(0)}/hr
             </span>
           </div>
 
-          <div className="mt-2 flex items-center gap-1 border-t border-[#F1F5F9] pt-2">
-            <div className="h-2 w-3 rounded-sm bg-[#E2E8F0]" />
-            <span className="text-[10px] text-[#94A3B8]">No data</span>
+          <div className="h-4 w-px bg-[#E2E8EF]" />
+
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-[#E8E6E1]" />
+            <span className="text-sm font-medium text-[#8D9AA7]">No reports yet</span>
           </div>
         </div>
       </div>
