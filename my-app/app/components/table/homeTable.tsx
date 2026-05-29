@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import mascotImg from '../../../src/assets/heroPill.png'
 import {
   ColumnDef,
   flexRender,
@@ -96,31 +95,7 @@ export default function DataTable<TData, TValue>({
           </Table>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end gap-5 px-6 pb-10 pt-32 bg-gradient-to-t from-white from-60% via-white/80 to-transparent">
-          <Image
-            src={mascotImg}
-            alt="MedComp mascot"
-            height={400}
-            className="drop-shadow-md"
-          />
-
-          <div className="text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8A99B0]">
-              Browse by role
-            </p>
-            <p className="mt-2 font-serif text-2xl font-medium tracking-[-0.03em] text-[#071126]">
-              Find pay reports for your profession.
-            </p>
-          </div>
-
-          <Link
-            href="/profession"
-            className="group inline-flex h-12 items-center gap-2 rounded-full bg-[#06183A] px-7 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(6,24,58,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0A214C] hover:shadow-[0_18px_40px_rgba(6,24,58,0.28)]"
-          >
-            Browse all roles
-            <span className="transition-transform group-hover:translate-x-0.5">→</span>
-          </Link>
-        </div>
+        
       </div>
     </div>
   )
