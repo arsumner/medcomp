@@ -82,7 +82,6 @@ async function getLocationsData() {
 
 function formatMoney(value: number) {
   if (!value || Number.isNaN(value)) return '$0.00'
-
   return value.toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -103,53 +102,50 @@ export default async function LocationsPage() {
   } = await getLocationsData()
 
   return (
-    <main className="min-h-screen bg-[#F6FBFA] text-[#071126]">
-      <section className="relative overflow-hidden border-b border-[#DDE8EA] bg-[linear-gradient(115deg,#F7FBFA_0%,#F4FAF8_42%,#EAF5FA_100%)]">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-[-12%] top-[-18%] h-[420px] w-[420px] rounded-full bg-[#DDEFEA]/70 blur-3xl" />
-          <div className="absolute right-[-10%] top-[8%] h-[420px] w-[420px] rounded-full bg-[#DCECF8]/80 blur-3xl" />
-          <div className="absolute bottom-[-28%] left-[30%] h-[360px] w-[520px] rounded-full bg-white/80 blur-3xl" />
-        </div>
+    <main className="min-h-screen bg-[#F5F4F1] text-[#071A3D]">
 
-        <div className="relative mx-auto max-w-7xl px-6 py-16 md:px-8 md:py-20">
+      <section className="px-6 pt-24 pb-16 md:px-8 md:pt-28 md:pb-20">
+        <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-4xl text-center">
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.28em] text-[#5F7182]">
-              Browse by location
+            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.28em] text-[#8D9AA7]">
+              Pay varies more than you'd think
             </p>
 
-            <h1 className="font-serif text-5xl font-medium leading-[0.95] tracking-[-0.04em] text-[#071126] md:text-7xl">
-              Location matters.
+            <h1 className="font-serif text-5xl font-normal leading-[1.02] tracking-[-0.04em] text-[#071A3D] md:text-7xl">
+              Where you work matters as much as what you do.
             </h1>
+
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-[#667085] md:text-lg">
+              The same role can pay $20 more an hour in a different state — sometimes in the next city over.
+              Search below to see what people are reporting near you.
+            </p>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-m text-[#637384]">
-            <span>{totalStates} states tracked</span>
-            <span className="hidden h-1 w-1 rounded-full bg-[#A7B6C1] sm:block" />
-            <span>{totalCities} cities tracked</span>
-            <span className="hidden h-1 w-1 rounded-full bg-[#A7B6C1] sm:block" />
-            <span>{totalSubmissions} anonymous submissions</span>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            {[
+              `${totalStates} states tracked`,
+              `${totalCities} cities tracked`,
+              `${totalSubmissions} anonymous submissions`,
+              highestState ? `Highest avg: ${highestState.state} at ${formatMoney(highestState.avg)}/hr` : null,
+            ].filter(Boolean).map((item) => (
+              <span
+                key={item as string}
+                className="rounded-full border border-[#E2E8EF] bg-white px-4 py-2 text-sm font-medium text-[#64748B] shadow-sm"
+              >
+                {item}
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="relative px-6 py-10 md:px-8 md:py-14">
+      <section className="px-6 pb-24 md:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="overflow-visible rounded-[2rem] border border-[#D9E5E8] bg-white/88 p-5 shadow-[0_18px_60px_rgba(7,17,38,0.055)] md:p-6">
-            <LocationsClient
-              topStates={topStates}
-              topCities={topCities}
-              initialMapData={mapData}
-            />
-          </div>
-
-          {highestState && (
-            <div className="mt-6 rounded-[2rem] border border-[#D9E5E8] bg-white/72 p-5 text-sm text-[#637384] shadow-[0_14px_42px_rgba(7,17,38,0.04)] md:p-6">
-              <span className="font-semibold text-[#071126]">
-                Current highest reported state average:
-              </span>{' '}
-              {highestState.state} at {formatMoney(highestState.avg)}/hr.
-            </div>
-          )}
+          <LocationsClient
+            topStates={topStates}
+            topCities={topCities}
+            initialMapData={mapData}
+          />
         </div>
       </section>
     </main>
