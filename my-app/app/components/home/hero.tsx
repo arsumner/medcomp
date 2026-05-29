@@ -268,8 +268,8 @@ export default function Hero({ totalReports }: HeroProps) {
             Built by a nurse. Free for everyone.
           </p>
 
-          <h1 className="font-serif text-[46px] font-normal leading-[1.02] tracking-[-0.055em] text-[#07152F] sm:text-[64px] lg:text-[78px]">
-            We're getting rid of the stigma around talking about pay in healthcare.
+          <h1 className="font-serif text-[46px] font-normal leading-[1.02] tracking-[-0.055em] text-[#07152F] sm:text-[64px] lg:text-[70px]">
+            Let's talk about <br/> pay in healthcare.
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-8 text-[#526174] sm:text-[18px]">
@@ -282,7 +282,7 @@ export default function Hero({ totalReports }: HeroProps) {
           <div className="rounded-[34px] border border-[#BFD1DD] bg-white p-3 shadow-[0_30px_100px_rgba(6,24,58,0.20)] ring-1 ring-[#E8F0F5]">
             <div className="mb-3 px-3 pt-1 text-left">
               <p className="text-lg font-bold text-[#263B52]">
-                What do you want to look up?
+                Search by profession, hospital, state or city
               </p>
             </div>
 
@@ -373,11 +373,11 @@ export default function Hero({ totalReports }: HeroProps) {
             href="/submit"
             className="inline-flex items-center justify-center rounded-full border border-[#C8D6E0] bg-white px-6 py-3 text-sm font-bold text-[#06183A] shadow-sm transition hover:border-[#AFC1D0] hover:bg-[#F8FBFD] focus:outline-none focus:ring-4 focus:ring-[#DDEBFF]"
           >
-            Share what you make
+            Share your pay
           </Link>
 
           <p className="max-w-md text-sm leading-6 text-[#7D8BA0]">
-            Every submission helps someone else know their worth.
+            We strive to un-gatekeep healthcare pay and need your help. All of our data comes from real humans, like you!
           </p>
         </div>
       </div>
