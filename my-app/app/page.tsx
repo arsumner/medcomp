@@ -46,37 +46,29 @@ export default async function Home() {
   ])
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC]">
+    <main className="min-h-screen bg-[#F5F4F1]">
       <Hero totalReports={totalReports} />
       <FeatureWalkthrough />
 
-      <section className="px-6 pb-24 pt-4 md:px-8">
+      <section className="px-6 pb-24 pt-8 md:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="rounded-[2rem] border border-[#E2E8F0] bg-white p-5 shadow-[0_24px_70px_rgba(15,23,42,0.06)] md:p-8">
-            <div className="mb-6 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-sm font-medium text-[#4C6FFF]">
-                  Recently shared
-                </p>
-
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#0F172A] md:text-3xl">
-                  See what others are reporting
-                </h2>
-
-                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#64748B] md:text-base">
-                  Browse recent anonymous pay reports from healthcare workers across roles, locations, and hospital systems.
-                </p>
-              </div>
-
-              <div className="rounded-2xl bg-[#F8FAFC] px-4 py-3 text-sm text-[#64748B]">
-                Updated as new reports come in
-              </div>
+          <div className="mb-6 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-medium text-[#178C85]">
+                Recently shared
+              </p>
+              <h2 className="mt-2 font-serif text-3xl font-normal tracking-[-0.03em] text-[#071A3D] md:text-4xl">
+                See what others are reporting
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#64748B] md:text-base">
+                Browse recent anonymous pay reports from healthcare workers across roles, locations, and hospital systems.
+              </p>
             </div>
-
-            <div className="overflow-hidden rounded-2xl border border-[#E2E8F0]">
-              <DataTable columns={columns} data={data} />
+            <div className="text-sm text-[#94A3B8]">
+              Updated as new reports come in
             </div>
           </div>
+          <DataTable columns={columns} data={data} />
         </div>
       </section>
     </main>

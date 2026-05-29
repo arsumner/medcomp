@@ -107,8 +107,8 @@ export default async function StatePage({
   const p75Position = getPercentPosition(p75, rangeMin, rangeMax)
   const p90Position = getPercentPosition(p90, rangeMin, rangeMax)
 
-  const middleRange = hasSalaryData
-    ? Math.round((rangeMin + rangeMax) / 2)
+  const middleRange = hasSalaryData 
+    ? Math.round((rangeMin + rangeMax) / 2) 
     : 0
 
   const stats = [
@@ -175,12 +175,8 @@ export default async function StatePage({
                   <h2 className="font-serif text-2xl font-semibold tracking-[-0.02em] text-[#243142]">
                     Rankings for all healthcare professions in {state}
                   </h2>
-
-                  <p className="mt-2 text-sm text-[#94A3B8]">
-                    Based on reported base hourly rates.
-                  </p>
+                  <p className="mt-2 text-sm text-[#94A3B8]">Based on reported base hourly rates.</p>
                 </div>
-
                 <p className="font-serif text-lg text-[#94A3B8] md:text-xl">
                   {hasSalaryData
                     ? `${formatMoney(rangeMin)}–${formatMoney(rangeMax)}/hr`
@@ -195,64 +191,34 @@ export default async function StatePage({
                   {hasSalaryData && (
                     <div
                       className="absolute top-8 h-4 rounded-full bg-gradient-to-r from-[#B8E3DE] via-[#CAD8EF] to-[#EAD8B5]"
-                      style={{
-                        left: `${p25Position}%`,
-                        width: `${Math.max(p90Position - p25Position, 5)}%`,
-                      }}
+                      style={{ left: `${p25Position}%`, width: `${Math.max(p90Position - p25Position, 5)}%` }}
                     />
                   )}
 
                   {hasSalaryData && (
                     <>
-                      <div
-                        className="absolute top-0 -translate-x-1/2"
-                        style={{ left: `${p25Position}%` }}
-                      >
-                        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-[0_8px_26px_rgba(15,23,42,0.10)]">
-                          <div className="h-6 w-6 rounded-full bg-[#BFE5E1]" />
+                      {[
+                        { pos: p25Position, color: 'bg-[#BFE5E1]', label: '25th', tone: 'text-[#0F766E]' },
+                        { pos: p75Position, color: 'bg-[#CDDAF0]', label: '75th', tone: 'text-[#2F5EA8]' },
+                        { pos: p90Position, color: 'bg-[#E8DDC8]', label: '90th', tone: 'text-[#7A5A1A]' },
+                      ].map(({ pos, color, label, tone }) => (
+                        <div key={label} className="absolute top-0 -translate-x-1/2" style={{ left: `${pos}%` }}>
+                          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-[0_8px_26px_rgba(15,23,42,0.10)]">
+                            <div className={`h-6 w-6 rounded-full ${color}`} />
+                          </div>
+                          <div className="mx-auto mt-2 h-9 w-px bg-[#D8E1E8]" />
+                          <p className={`font-serif text-base font-semibold ${tone}`}>{label}</p>
                         </div>
-                        <div className="mx-auto mt-2 h-9 w-px bg-[#D8E1E8]" />
-                        <p className="font-serif text-base font-semibold text-[#0F766E]">
-                          25th
-                        </p>
-                      </div>
-
-                      <div
-                        className="absolute top-0 -translate-x-1/2"
-                        style={{ left: `${p75Position}%` }}
-                      >
-                        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-[0_8px_26px_rgba(15,23,42,0.10)]">
-                          <div className="h-6 w-6 rounded-full bg-[#CDDAF0]" />
-                        </div>
-                        <div className="mx-auto mt-2 h-9 w-px bg-[#D8E1E8]" />
-                        <p className="font-serif text-base font-semibold text-[#2F5EA8]">
-                          75th
-                        </p>
-                      </div>
-
-                      <div
-                        className="absolute top-0 -translate-x-1/2"
-                        style={{ left: `${p90Position}%` }}
-                      >
-                        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-[0_8px_26px_rgba(15,23,42,0.10)]">
-                          <div className="h-6 w-6 rounded-full bg-[#E8DDC8]" />
-                        </div>
-                        <div className="mx-auto mt-2 h-9 w-px bg-[#D8E1E8]" />
-                        <p className="font-serif text-base font-semibold text-[#7A5A1A]">
-                          90th
-                        </p>
-                      </div>
+                      ))}
                     </>
                   )}
 
                   <div className="absolute left-0 top-20 font-serif text-base text-[#94A3B8]">
                     {hasSalaryData ? formatMoney(rangeMin) : '$0'}
                   </div>
-
                   <div className="absolute left-1/2 top-20 -translate-x-1/2 font-serif text-base text-[#94A3B8]">
                     {hasSalaryData ? formatMoney(middleRange) : '$0'}
                   </div>
-
                   <div className="absolute right-0 top-20 font-serif text-base text-[#94A3B8]">
                     {hasSalaryData ? formatMoney(rangeMax) : '$0'}
                   </div>
@@ -262,19 +228,11 @@ export default async function StatePage({
 
             <div className="mt-8 grid gap-5 md:grid-cols-3">
               {stats.map(({ label, value, tone, yearly }) => (
-                <div
-                  key={label}
-                  className="rounded-[1.75rem] border border-[#E1E8EF] bg-white/80 p-7 text-center shadow-[0_18px_50px_rgba(15,23,42,0.04)] backdrop-blur"
-                >
-                  <p className={`font-serif text-lg font-semibold ${tone}`}>
-                    {label}
-                  </p>
-
+                <div key={label} className="rounded-[1.75rem] border border-[#E1E8EF] bg-white/80 p-7 text-center shadow-[0_18px_50px_rgba(15,23,42,0.04)] backdrop-blur">
+                  <p className={`font-serif text-lg font-semibold ${tone}`}>{label}</p>
                   <p className="mt-8 font-serif text-4xl font-semibold tracking-[-0.04em] text-[#071633] md:text-5xl">
-                    {formatMoney(value)}
-                    <span className="text-2xl">/hr</span>
+                    {formatMoney(value)}<span className="text-2xl">/hr</span>
                   </p>
-
                   <p className="mt-5 font-serif text-lg text-[#94A3B8]">
                     {formatMoney(Math.round(yearly / 1000))}k/yr
                   </p>
@@ -289,21 +247,14 @@ export default async function StatePage({
         <div className="relative overflow-hidden rounded-[2rem] border border-[#E1E8EF] bg-white p-6 shadow-[0_18px_55px_rgba(15,23,42,0.05)] md:p-8">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-sm font-semibold text-[#0F766E]">
-                Contribute anonymously
-              </p>
-
+              <p className="text-sm font-semibold text-[#0F766E]">Contribute anonymously</p>
               <h2 className="mt-2 font-serif text-3xl font-medium tracking-[-0.03em] text-[#071633]">
-                Help healthcare workers in {state} compare pay with more
-                confidence.
+                Help healthcare workers in {state} compare pay with more confidence.
               </h2>
-
               <p className="mt-3 max-w-2xl text-sm leading-6 text-[#64748B]">
-                Your submission helps build a clearer picture of hourly rates,
-                differentials, and role-specific pay across the state.
+                Your submission helps build a clearer picture of hourly rates, differentials, and role-specific pay across the state.
               </p>
             </div>
-
             <Link
               href="/submit"
               className="inline-flex w-fit items-center justify-center rounded-full bg-[#071633] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#13284F]"
@@ -318,6 +269,7 @@ export default async function StatePage({
         <TableWithFilters
           submissions={submissions}
           count={count}
+          hideFilters={['state']}
           emptyMessage={`Be the first to share your salary for ${state}.`}
         />
       </section>
