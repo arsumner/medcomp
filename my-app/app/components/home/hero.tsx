@@ -103,23 +103,19 @@ export default function Hero({ totalReports }: HeroProps) {
 
         const result = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
           input: query,
-          includedPrimaryTypes: ['locality'],
+          includedPrimaryTypes: ['locality', 'sublocality_level_1'],
         })
 
         const suggestions = result.suggestions
           .map((s) => {
             const placePrediction = s.placePrediction
-
             if (!placePrediction) return null
-
             return {
               name: placePrediction.mainText?.toString() ?? '',
               fullText: placePrediction.text?.toString() ?? '',
             }
           })
-          .filter((s): s is CitySuggestion => {
-            return Boolean(s && s.name && s.fullText)
-          })
+          .filter((s): s is CitySuggestion => Boolean(s && s.name && s.fullText))
 
         setCitySuggestions(suggestions)
         setShowDropdown(true)
@@ -139,30 +135,19 @@ export default function Hero({ totalReports }: HeroProps) {
       return allProfessions
         .filter(p => p.toLowerCase().includes(query.toLowerCase()))
         .slice(0, 7)
-        .map(p => ({
-          key: p,
-          label: p,
-          value: p,
-          routeValue: p,
-        }))
+        .map(p => ({ key: p, label: p, value: p, routeValue: p }))
     }
 
     if (category === 'state') {
       return states
         .filter(s => s.toLowerCase().includes(query.toLowerCase()))
         .slice(0, 7)
-        .map(s => ({
-          key: s,
-          label: s,
-          value: s,
-          routeValue: s,
-        }))
+        .map(s => ({ key: s, label: s, value: s, routeValue: s }))
     }
 
     if (category === 'city') {
       return citySuggestions.slice(0, 7).map(city => {
         const cityName = city.name.split(',')[0].trim()
-
         return {
           key: city.fullText,
           label: city.fullText,
@@ -222,12 +207,10 @@ export default function Hero({ totalReports }: HeroProps) {
       const match = currentSuggestions.find(
         s => s.value.toLowerCase() === query.toLowerCase()
       )
-
       if (!match) {
         setError('Choose a role from the suggestions so we can take you to the right page.')
         return
       }
-
       handleSelect(match)
       return
     }
@@ -236,12 +219,10 @@ export default function Hero({ totalReports }: HeroProps) {
       const match = currentSuggestions.find(
         s => s.value.toLowerCase() === query.toLowerCase()
       )
-
       if (!match) {
         setError('Choose a state from the suggestions so we can take you to the right page.')
         return
       }
-
       handleSelect(match)
       return
     }
@@ -251,14 +232,12 @@ export default function Hero({ totalReports }: HeroProps) {
         setError('Choose a city from the suggestions so we can take you to the right page.')
         return
       }
-
       const match =
         currentSuggestions.find(
           s =>
             s.value.toLowerCase() === query.toLowerCase() ||
             s.routeValue.toLowerCase() === query.toLowerCase()
         ) || currentSuggestions[0]
-
       handleSelect(match)
       return
     }
@@ -268,12 +247,9 @@ export default function Hero({ totalReports }: HeroProps) {
         setError('Choose a hospital from the suggestions so we can take you to the right page.')
         return
       }
-
       const match =
-        currentSuggestions.find(
-          s => s.value.toLowerCase() === query.toLowerCase()
-        ) || currentSuggestions[0]
-
+        currentSuggestions.find(s => s.value.toLowerCase() === query.toLowerCase()) ||
+        currentSuggestions[0]
       handleSelect(match)
     }
   }
@@ -285,23 +261,20 @@ export default function Hero({ totalReports }: HeroProps) {
   const currentSuggestions = getSuggestions()
 
   return (
-    <section className="relative overflow-hidden border-b border-[#DDE8F0] bg-[#F7FBFC]">
-      <div className="pointer-events-none absolute left-[-260px] top-[-260px] h-[560px] w-[560px] rounded-full bg-[#DDF5F2] opacity-70 blur-3xl" />
-      <div className="pointer-events-none absolute right-[-260px] top-[-200px] h-[680px] w-[680px] rounded-full bg-[#D8EFFF] opacity-70 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-[-360px] left-1/2 h-[620px] w-[760px] -translate-x-1/2 rounded-full bg-[#F4F0E7] opacity-60 blur-3xl" />
-
-      <div className="relative mx-auto flex min-h-[calc(100vh-72px)] max-w-7xl flex-col items-center px-5 pb-10 pt-14 text-center sm:px-6 lg:pt-16">
+    <section className="bg-[#F5F4F1]">
+      <div className="relative mx-auto flex max-w-7xl flex-col items-center px-5 pb-16 pt-24 text-center sm:px-6 lg:pt-28">
         <div className="mx-auto max-w-5xl">
-          <p className="mx-auto mb-4 text-sm font-semibold uppercase tracking-[0.08em] text-[#64748B]">
-            Built by healthcare workers, for healthcare workers
+          <p className="mx-auto mb-4 text-sm font-semibold uppercase tracking-[0.08em] text-[#8D9AA7]">
+            Built by a nurse. Free for everyone.
           </p>
 
-          <h1 className="font-serif text-[46px] font-normal leading-[0.98] tracking-[-0.055em] text-[#07152F] sm:text-[64px] lg:text-[78px]">
-            See what your colleagues <br /> are actually making.
+          <h1 className="font-serif text-[46px] font-normal leading-[1.02] tracking-[-0.055em] text-[#07152F] sm:text-[64px] lg:text-[78px]">
+            We're getting rid of the stigma around talking about pay in healthcare.
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-8 text-[#526174] sm:text-[18px]">
-            Anonymous pay info from nurses, PAs, CRNAs, and more. <br /> No account needed.
+            We're all curious, but none of us talk about it. So we built a place where healthcare workers
+            can anonymously share what they earn. No names, no accounts, no strings attached.
           </p>
         </div>
 
@@ -309,14 +282,13 @@ export default function Hero({ totalReports }: HeroProps) {
           <div className="rounded-[34px] border border-[#BFD1DD] bg-white p-3 shadow-[0_30px_100px_rgba(6,24,58,0.20)] ring-1 ring-[#E8F0F5]">
             <div className="mb-3 px-3 pt-1 text-left">
               <p className="text-lg font-bold text-[#263B52]">
-                What do you want to compare?
+                What do you want to look up?
               </p>
             </div>
 
             <div className="grid grid-cols-4 gap-1 rounded-full border border-[#D8E5EA] bg-[#DDEBED] p-1 shadow-inner">
               {searchOptions.map(option => {
                 const isActive = option.value === category
-
                 return (
                   <button
                     key={option.value}
@@ -337,24 +309,9 @@ export default function Hero({ totalReports }: HeroProps) {
             <div className="mt-3 flex flex-col gap-3 rounded-[27px] border border-[#BFD1DD] bg-[#F4F8FA] p-3 shadow-inner md:flex-row md:items-center">
               <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[22px] bg-white px-3 shadow-sm md:bg-transparent md:shadow-none">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#DDF5F2] text-[#087A7B] ring-1 ring-[#BFE5E1]">
-                  <svg
-                    width="19"
-                    height="19"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M10.75 18.5a7.75 7.75 0 1 1 0-15.5 7.75 7.75 0 0 1 0 15.5Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <path
-                      d="m16.5 16.5 4 4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M10.75 18.5a7.75 7.75 0 1 1 0-15.5 7.75 7.75 0 0 1 0 15.5Z" stroke="currentColor" strokeWidth="2" />
+                    <path d="m16.5 16.5 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </div>
 
@@ -404,11 +361,11 @@ export default function Hero({ totalReports }: HeroProps) {
         </div>
 
         <div className="relative z-20 mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-medium text-[#5F6F80]">
-          <span>Search for higher paying roles</span>
+          <span>Real pay, not estimates</span>
           <span className="h-1 w-1 rounded-full bg-[#B8C6D1]" />
-          <span>No need to login or signup</span>
+          <span>No account needed</span>
           <span className="h-1 w-1 rounded-full bg-[#B8C6D1]" />
-          <span>100% anonymous</span>
+          <span>Always anonymous</span>
         </div>
 
         <div className="relative z-20 mt-6 flex flex-col items-center gap-3 sm:flex-row">
@@ -416,11 +373,11 @@ export default function Hero({ totalReports }: HeroProps) {
             href="/submit"
             className="inline-flex items-center justify-center rounded-full border border-[#C8D6E0] bg-white px-6 py-3 text-sm font-bold text-[#06183A] shadow-sm transition hover:border-[#AFC1D0] hover:bg-[#F8FBFD] focus:outline-none focus:ring-4 focus:ring-[#DDEBFF]"
           >
-            Submit your current pay
+            Share what you make
           </Link>
 
           <p className="max-w-md text-sm leading-6 text-[#7D8BA0]">
-            Every submission helps improve our community.
+            Every submission helps someone else know their worth.
           </p>
         </div>
       </div>
