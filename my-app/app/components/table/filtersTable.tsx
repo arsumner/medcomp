@@ -212,7 +212,7 @@ export default function TableWithFilters({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h2 className="mt-3 font-serif text-3xl font-medium tracking-[-0.04em] text-[#071126] md:text-4xl">
-              Compare reported pay.
+              Salaries submitted by our healthcare community
             </h2>
           </div>
 
@@ -249,7 +249,7 @@ export default function TableWithFilters({
       <div className="border-b border-[#D9E6E9] bg-[#F6FAFA] px-4 py-4 md:px-6">
         <div className="mb-3 flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-[#071126]">Filter table results</p>
+            <p className="text-sm font-semibold text-[#071126]">Don't see your city, state, facility or role? Be the first to contribute!</p>
             <p className="mt-1 text-xs leading-5 text-[#657686]">
               {showState
                 ? 'Filter by state first, then city and workplace will update automatically.'
