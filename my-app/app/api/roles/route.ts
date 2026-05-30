@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { writeLimiter, getClientIp } from '@/lib/ratelimit'
 
 function toSlug(profession: string, department?: string) {
   const departmentShortcuts: Record<string, string> = {
@@ -79,7 +80,6 @@ export async function GET(request: Request) {
     return Response.json(result)
   }
 
-  // Original role lookup logic
   let query = supabase.from('role').select('*')
 
   if (profession) {
@@ -100,27 +100,33 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (writeLimiter) {
+    const { success } = await writeLimiter.limit(getClientIp(request))
+    if (!success) {
+      return Response.json({ error: 'Too many requests' }, { status: 429 })
+    }
+  }
+
   const body = await request.json()
 
-  const profession = body.profession
-  const department = body.department
+  if (
+    typeof body.profession !== 'string' || !body.profession.trim() || body.profession.length > 200 ||
+    typeof body.department !== 'string' || !body.department.trim() || body.department.length > 200
+  ) {
+    return Response.json({ error: 'Invalid role data' }, { status: 400 })
+  }
+
+  const profession = body.profession.trim()
+  const department = body.department.trim()
   const slug = toSlug(profession, department)
 
   const { data, error } = await supabase
     .from('role')
-    .insert([
-      {
-        profession,
-        department,
-        license_type: body.license_type ?? null,
-        slug,
-      },
-    ])
+    .insert([{ profession, department, license_type: body.license_type ?? null, slug }])
     .select()
 
   if (error) {
-    return Response.json({ error: error.message }, { status: 500 })
+    return Response.json({ error: 'Something went wrong' }, { status: 500 })
   }
-
   return Response.json(data, { status: 201 })
 }

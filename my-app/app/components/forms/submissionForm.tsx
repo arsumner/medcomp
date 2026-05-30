@@ -35,7 +35,6 @@ export default function SubmissionForm() {
 
   async function handleSubmit(event:React.FormEvent) {
     event.preventDefault()
-    console.log({ profession, department, baseRate, payType, hospital, city, state })
 
     if (!profession || !department || !baseRate || !payType || !hospital || !city || !state) {
       alert('Please fill out all required fields')
