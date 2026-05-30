@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 
     const { data, error } = await query
     if (error) {
-        return Response.json( {error: error.message}, { status: 500 })
+        return Response.json({ error: 'Something went wrong' }, { status: 500 })
     }
     return Response.json(data)
 }
