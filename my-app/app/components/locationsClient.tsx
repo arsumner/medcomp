@@ -17,7 +17,6 @@ function toSlug(s: string) {
 
 function formatMoney(value: number) {
   if (!value || Number.isNaN(value)) return '$0.00'
-
   return value.toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -57,9 +56,7 @@ export default function LocationsClient({ topStates, topCities, initialMapData }
       setMapData(initialMapData)
       return
     }
-
     setMapLoading(true)
-    
     fetch(`/api/roles?mapData=true&profession=${encodeURIComponent(selectedProfession)}`, { cache: 'no-store' })
       .then(r => r.json())
       .then(d => { if (Array.isArray(d)) setMapData(d); setMapLoading(false) })
@@ -75,17 +72,30 @@ export default function LocationsClient({ topStates, topCities, initialMapData }
   }, [])
 
   useEffect(() => {
-    if (searchType !== 'cities' || !query || query.length < 2) { setPlaceSuggestions([]); return }
+    if (searchType !== 'cities' || !query || query.length < 2) {
+      setPlaceSuggestions([])
+      return
+    }
     const fetchCities = async () => {
       try {
         const { AutocompleteSuggestion } = (await google.maps.importLibrary('places')) as google.maps.PlacesLibrary
-        const result = await AutocompleteSuggestion.fetchAutocompleteSuggestions({ input: query, includedPrimaryTypes: ['locality'] })
+        const result = await AutocompleteSuggestion.fetchAutocompleteSuggestions({ input: query })
+
         setPlaceSuggestions(
-          result.suggestions.map(s => {
-            const p = s.placePrediction
-            if (!p) return null
-            return { name: p.mainText?.toString() ?? '', fullText: p.text?.toString() ?? '' }
-          }).filter((s): s is { name: string; fullText: string } => s !== null).slice(0, 10)
+          result.suggestions
+            .filter(s => {
+              const types = s.placePrediction?.types ?? []
+              return types.some(t =>
+                ['locality', 'sublocality', 'sublocality_level_1', 'neighborhood', 'postal_town'].includes(t)
+              )
+            })
+            .map(s => {
+              const p = s.placePrediction
+              if (!p) return null
+              return { name: p.mainText?.toString() ?? '', fullText: p.text?.toString() ?? '' }
+            })
+            .filter((s): s is { name: string; fullText: string } => s !== null)
+            .slice(0, 10)
         )
         setShowDropdown(true)
       } catch { setPlaceSuggestions([]) }
@@ -168,7 +178,7 @@ export default function LocationsClient({ topStates, topCities, initialMapData }
                   onChange={e => { setQuery(e.target.value); setShowDropdown(true) }}
                   onKeyDown={handleKeyDown}
                   onFocus={() => setShowDropdown(true)}
-                  placeholder={searchType === 'states' ? 'Search a state, like New York' : 'Search a city, like New York City'}
+                  placeholder={searchType === 'states' ? 'Search a state, like New York' : 'Search a city, like Brooklyn or Miami'}
                   className="w-full bg-transparent text-base font-semibold text-[#071A3D] outline-none placeholder:text-[#B0BCCE]"
                 />
               </div>
@@ -236,7 +246,6 @@ export default function LocationsClient({ topStates, topCities, initialMapData }
 
         <div className="overflow-hidden rounded-[2rem] border border-[#E2E8EF] bg-white shadow-[0_18px_60px_rgba(7,17,38,0.05)]">
           <div className="relative" style={{ height: '580px' }}>
-
             <div className="absolute left-4 top-4 z-10">
               <div className="rounded-2xl border border-[#E2E8EF] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(7,17,38,0.08)] backdrop-blur-sm">
                 <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8D9AA7]">
