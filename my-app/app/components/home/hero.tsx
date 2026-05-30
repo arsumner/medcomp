@@ -264,56 +264,64 @@ export default function Hero({ totalReports }: HeroProps) {
     <section className="bg-[#F5F4F1]">
       <div className="relative mx-auto flex max-w-7xl flex-col items-center px-5 pb-16 pt-24 text-center sm:px-6 lg:pt-28">
         <div className="mx-auto max-w-5xl">
-          <p className="mx-auto mb-4 text-sm font-semibold uppercase tracking-[0.08em] text-[#8D9AA7]">
+          <p className="mx-auto mb-4 text-sm font-bold uppercase tracking-[0.08em] text-[#5E6B7A]">
             Built by a nurse. Free for everyone.
           </p>
 
           <h1 className="font-serif text-[46px] font-normal leading-[1.02] tracking-[-0.055em] text-[#07152F] sm:text-[64px] lg:text-[70px]">
-            Let's talk about <br/> pay in healthcare.
+            Let&apos;s talk about <br /> pay in healthcare.
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-8 text-[#526174] sm:text-[18px]">
-            We're all curious, but none of us talk about it. So we built a place where healthcare workers
+          <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-8 text-[#425166] sm:text-[18px]">
+            We&apos;re all curious, but none of us talk about it. So we built a place where healthcare workers
             can anonymously share what they earn. No names, no accounts, no strings attached.
           </p>
         </div>
 
-        <div ref={inputRef} className="relative z-30 mt-9 w-full max-w-4xl">
-          <div className="rounded-[34px] border border-[#BFD1DD] bg-white p-3 shadow-[0_30px_100px_rgba(6,24,58,0.20)] ring-1 ring-[#E8F0F5]">
-            <div className="mb-3 px-3 pt-1 text-left">
-              <p className="text-lg font-bold text-[#263B52]">
-                Search by profession, hospital, state or city
-              </p>
-            </div>
+        <div ref={inputRef} className="relative z-30 mt-10 w-full max-w-4xl">
+          <div className="rounded-[2rem] bg-white/90 p-2 shadow-[0_24px_80px_rgba(7,21,47,0.14)] ring-1 ring-[#D4E0E8] backdrop-blur-md">
+            <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
+              <div className="flex shrink-0 rounded-full bg-[#E8EEF2] p-1">
+                {searchOptions.map(option => {
+                  const isActive = option.value === category
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleCategoryChange(option.value)}
+                      className={`rounded-full px-4 py-2 text-sm font-bold transition sm:px-5 ${
+                        isActive
+                          ? 'bg-[#07152F] text-white shadow-sm'
+                          : 'text-[#4B5C6F] hover:bg-white hover:text-[#07152F]'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  )
+                })}
+              </div>
 
-            <div className="grid grid-cols-4 gap-1 rounded-full border border-[#D8E5EA] bg-[#DDEBED] p-1 shadow-inner">
-              {searchOptions.map(option => {
-                const isActive = option.value === category
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => handleCategoryChange(option.value)}
-                    className={`rounded-full px-2 py-2.5 text-center text-[13px] font-bold transition sm:text-lg ${
-                      isActive
-                        ? 'bg-[#06183A] text-white shadow-[0_8px_20px_rgba(6,24,58,0.22)]'
-                        : 'text-[#4F6070] hover:bg-white/60 hover:text-[#06183A]'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                )
-              })}
-            </div>
-
-            <div className="mt-3 flex flex-col gap-3 rounded-[27px] border border-[#BFD1DD] bg-[#F4F8FA] p-3 shadow-inner md:flex-row md:items-center">
-              <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[22px] bg-white px-3 shadow-sm md:bg-transparent md:shadow-none">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#DDF5F2] text-[#087A7B] ring-1 ring-[#BFE5E1]">
-                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M10.75 18.5a7.75 7.75 0 1 1 0-15.5 7.75 7.75 0 0 1 0 15.5Z" stroke="currentColor" strokeWidth="2" />
-                    <path d="m16.5 16.5 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                </div>
+              <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[1.5rem] bg-white px-4 py-2 ring-1 ring-[#D7E2E9] transition focus-within:ring-2 focus-within:ring-[#4A9EA6]">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                  className="shrink-0 text-[#536579]"
+                >
+                  <path
+                    d="M10.75 18.5a7.75 7.75 0 1 1 0-15.5 7.75 7.75 0 0 1 0 15.5Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="m16.5 16.5 4 4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
 
                 <input
                   value={query}
@@ -325,14 +333,22 @@ export default function Hero({ totalReports }: HeroProps) {
                   onKeyDown={handleKeyDown}
                   onFocus={() => setShowDropdown(true)}
                   placeholder={activeSearch?.placeholder}
-                  className="min-w-0 flex-1 bg-transparent py-4 text-[16px] font-medium text-[#101827] outline-none placeholder:text-[#7D8BA0]"
+                  className="min-w-0 flex-1 bg-transparent py-3 text-[16px] font-semibold text-[#07152F] outline-none placeholder:text-[#64748B]"
                 />
+
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  className="hidden shrink-0 rounded-full bg-[#07152F] px-6 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(7,21,47,0.22)] transition hover:bg-[#122A56] focus:outline-none focus:ring-4 focus:ring-[#C9D9FF] sm:inline-flex"
+                >
+                  Search
+                </button>
               </div>
 
               <button
                 type="button"
                 onClick={handleSearch}
-                className="shrink-0 rounded-full bg-[#06183A] px-9 py-4 text-[18px] font-bold text-white shadow-[0_12px_30px_rgba(6,24,58,0.26)] transition hover:bg-[#102B62] focus:outline-none focus:ring-4 focus:ring-[#C8D8FF]"
+                className="rounded-full bg-[#07152F] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(7,21,47,0.22)] transition hover:bg-[#122A56] focus:outline-none focus:ring-4 focus:ring-[#C9D9FF] sm:hidden"
               >
                 Search
               </button>
@@ -340,18 +356,18 @@ export default function Hero({ totalReports }: HeroProps) {
           </div>
 
           {error && (
-            <p className="mt-3 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-left text-sm text-red-600">
+            <p className="mt-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-left text-sm font-semibold text-red-700">
               {error}
             </p>
           )}
 
           {showDropdown && currentSuggestions.length > 0 && (
-            <ul className="absolute z-50 mt-3 max-h-72 w-full overflow-auto rounded-3xl border border-[#C7D7E2] bg-white p-2 text-left shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
+            <ul className="absolute z-50 mt-3 max-h-72 w-full overflow-auto rounded-[1.5rem] border border-[#D4E0E8] bg-white/95 p-2 text-left shadow-[0_24px_70px_rgba(15,23,42,0.16)] backdrop-blur-md">
               {currentSuggestions.map((suggestion) => (
                 <li
                   key={suggestion.key}
                   onClick={() => handleSelect(suggestion)}
-                  className="cursor-pointer rounded-2xl px-4 py-3 text-sm font-semibold text-[#334155] transition hover:bg-[#EEF8FA] hover:text-[#06183A]"
+                  className="cursor-pointer rounded-2xl px-4 py-3 text-sm font-semibold text-[#243447] transition hover:bg-[#EEF7F8] hover:text-[#07152F]"
                 >
                   {suggestion.label}
                 </li>
@@ -360,23 +376,23 @@ export default function Hero({ totalReports }: HeroProps) {
           )}
         </div>
 
-        <div className="relative z-20 mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-medium text-[#5F6F80]">
+        <div className="relative z-20 mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-semibold text-[#4B5C6F]">
           <span>Real pay, not estimates</span>
-          <span className="h-1 w-1 rounded-full bg-[#B8C6D1]" />
+          <span className="h-1 w-1 rounded-full bg-[#8FA1B3]" />
           <span>No account needed</span>
-          <span className="h-1 w-1 rounded-full bg-[#B8C6D1]" />
+          <span className="h-1 w-1 rounded-full bg-[#8FA1B3]" />
           <span>Always anonymous</span>
         </div>
 
         <div className="relative z-20 mt-6 flex flex-col items-center gap-3 sm:flex-row">
           <Link
             href="/submit"
-            className="inline-flex items-center justify-center rounded-full border border-[#C8D6E0] bg-white px-6 py-3 text-sm font-bold text-[#06183A] shadow-sm transition hover:border-[#AFC1D0] hover:bg-[#F8FBFD] focus:outline-none focus:ring-4 focus:ring-[#DDEBFF]"
+            className="inline-flex items-center justify-center rounded-full border border-[#B7C7D4] bg-white px-6 py-3 text-sm font-bold text-[#07152F] shadow-sm transition hover:border-[#8FA5B7] hover:bg-[#F8FBFD] focus:outline-none focus:ring-4 focus:ring-[#D4E3FF]"
           >
             Share your pay
           </Link>
 
-          <p className="max-w-md text-sm leading-6 text-[#7D8BA0]">
+          <p className="max-w-md text-sm font-medium leading-6 text-[#536579]">
             We strive to un-gatekeep healthcare pay and need your help. All of our data comes from real humans, like you!
           </p>
         </div>

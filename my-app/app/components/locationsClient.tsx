@@ -152,40 +152,70 @@ export default function LocationsClient({ topStates, topCities, initialMapData }
           </p>
         </div>
 
-        <div ref={inputRef} className="relative max-w-3xl">
-          <div className="rounded-[2rem] border border-[#E2E8EF] bg-white p-3 shadow-[0_24px_80px_rgba(7,17,38,0.08)]">
-            <div className="mb-3 flex flex-col gap-3 rounded-[1.45rem] bg-[#F8F7F4] p-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="px-2 text-sm font-semibold text-[#8D9AA7]">Search by:</p>
-              <div className="inline-flex rounded-full border border-[#E2E8EF] bg-white p-1">
+        <div ref={inputRef} className="relative max-w-4xl">
+          <div className="rounded-[2rem] bg-white/90 p-2 shadow-[0_24px_80px_rgba(7,21,47,0.12)] ring-1 ring-[#D8E2E8]">
+            <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
+              <div className="grid grid-cols-2 gap-1 rounded-full bg-[#EEF3F5] p-1 lg:flex lg:shrink-0">
                 {(['states', 'cities'] as const).map(type => (
                   <button
                     key={type}
                     type="button"
                     onClick={() => { setSearchType(type); setQuery(''); setShowDropdown(false); setPlaceSuggestions([]) }}
-                    className={`rounded-full px-5 py-2 text-sm font-semibold transition ${searchType === type ? 'bg-[#071A3D] text-white shadow-sm' : 'text-[#8D9AA7] hover:text-[#071A3D]'}`}
+                    className={`rounded-full px-5 py-2.5 text-sm font-bold transition ${
+                      searchType === type
+                        ? 'bg-[#071A3D] text-white shadow-[0_8px_18px_rgba(7,26,61,0.18)]'
+                        : 'text-[#405166] hover:bg-white hover:text-[#071A3D]'
+                    }`}
                   >
                     {type === 'states' ? 'State' : 'City'}
                   </button>
                 ))}
               </div>
-            </div>
 
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <div className="flex min-h-[64px] flex-1 items-center gap-3 px-4">
-                <span className="text-lg text-[#8D9AA7]">⌕</span>
+              <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[1.5rem] bg-white px-4 py-2 ring-1 ring-[#D7E2E9] transition focus-within:ring-2 focus-within:ring-[#3D8E98]">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                  className="shrink-0 text-[#526579]"
+                >
+                  <path
+                    d="M10.75 18.5a7.75 7.75 0 1 1 0-15.5 7.75 7.75 0 0 1 0 15.5Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="m16.5 16.5 4 4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+
                 <input
                   value={query}
                   onChange={e => { setQuery(e.target.value); setShowDropdown(true) }}
                   onKeyDown={handleKeyDown}
                   onFocus={() => setShowDropdown(true)}
                   placeholder={searchType === 'states' ? 'Search a state, like New York' : 'Search a city, like Brooklyn or Miami'}
-                  className="w-full bg-transparent text-base font-semibold text-[#071A3D] outline-none placeholder:text-[#B0BCCE]"
+                  className="min-w-0 flex-1 bg-transparent py-3 text-base font-semibold text-[#071A3D] outline-none placeholder:text-[#63758A]"
                 />
+
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  className="hidden shrink-0 rounded-full bg-[#071A3D] px-6 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(7,26,61,0.20)] transition hover:bg-[#102A5C] focus:outline-none focus:ring-4 focus:ring-[#C9D9FF] sm:inline-flex"
+                >
+                  Search
+                </button>
               </div>
+
               <button
                 type="button"
                 onClick={handleSearch}
-                className="min-h-[56px] rounded-full bg-[#071A3D] px-8 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(7,26,61,0.18)] transition hover:-translate-y-0.5 hover:bg-[#102A5C]"
+                className="rounded-full bg-[#071A3D] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(7,26,61,0.20)] transition hover:bg-[#102A5C] focus:outline-none focus:ring-4 focus:ring-[#C9D9FF] sm:hidden"
               >
                 Search
               </button>
@@ -193,39 +223,55 @@ export default function LocationsClient({ topStates, topCities, initialMapData }
           </div>
 
           {showDropdown && query.length > 0 && activeSuggestions.length > 0 && (
-            <div className="absolute left-0 right-0 z-[999] mt-3 max-h-[360px] w-full overflow-y-auto overscroll-contain rounded-[1.5rem] border border-[#E2E8EF] bg-white p-2 shadow-[0_22px_60px_rgba(7,17,38,0.14)]">
-              <p className="px-4 pb-2 pt-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#B0BCCE]">
+            <div className="absolute left-0 right-0 z-[999] mt-3 max-h-[360px] w-full overflow-y-auto overscroll-contain rounded-[1.5rem] bg-white/95 p-2 shadow-[0_24px_70px_rgba(15,23,42,0.16)] ring-1 ring-[#D8E2E8] backdrop-blur-md">
+              <p className="px-4 pb-2 pt-3 text-xs font-bold uppercase tracking-[0.16em] text-[#65778A]">
                 {searchType === 'states' ? 'Matching states' : 'Matching cities'}
               </p>
+
               {searchType === 'states'
                 ? stateSuggestions.map(state => (
-                    <button key={state} type="button" onClick={() => handleSelectState(state)}
-                      className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition hover:bg-[#F8F7F4]">
+                    <button
+                      key={state}
+                      type="button"
+                      onClick={() => handleSelectState(state)}
+                      className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition hover:bg-[#EEF7F8]"
+                    >
                       <div>
-                        <p className="text-sm font-semibold text-[#071A3D]">{state}</p>
-                        <p className="mt-0.5 text-xs text-[#B0BCCE]">View statewide salary reports</p>
+                        <p className="text-sm font-bold text-[#071A3D]">{state}</p>
+                        <p className="mt-0.5 text-xs font-medium text-[#65778A]">
+                          View statewide salary reports
+                        </p>
                       </div>
-                      <span className="text-sm text-[#B0BCCE]">→</span>
+                      <span className="text-sm font-bold text-[#526579]">→</span>
                     </button>
                   ))
                 : placeSuggestions.map(city => (
-                    <button key={city.fullText} type="button" onClick={() => handleSelectCity(city.name, city.fullText)}
-                      className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition hover:bg-[#F8F7F4]">
+                    <button
+                      key={city.fullText}
+                      type="button"
+                      onClick={() => handleSelectCity(city.name, city.fullText)}
+                      className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition hover:bg-[#EEF7F8]"
+                    >
                       <div>
-                        <p className="text-sm font-semibold text-[#071A3D]">{city.name}</p>
-                        <p className="mt-0.5 text-xs text-[#B0BCCE]">{city.fullText}</p>
+                        <p className="text-sm font-bold text-[#071A3D]">{city.name}</p>
+                        <p className="mt-0.5 text-xs font-medium text-[#65778A]">
+                          {city.fullText}
+                        </p>
                       </div>
-                      <span className="text-sm text-[#B0BCCE]">→</span>
+                      <span className="text-sm font-bold text-[#526579]">→</span>
                     </button>
                   ))}
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap gap-2 text-sm text-[#8D9AA7]">
+          <div className="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-[#405166]">
             {['California', 'New York', 'Texas'].map(state => (
-              <button key={state} type="button"
+              <button
+                key={state}
+                type="button"
                 onClick={() => { setSearchType('states'); handleSelectState(state) }}
-                className="rounded-full border border-[#E2E8EF] bg-white px-4 py-2 shadow-sm transition hover:border-[#D7E1E7] hover:text-[#071A3D]">
+                className="rounded-full bg-white/70 px-4 py-2 ring-1 ring-[#D8E2E8] transition hover:bg-white hover:text-[#071A3D]"
+              >
                 {state}
               </button>
             ))}
