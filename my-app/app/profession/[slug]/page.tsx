@@ -65,95 +65,141 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
   const { slug } = await params
   const { submissions, p25, p75, p90, minRate, maxRate, count } = await getProfessionData(slug)
   const professionName = submissions[0]?.role.profession || slug.replace(/-/g, ' ')
-
+  
   const hasSalaryData = count > 0 && minRate > 0 && maxRate > 0
 
   const rangeMin = hasSalaryData ? Math.floor(minRate) : 0
   const rangeMax = hasSalaryData ? Math.ceil(maxRate) : 0
+  const middleRange = hasSalaryData ? Math.round((rangeMin + rangeMax) / 2) : 0
 
   const p25Position = getPercentPosition(p25, rangeMin, rangeMax)
   const p75Position = getPercentPosition(p75, rangeMin, rangeMax)
   const p90Position = getPercentPosition(p90, rangeMin, rangeMax)
 
-  const middleRange = hasSalaryData ? Math.round((rangeMin + rangeMax) / 2) : 0
-
   const stats = [
-    { label: '25th', value: p25, tone: 'text-[#0F766E]', yearly: annualize(p25) },
-    { label: '75th', value: p75, tone: 'text-[#2F5EA8]', yearly: annualize(p75) },
-    { label: '90th', value: p90, tone: 'text-[#7A5A1A]', yearly: annualize(p90) },
+    {
+      label: '25th',
+      value: p25,
+      tone: 'text-[#0F766E]',
+      dot: 'bg-[#BFE5E1]',
+      yearly: annualize(p25),
+      position: p25Position,
+    },
+    {
+      label: '75th',
+      value: p75,
+      tone: 'text-[#2F5EA8]',
+      dot: 'bg-[#CDDAF0]',
+      yearly: annualize(p75),
+      position: p75Position,
+    },
+    {
+      label: '90th',
+      value: p90,
+      tone: 'text-[#7A5A1A]',
+      dot: 'bg-[#E8DDC8]',
+      yearly: annualize(p90),
+      position: p90Position,
+    },
   ]
 
   return (
-    <main className="min-h-screen bg-[#F6F9FC] px-4 py-8 md:px-8 md:py-12">
+    <main className="min-h-screen bg-[#F6F9FC] px-4 py-6 md:px-8 md:py-8">
       <section className="mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-[2.75rem] border border-[#DDE7EF] bg-gradient-to-br from-white via-[#FBFCFD] to-[#EEF8F6] p-6 shadow-[0_28px_80px_rgba(15,23,42,0.08)] md:p-10 lg:p-12">
-          <div className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#DDEEFF]/60 blur-3xl" />
-          <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 rounded-full bg-[#E7FAF4]/80 blur-3xl" />
+        <div className="relative overflow-hidden rounded-[2rem] border border-[#DDE7EF] bg-gradient-to-br from-white via-[#FBFCFD] to-[#EEF8F6] p-5 shadow-[0_18px_50px_rgba(15,23,42,0.055)] md:p-7">
+          <div className="pointer-events-none absolute -left-24 bottom-0 h-56 w-56 rounded-full bg-[#DDEEFF]/50 blur-3xl" />
+          <div className="pointer-events-none absolute right-0 top-0 h-64 w-64 rounded-full bg-[#E7FAF4]/70 blur-3xl" />
 
           <div className="relative z-10">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <div className="mb-4 flex items-center gap-2 text-sm text-[#8B99A8]">
+                <div className="mb-3 flex items-center gap-2 text-sm text-[#8B99A8]">
                   <Link href="/profession" className="transition hover:text-[#071633]">
                     Roles
                   </Link>
                   <span>/</span>
-                  <span className="capitalize text-[#071633]">{professionName}</span>
+                  <span className="capitalize text-[#071633]">
+                    {professionName}
+                  </span>
                 </div>
 
-                <p className="font-serif text-xs font-semibold uppercase tracking-[0.38em] text-[#8B99A8] md:text-sm">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8B99A8]">
                   Compare salaries for this role
                 </p>
 
-                <h1 className="mt-5 max-w-4xl font-serif text-4xl font-medium leading-tight tracking-[-0.03em] text-[#071633] md:text-6xl">
+                <h1 className="mt-2 max-w-4xl font-serif text-3xl font-medium leading-tight tracking-[-0.03em] text-[#071633] md:text-5xl">
                   {professionName} Salaries
                 </h1>
 
-                <p className="mt-5 max-w-2xl text-base leading-7 text-[#64748B] md:text-lg">
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-[#64748B] md:text-base">
                   See what people in this role are reporting across hospitals, cities, states, and experience levels.
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3 lg:justify-end">
+              <div className="flex flex-wrap items-center gap-3">
                 <div className="rounded-full border border-[#DFE8F0] bg-white/80 px-4 py-2 text-sm font-medium text-[#64748B] shadow-sm">
                   {count} {count === 1 ? 'submission' : 'submissions'}
                 </div>
 
                 <Link
                   href="/submit"
-                  className="inline-flex items-center justify-center rounded-full bg-[#071633] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(7,22,51,0.16)] transition hover:-translate-y-0.5 hover:bg-[#13284F]"
+                  className="inline-flex items-center justify-center rounded-full bg-[#071633] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(7,22,51,0.14)] transition hover:-translate-y-0.5 hover:bg-[#13284F]"
                 >
                   Submit salary
                 </Link>
               </div>
             </div>
 
-            <div className="mt-10 rounded-[2rem] border border-[#E1E8EF] bg-white/72 p-6 shadow-[0_18px_60px_rgba(15,23,42,0.05)] backdrop-blur md:mt-14 md:p-10">
-              <div className="flex items-start justify-between gap-4">
+            <div className="mt-6 rounded-[1.5rem] border border-[#E1E8EF] bg-white/78 p-5 shadow-[0_14px_40px_rgba(15,23,42,0.04)] backdrop-blur md:p-6">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div>
-                  <h2 className="font-serif text-2xl font-semibold tracking-[-0.02em] text-[#243142]">
-                    Pay range for {professionName}
-                  </h2>
-
-                  <p className="mt-2 text-sm text-[#94A3B8]">
-                    Based on reported base hourly rates.
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">
+                    Reported pay range
                   </p>
+
+                  <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <p className="font-serif text-2xl font-semibold tracking-[-0.03em] text-[#071633] md:text-3xl">
+                      {hasSalaryData
+                        ? `${formatMoney(rangeMin)}–${formatMoney(rangeMax)}/hr`
+                        : '$0/hr'}
+                    </p>
+
+                    <p className="text-sm text-[#94A3B8]">
+                      based on base hourly rates
+                    </p>
+                  </div>
                 </div>
 
-                <p className="font-serif text-lg text-[#94A3B8] md:text-xl">
-                  {hasSalaryData
-                    ? `${formatMoney(rangeMin)}–${formatMoney(rangeMax)}/hr`
-                    : '$0/hr'}
-                </p>
+                <div className="grid grid-cols-3 gap-2 lg:min-w-[420px]">
+                  {stats.map(({ label, value, tone, yearly }) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl bg-[#F8FAFC] px-3 py-3 text-center"
+                    >
+                      <p className={`text-xs font-semibold uppercase tracking-[0.12em] ${tone}`}>
+                        {label}
+                      </p>
+
+                      <p className="mt-1 font-serif text-xl font-semibold tracking-[-0.03em] text-[#071633] md:text-2xl">
+                        {formatMoney(value)}
+                        <span className="text-sm">/hr</span>
+                      </p>
+
+                      <p className="mt-0.5 text-xs text-[#94A3B8]">
+                        {formatMoney(Math.round(yearly / 1000))}k/yr
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="mt-16 px-2 md:px-4">
-                <div className="relative h-28">
-                  <div className="absolute left-0 right-0 top-8 h-4 rounded-full bg-[#E8EEF2]" />
+              <div className="mt-6 px-1">
+                <div className="relative h-20">
+                  <div className="absolute left-0 right-0 top-8 h-2.5 rounded-full bg-[#E8EEF2]" />
 
                   {hasSalaryData && (
                     <div
-                      className="absolute top-8 h-4 rounded-full bg-gradient-to-r from-[#B8E3DE] via-[#CAD8EF] to-[#EAD8B5]"
+                      className="absolute top-8 h-2.5 rounded-full bg-gradient-to-r from-[#B8E3DE] via-[#CAD8EF] to-[#EAD8B5]"
                       style={{
                         left: `${p25Position}%`,
                         width: `${Math.max(p90Position - p25Position, 5)}%`,
@@ -161,92 +207,61 @@ export default async function ProfessionPage({ params }: { params: Promise<{ slu
                     />
                   )}
 
-                  {hasSalaryData && (
-                    <>
-                      <div className="absolute top-0 -translate-x-1/2" style={{ left: `${p25Position}%` }}>
-                        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-[0_8px_26px_rgba(15,23,42,0.10)]">
-                          <div className="h-6 w-6 rounded-full bg-[#BFE5E1]" />
+                  {hasSalaryData &&
+                    stats.map(({ label, tone, dot, position }) => (
+                      <div
+                        key={label}
+                        className="absolute top-5 -translate-x-1/2"
+                        style={{ left: `${position}%` }}
+                      >
+                        <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-[0_8px_20px_rgba(15,23,42,0.10)]">
+                          <div className={`h-4 w-4 rounded-full ${dot}`} />
                         </div>
-                        <div className="mx-auto mt-2 h-9 w-px bg-[#D8E1E8]" />
-                        <p className="font-serif text-base font-semibold text-[#0F766E]">25th</p>
-                      </div>
 
-                      <div className="absolute top-0 -translate-x-1/2" style={{ left: `${p75Position}%` }}>
-                        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-[0_8px_26px_rgba(15,23,42,0.10)]">
-                          <div className="h-6 w-6 rounded-full bg-[#CDDAF0]" />
-                        </div>
-                        <div className="mx-auto mt-2 h-9 w-px bg-[#D8E1E8]" />
-                        <p className="font-serif text-base font-semibold text-[#2F5EA8]">75th</p>
+                        <p className={`mt-1 text-center text-xs font-semibold ${tone}`}>
+                          {label}
+                        </p>
                       </div>
+                    ))}
 
-                      <div className="absolute top-0 -translate-x-1/2" style={{ left: `${p90Position}%` }}>
-                        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-[0_8px_26px_rgba(15,23,42,0.10)]">
-                          <div className="h-6 w-6 rounded-full bg-[#E8DDC8]" />
-                        </div>
-                        <div className="mx-auto mt-2 h-9 w-px bg-[#D8E1E8]" />
-                        <p className="font-serif text-base font-semibold text-[#7A5A1A]">90th</p>
-                      </div>
-                    </>
-                  )}
-
-                  <div className="absolute left-0 top-20 font-serif text-base text-[#94A3B8]">
+                  <div className="absolute left-0 top-14 text-xs text-[#94A3B8]">
                     {hasSalaryData ? formatMoney(rangeMin) : '$0'}
                   </div>
-                  <div className="absolute left-1/2 top-20 -translate-x-1/2 font-serif text-base text-[#94A3B8]">
+
+                  <div className="absolute left-1/2 top-14 -translate-x-1/2 text-xs text-[#94A3B8]">
                     {hasSalaryData ? formatMoney(middleRange) : '$0'}
                   </div>
-                  <div className="absolute right-0 top-20 font-serif text-base text-[#94A3B8]">
+
+                  <div className="absolute right-0 top-14 text-xs text-[#94A3B8]">
                     {hasSalaryData ? formatMoney(rangeMax) : '$0'}
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="mt-8 grid gap-5 md:grid-cols-3">
-              {stats.map(({ label, value, tone, yearly }) => (
-                <div
-                  key={label}
-                  className="rounded-[1.75rem] border border-[#E1E8EF] bg-white/80 p-7 text-center shadow-[0_18px_50px_rgba(15,23,42,0.04)] backdrop-blur"
-                >
-                  <p className={`font-serif text-lg font-semibold ${tone}`}>{label}</p>
-
-                  <p className="mt-8 font-serif text-4xl font-semibold tracking-[-0.04em] text-[#071633] md:text-5xl">
-                    {formatMoney(value)}
-                    <span className="text-2xl">/hr</span>
-                  </p>
-
-                  <p className="mt-5 font-serif text-lg text-[#94A3B8]">
-                    {formatMoney(Math.round(yearly / 1000))}k/yr
-                  </p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-1 py-8 md:py-10">
-        <div className="relative overflow-hidden rounded-[2rem] border border-[#E1E8EF] bg-white p-6 shadow-[0_18px_55px_rgba(15,23,42,0.05)] md:p-8">
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+      <section className="mx-auto max-w-7xl px-1 py-5 md:py-6">
+        <div className="relative overflow-hidden rounded-[1.75rem] border border-[#E1E8EF] bg-white p-5 shadow-[0_12px_36px_rgba(15,23,42,0.04)] md:p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-sm font-semibold text-[#0F766E]">
                 100% anonymous always
               </p>
 
-              <h2 className="mt-2 font-serif text-3xl font-medium tracking-[-0.03em] text-[#071633]">
-                Calling all {professionName}s! Help grow our database by submitting your pay info.
+              <h2 className="mt-1 font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                Help grow the {professionName} salary database.
               </h2>
 
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-[#64748B]">
-                This site is
-                100% community sourced. The more data we have, the better our peers can compare pay with more confidence.
-                Your submission helps build a clearer picture of hourly rates, differentials, and role-specific pay across the country.
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#64748B]">
+                The more data we have, the easier it is for healthcare workers to compare pay with confidence.
               </p>
             </div>
 
             <Link
               href="/submit"
-              className="inline-flex w-fit items-center justify-center rounded-full bg-[#071633] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#13284F]"
+              className="inline-flex w-fit items-center justify-center rounded-full bg-[#071633] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#13284F]"
             >
               Submit
             </Link>
