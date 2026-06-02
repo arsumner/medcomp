@@ -3,19 +3,31 @@ import { writeLimiter, getClientIp } from '@/lib/ratelimit'
 
 export async function GET(request: Request) {
     const {searchParams} = new URL(request.url)
+    const place_id = searchParams.get('place_id')
     const name = searchParams.get('name')
-    let query = supabase.from('hospital').select()
-    if (name) {
-        query = query.eq('name', name)
-    }
-    const { data, error } = await query
 
+    if (place_id) {
+        const { data, error } = await supabase.from('hospital').select().eq('place_id', place_id)
+        if (!error && data && data.length > 0) {
+            return Response.json(data)
+        }
+    }
+
+    if (name) {
+        const { data, error } = await supabase.from('hospital').select().ilike('name', name)
+        if (error) {
+            return Response.json({ error: 'Something went wrong' }, { status: 500 })
+        }
+        return Response.json(data ?? [])
+    }
+
+    const { data, error } = await supabase.from('hospital').select()
     if (error) {
         return Response.json({ error: 'Something went wrong' }, { status: 500 })
     }
-
     return Response.json(data)
 }
+
 
 
 export async function POST(request: Request) {
@@ -40,6 +52,7 @@ export async function POST(request: Request) {
     name: body.name.trim(),
     city: body.city.trim(),
     state: body.state.trim(),
+    place_id: typeof body.place_id === 'string' ? body.place_id.trim() || null: null
   }]).select()
 
   if (error) {

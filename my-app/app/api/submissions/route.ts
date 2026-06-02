@@ -45,8 +45,8 @@ export async function POST(request: Request) {
   if (
     !validPayTypes.includes(body.pay_type) ||
     !Number.isFinite(baseRate) || baseRate <= 0 || baseRate > 2_000_000 ||
-    typeof body.hospitalid !== 'string' || !body.hospitalid ||
-    typeof body.roleid !== 'string' || !body.roleid ||
+    (typeof body.hospitalid !== 'string' && typeof body.hospitalid !== 'number') || body.hospitalid == null || body.hospitalid === '' ||
+    (typeof body.roleid !== 'string' && typeof body.roleid !== 'number') || body.roleid == null || body.roleid === '' ||
     (yearsExp !== null && (!Number.isInteger(yearsExp) || yearsExp < 0 || yearsExp > 60))
   ) {
     return Response.json({ error: 'Invalid submission data' }, { status: 400 })

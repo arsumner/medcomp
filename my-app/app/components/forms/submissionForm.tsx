@@ -5,14 +5,31 @@ import { departments } from '../../data/departments'
 import { useRouter } from 'next/navigation'
 import HospitalSearch from './../forms/hospitalSearch'
 
-const inputClass = "w-full bg-white text-[#111827] px-4 py-3 border border-[#E5E7EB] rounded-lg outline-none focus:border-[#0D9488] transition-colors duration-200 placeholder-[#9CA3AF]"
-const selectClass = "w-full bg-white text-[#111827] px-4 py-3 border border-[#E5E7EB] rounded-lg outline-none focus:border-[#0D9488] transition-colors duration-200"
-const labelClass = "block text-sm font-medium text-[#6B7280] mb-2 uppercase tracking-wider"
-const altLabelClass = "text-[#6B7280] text-sm leading-relaxed mb-2 block"
-const sectionClass = "bg-white border border-[#E5E7EB] rounded-2xl p-6 flex flex-col gap-5 shadow-sm"
+const inputClass =
+  'w-full rounded-[1.15rem] bg-white/90 px-4 py-3.5 text-[#071A3D] ring-1 ring-[#C7D3DC] outline-none transition placeholder:text-[#475569] focus:bg-white focus:ring-2 focus:ring-[#116F6B]'
+
+const selectClass =
+  'w-full rounded-[1.15rem] bg-white/90 px-4 py-3.5 text-[#071A3D] ring-1 ring-[#C7D3DC] outline-none transition focus:bg-white focus:ring-2 focus:ring-[#116F6B]'
+
+const labelClass =
+  'mb-2 block text-xs font-bold uppercase tracking-[0.13em] text-[#334155]'
+
+const altLabelClass =
+  'mb-2 block text-sm font-medium leading-relaxed text-[#405064]'
+
+const sectionClass =
+  'border-t border-[#C7D3DC] pt-8'
+
+const stepClass =
+  'text-xs font-bold uppercase tracking-[0.15em] text-[#0B6F6A]'
+
+const headingClass =
+  'mt-2 font-serif text-3xl font-normal tracking-[-0.04em] text-[#071A3D]'
+
+const descriptionClass =
+  'mt-2 max-w-2xl text-sm font-medium leading-7 text-[#334155]'
 
 export default function SubmissionForm() {
-
   const [profession, setProfession] = useState('')
   const [department, setDepartment] = useState('')
   const [baseRate, setBaseRate] = useState('')
@@ -27,13 +44,19 @@ export default function SubmissionForm() {
   const [evening_diff, setEveningDiff] = useState('')
   const [signon_bonus, setSignonBonus] = useState('')
   const [preceptor_pay, setPreceptorPay] = useState('')
+  const [placeId, setPlaceId] = useState('')
   const router = useRouter()
 
-  const baseRateLabel = payType === 'salary' ? 'Annual Salary ($)' : payType === 'travel' ? 'Weekly Rate ($)' : 'Hourly Rate ($/hr)'
+  const baseRateLabel =
+    payType === 'salary'
+      ? 'Annual Salary ($)'
+      : payType === 'travel'
+        ? 'Weekly Rate ($)'
+        : 'Hourly Rate ($/hr)'
+
   const allProfessions = Object.values(professions).flat()
 
-
-  async function handleSubmit(event:React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
 
     if (!profession || !department || !baseRate || !payType || !hospital || !city || !state) {
@@ -41,7 +64,10 @@ export default function SubmissionForm() {
       return
     }
 
-    const hospitalResponse = await fetch(`/api/hospitals?name=${encodeURIComponent(hospital)}`)
+    const hospitalResponse = await fetch(
+      `/api/hospitals?place_id=${encodeURIComponent(placeId)}&name=${encodeURIComponent(hospital)}`
+    )
+
     const hospitalData = await hospitalResponse.json()
 
     let hospitalid
@@ -53,11 +79,10 @@ export default function SubmissionForm() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: hospital, city, state })
+        body: JSON.stringify({ name: hospital, city, state, place_id: placeId })
       })
       const newHospitalData = await newHospital.json()
       hospitalid = newHospitalData[0].hospitalid
-
     }
 
     const roleResponse = await fetch(`/api/roles?profession=${encodeURIComponent(profession)}&department=${encodeURIComponent(department)}`)
@@ -76,7 +101,7 @@ export default function SubmissionForm() {
       })
       const newRoleData = await newRole.json()
       roleid = newRoleData[0].roleid
-    } 
+    }
 
     const response = await fetch('/api/submissions', {
       method: 'POST',
@@ -105,42 +130,46 @@ export default function SubmissionForm() {
     }
   }
 
-      return (
-      <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-        <div className="rounded-[2rem] border border-[#E2E8F0] bg-gradient-to-br from-[#F8FAFC] to-[#EEF2FF] p-6 md:p-8">
-          <p className="text-sm font-medium text-[#4C6FFF]">
-            Anonymous salary submission
+  return (
+    <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-3xl flex-col gap-9">
+      <div className="rounded-[2.5rem] bg-white/80 px-6 py-7 shadow-[0_24px_80px_rgba(7,21,47,0.10)] ring-1 ring-[#C7D3DC] backdrop-blur-md md:px-8 md:py-8">
+        <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#0B6F6A]">
+          Anonymous salary submission
+        </p>
+
+        <h1 className="mt-3 font-serif text-4xl font-normal leading-[1.05] tracking-[-0.05em] text-[#071A3D] md:text-5xl">
+          Share your healthcare compensation.
+        </h1>
+
+        <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-[#334155]">
+          Your submission helps other healthcare workers compare pay, prepare for negotiations, and understand what fair compensation looks like.
+        </p>
+
+        <div className="mt-6 flex flex-wrap gap-2 text-sm font-bold text-[#334155]">
+          <span className="rounded-full bg-[#EEF3F5] px-4 py-2 ring-1 ring-[#C7D3DC]">
+            Anonymous
+          </span>
+
+          <span className="rounded-full bg-[#EEF3F5] px-4 py-2 ring-1 ring-[#C7D3DC]">
+            Takes ~2 minutes
+          </span>
+
+          <span className="rounded-full bg-[#DDF5F2] px-4 py-2 text-[#064E52] ring-1 ring-[#9FD5D0]">
+            No account needed
+          </span>
+        </div>
+      </div>
+
+      <div className={sectionClass}>
+        <div className="mb-6">
+          <p className={stepClass}>Step 1</p>
+          <h2 className={headingClass}>Role information</h2>
+          <p className={descriptionClass}>
+            Tell us what role and department best match your work.
           </p>
-
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#0F172A]">
-            Share your healthcare compensation.
-          </h1>
-
-          <p className="mt-3 text-sm leading-relaxed text-[#64748B]">
-            Your submission helps other healthcare workers compare pay, prepare for negotiations, and understand what fair compensation looks like.
-          </p>
-
-          <div className="mt-5 flex flex-wrap gap-3 text-sm text-[#64748B]">
-            <span className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1.5">
-              Anonymous
-            </span>
-            <span className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1.5">
-              Takes ~2 minutes
-            </span>
-          </div>
         </div>
 
-        <div className={sectionClass}>
-          <div>
-            <p className="text-sm font-medium text-[#4C6FFF]">Step 1</p>
-            <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#0F172A]">
-              Role information
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#64748B]">
-              Tell us what role and department best match your work.
-            </p>
-          </div>
-
+        <div className="grid gap-5">
           <div>
             <label className={labelClass}>Profession</label>
             <select
@@ -184,55 +213,54 @@ export default function SubmissionForm() {
               type="number"
             />
           </div>
+        </div>
 
-          <p className="text-sm leading-relaxed text-[#64748B]">
-            Missing your profession or department?{' '}
-            <a href="/contact" className="font-medium text-[#4C6FFF] underline underline-offset-4">
-              Message us
-            </a>
-            .
+        <p className="mt-5 text-sm font-medium leading-relaxed text-[#405064]">
+          Missing your profession or department?{' '}
+          <a href="/contact" className="font-bold text-[#0B6F6A] underline underline-offset-4">
+            Message us
+          </a>
+          .
+        </p>
+      </div>
+
+      <div className={sectionClass}>
+        <div className="mb-6">
+          <p className={stepClass}>Step 2</p>
+          <h2 className={headingClass}>Facility</h2>
+          <p className={descriptionClass}>
+            Search for your hospital, clinic, outpatient center, or other healthcare facility.
           </p>
         </div>
 
-        <div className={sectionClass}>
-          <div>
-            <p className="text-sm font-medium text-[#4C6FFF]">Step 2</p>
-            <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#0F172A]">
-              Facility
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#64748B]">
-              Search for your hospital, clinic, outpatient center, or other healthcare facility.
-            </p>
-          </div>
+        <HospitalSearch
+          onSelect={(hospital, city, state, placeId) => {
+            setHospital(hospital)
+            setCity(city)
+            setState(state)
+            setPlaceId(placeId)
+          }}
+        />
 
-          <HospitalSearch
-            onSelect={(hospital, city, state) => {
-              setHospital(hospital)
-              setCity(city)
-              setState(state)
-            }}
-          />
+        <p className="mt-5 text-sm font-medium leading-relaxed text-[#405064]">
+          Can’t find your facility?{' '}
+          <a href="/contact" className="font-bold text-[#0B6F6A] underline underline-offset-4">
+            Message us
+          </a>
+          {' '}so we can add it.
+        </p>
+      </div>
 
-          <p className="text-sm leading-relaxed text-[#64748B]">
-            Can’t find your facility?{' '}
-            <a href="/contact" className="font-medium text-[#4C6FFF] underline underline-offset-4">
-              Message us
-            </a>
-            {' '}so we can add it.
+      <div className={sectionClass}>
+        <div className="mb-6">
+          <p className={stepClass}>Step 3</p>
+          <h2 className={headingClass}>Base compensation</h2>
+          <p className={descriptionClass}>
+            Enter your base pay before optional differentials or bonuses.
           </p>
         </div>
 
-        <div className={sectionClass}>
-          <div>
-            <p className="text-sm font-medium text-[#4C6FFF]">Step 3</p>
-            <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#0F172A]">
-              Base compensation
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#64748B]">
-              Enter your base pay before optional differentials or bonuses.
-            </p>
-          </div>
-
+        <div className="grid gap-5">
           <div>
             <label className={labelClass}>Pay type</label>
             <select
@@ -261,60 +289,108 @@ export default function SubmissionForm() {
             />
           </div>
         </div>
+      </div>
 
-        <div className={sectionClass}>
-          <div>
-            <p className="text-sm font-medium text-[#4C6FFF]">Step 4</p>
-            <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#0F172A]">
-              Additional pay
-              <span className="ml-2 text-sm font-normal text-[#94A3B8]">
-                Optional
-              </span>
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#64748B]">
-              Add any differentials, certification pay, preceptor pay, charge pay, or sign-on bonus.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className={labelClass}>Preceptor pay</label>
-              <input className={inputClass} value={preceptor_pay} onChange={(e) => setPreceptorPay(e.target.value)} placeholder="2.50" type="number" min="0" step=".01" />
-            </div>
-
-            <div>
-              <label className={labelClass}>Certification pay</label>
-              <input className={inputClass} value={certification_pay} onChange={(e) => setCertificationPay(e.target.value)} placeholder="1.25" type="number" min="0" step=".01" />
-            </div>
-
-            <div>
-              <label className={labelClass}>Night differential</label>
-              <input className={inputClass} value={night_diff} onChange={(e) => setNightDiff(e.target.value)} placeholder="2.70" type="number" min="0" step=".01" />
-            </div>
-
-            <div>
-              <label className={labelClass}>Evening differential</label>
-              <input className={inputClass} value={evening_diff} onChange={(e) => setEveningDiff(e.target.value)} placeholder="2.00" type="number" min="0" step=".01" />
-            </div>
-
-            <div>
-              <label className={labelClass}>Charge differential</label>
-              <input className={inputClass} value={charge_diff} onChange={(e) => setChargeDiff(e.target.value)} placeholder="2.50" type="number" min="0" step=".01" />
-            </div>
-
-            <div>
-              <label className={labelClass}>Sign-on bonus</label>
-              <input className={inputClass} value={signon_bonus} onChange={(e) => setSignonBonus(e.target.value)} placeholder="5000" type="number" min="0" />
-            </div>
-          </div>
+      <div className={sectionClass}>
+        <div className="mb-6">
+          <p className={stepClass}>Step 4</p>
+          <h2 className={headingClass}>
+            Additional pay
+            <span className="ml-2 align-middle text-sm font-bold tracking-normal text-[#475569]">
+              Optional
+            </span>
+          </h2>
+          <p className={descriptionClass}>
+            Add any differentials, certification pay, preceptor pay, charge pay, or sign-on bonus.
+          </p>
         </div>
 
-        <button
-          type="submit"
-          className="w-full rounded-2xl bg-[#4C6FFF] px-6 py-4 text-base font-semibold text-white transition hover:bg-[#3B5BDB]"
-        >
-          Submit anonymously
-        </button>
-      </form>
-    )
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className={labelClass}>Preceptor pay</label>
+            <input
+              className={inputClass}
+              value={preceptor_pay}
+              onChange={(e) => setPreceptorPay(e.target.value)}
+              placeholder="2.50"
+              type="number"
+              min="0"
+              step=".01"
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Certification pay</label>
+            <input
+              className={inputClass}
+              value={certification_pay}
+              onChange={(e) => setCertificationPay(e.target.value)}
+              placeholder="1.25"
+              type="number"
+              min="0"
+              step=".01"
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Night differential</label>
+            <input
+              className={inputClass}
+              value={night_diff}
+              onChange={(e) => setNightDiff(e.target.value)}
+              placeholder="2.70"
+              type="number"
+              min="0"
+              step=".01"
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Evening differential</label>
+            <input
+              className={inputClass}
+              value={evening_diff}
+              onChange={(e) => setEveningDiff(e.target.value)}
+              placeholder="2.00"
+              type="number"
+              min="0"
+              step=".01"
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Charge differential</label>
+            <input
+              className={inputClass}
+              value={charge_diff}
+              onChange={(e) => setChargeDiff(e.target.value)}
+              placeholder="2.50"
+              type="number"
+              min="0"
+              step=".01"
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Sign-on bonus</label>
+            <input
+              className={inputClass}
+              value={signon_bonus}
+              onChange={(e) => setSignonBonus(e.target.value)}
+              placeholder="5000"
+              type="number"
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        className="w-full rounded-full bg-[#071A3D] px-6 py-4 text-base font-bold text-white shadow-[0_16px_38px_rgba(7,26,61,0.20)] transition hover:-translate-y-0.5 hover:bg-[#102A5C] focus:outline-none focus:ring-4 focus:ring-[#C9D9FF]"
+      >
+        Submit anonymously
+      </button>
+    </form>
+  )
 }

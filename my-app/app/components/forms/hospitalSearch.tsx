@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 type HospitalSearchProps = {
-  onSelect: (hospital: string, city: string, state: string) => void
+  onSelect: (hospital: string, city: string, state: string, placeId: string) => void
 }
 
 export default function HospitalSearch({ onSelect }: HospitalSearchProps) {
@@ -41,7 +41,7 @@ export default function HospitalSearch({ onSelect }: HospitalSearchProps) {
     return () => clearTimeout(timer)
   }, [input])
 
-const handleSelect = async ( suggestion: google.maps.places.AutocompleteSuggestion ) => {
+  const handleSelect = async ( suggestion: google.maps.places.AutocompleteSuggestion ) => {
   const placePrediction = suggestion.placePrediction
 
   if (!placePrediction) {
@@ -51,7 +51,8 @@ const handleSelect = async ( suggestion: google.maps.places.AutocompleteSuggesti
 
   const place = placePrediction.toPlace()
 
-  await place.fetchFields({fields: ['displayName', 'addressComponents'],})
+  await place.fetchFields({ fields: ['displayName', 'addressComponents', 'id'] })
+
 
   const components = place.addressComponents ?? []
 
@@ -68,10 +69,12 @@ const handleSelect = async ( suggestion: google.maps.places.AutocompleteSuggesti
   const hospital =
     place.displayName ?? placePrediction.text?.toString() ?? ''
 
+  const placeId = place.id ?? ''
+
   setInput(hospital)
   setSuggestions([])
   setOpen(false)
-  onSelect(hospital, city, state)
+  onSelect(hospital, city, state, placeId)
 }
 
   return (
