@@ -1,12 +1,14 @@
 import { supabase } from '@/lib/supabase'
-import DataTable from '../../components/table/homeTable'
-import { columns } from '../../components/table/columns'
 import Link from 'next/link'
+import TableWithFilters from '../../components/table/filtersTable'
 
 export const dynamic = 'force-dynamic'
 
 function formatHospital(slug: string) {
-  return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+  return slug
+    .split('-')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
 }
 
 function percentile(arr: number[], p: number) {
@@ -16,118 +18,331 @@ function percentile(arr: number[], p: number) {
   return sorted[Math.max(0, index)]
 }
 
+function formatMoney(value: number) {
+  if (!value || Number.isNaN(value)) return '$0.00'
+
+  return value.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: value % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  })
+}
+
+function annualize(hourly: number) {
+  return hourly * 2080
+}
+
+function getPercentPosition(value: number, min: number, max: number) {
+  if (!value || !min || !max || min === max) return 0
+  return Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100))
+}
+
 async function getHospitalData(slug: string) {
   const hospitalName = formatHospital(slug)
 
+  const searchPattern = '%' + slug.split('-').filter(Boolean).join('%') + '%'
+
+  const { data: hospitals } = await supabase
+    .from('hospital')
+    .select('hospitalid, name, city, state')
+    .ilike('name', searchPattern)
+    .limit(1)
+
+  if (!hospitals || hospitals.length === 0) {
+    return {
+      submissions: [],
+      p25: 0,
+      p75: 0,
+      p90: 0,
+      minRate: 0,
+      maxRate: 0,
+      hospital: hospitalName,
+      city: '',
+      state: '',
+      count: 0,
+    }
+  }
+
+  const hospitalRecord = hospitals[0]
+
   const { data, error } = await supabase
     .from('submission')
-    .select(`
-      *,
-      role (profession, department),
-      hospital!inner (name, city, state)
-    `)
-    .ilike('hospital.name', `%${hospitalName}%`)
+    .select('*, role (profession, department), hospital (name, city, state)')
+    .eq('hospitalid', hospitalRecord.hospitalid)
     .order('submitted_at', { ascending: false })
 
-  if (error || !data) return { submissions: [], p25: 0, p75: 0, p90: 0, hospital: hospitalName, count: 0 }
+  if (error || !data) {
+    return {
+      submissions: [],
+      p25: 0,
+      p75: 0,
+      p90: 0,
+      minRate: 0,
+      maxRate: 0,
+      hospital: hospitalRecord.name,
+      city: hospitalRecord.city ?? '',
+      state: hospitalRecord.state ?? '',
+      count: 0,
+    }
+  }
 
-  const rates = data.map(d => d.base_rate).filter(Boolean)
-  const hospitalInfo = data[0]?.hospital
+  const rates = data
+    .map(d => Number(d.base_rate))
+    .filter(rate => !Number.isNaN(rate) && rate > 0)
+
   return {
     submissions: data,
     p25: percentile(rates, 25),
     p75: percentile(rates, 75),
     p90: percentile(rates, 90),
-    hospital: hospitalInfo?.name ?? hospitalName,
-    city: hospitalInfo?.city ?? '',
-    state: hospitalInfo?.state ?? '',
+    minRate: rates.length ? Math.min(...rates) : 0,
+    maxRate: rates.length ? Math.max(...rates) : 0,
+    hospital: hospitalRecord.name,
+    city: hospitalRecord.city ?? '',
+    state: hospitalRecord.state ?? '',
     count: data.length,
   }
 }
 
-export default async function HospitalPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function HospitalPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const { slug } = await params
-  const { submissions, p25, p75, p90, hospital, city, state, count } = await getHospitalData(slug)
+
+  const {
+    submissions,
+    p25,
+    p75,
+    p90,
+    minRate,
+    maxRate,
+    hospital,
+    city,
+    state,
+    count,
+  } = await getHospitalData(slug)
+
+  const hasSalaryData = count > 0 && minRate > 0 && maxRate > 0
+
+  const rangeMin = hasSalaryData ? Math.floor(minRate) : 0
+  const rangeMax = hasSalaryData ? Math.ceil(maxRate) : 0
+  const middleRange = hasSalaryData ? Math.round((rangeMin + rangeMax) / 2) : 0
+
+  const p25Position = getPercentPosition(p25, rangeMin, rangeMax)
+  const p75Position = getPercentPosition(p75, rangeMin, rangeMax)
+  const p90Position = getPercentPosition(p90, rangeMin, rangeMax)
+
+  const location = [city, state].filter(Boolean).join(', ')
+
+  const stats = [
+    {
+      label: '25th',
+      value: p25,
+      tone: 'text-[#0F766E]',
+      dot: 'bg-[#BFE5E1]',
+      yearly: annualize(p25),
+      position: p25Position,
+    },
+    {
+      label: '75th',
+      value: p75,
+      tone: 'text-[#2F5EA8]',
+      dot: 'bg-[#CDDAF0]',
+      yearly: annualize(p75),
+      position: p75Position,
+    },
+    {
+      label: '90th',
+      value: p90,
+      tone: 'text-[#7A5A1A]',
+      dot: 'bg-[#E8DDC8]',
+      yearly: annualize(p90),
+      position: p90Position,
+    },
+  ]
 
   return (
-    <main className="min-h-screen bg-[#F9FAFB]">
+    <main className="min-h-screen bg-[#F6F9FC] px-4 py-6 md:px-8 md:py-8">
+      <section className="mx-auto max-w-7xl">
+        <div className="relative overflow-hidden rounded-[2rem] border border-[#DDE7EF] bg-gradient-to-br from-white via-[#FBFCFD] to-[#EEF8F6] p-5 shadow-[0_18px_50px_rgba(15,23,42,0.055)] md:p-7">
+          <div className="pointer-events-none absolute -left-24 bottom-0 h-56 w-56 rounded-full bg-[#DDEEFF]/50 blur-3xl" />
+          <div className="pointer-events-none absolute right-0 top-0 h-64 w-64 rounded-full bg-[#E7FAF4]/70 blur-3xl" />
 
-      <div className="relative bg-[#0A0F1E] px-8 py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_#0D948820_0%,_transparent_70%)] pointer-events-none" />
-        <div className="relative z-10 mx-auto max-w-7xl">
-
-          <div className="inline-flex items-center gap-2 bg-[#0D9488]/10 border border-[#0D9488]/30 text-[#0D9488] text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0D9488] animate-pulse" />
-            Salary Data
-          </div>
-
-          <div className="flex items-start justify-between gap-12 mb-12">
-            <div>
-              <h1 className="text-5xl font-bold text-white tracking-tight mb-2">
-                {hospital}
-              </h1>
-              {city && state && (
-                <p className="text-[#4B5563] text-base mb-4">{city}, {state}</p>
-              )}
-              <p className="text-[#9CA3AF] text-lg max-w-lg leading-relaxed">
-                Real compensation data from healthcare professionals at this facility.
-              </p>
-            </div>
-            <div className="flex flex-col items-end gap-3 flex-shrink-0 ml-8 pt-2">
-              <Link
-                href="/submit"
-                className="inline-flex items-center gap-2 bg-[#0D9488] hover:bg-[#0F766E] text-white px-7 py-3.5 rounded-full font-semibold text-sm tracking-wide transition-all duration-200"
-              >
-                Submit Your Salary →
-              </Link>
-              <span className="text-[#4B5563] text-sm">{count} submissions</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-px bg-white/5 rounded-t-2xl overflow-hidden">
-            {[
-              { label: '25th Percentile', value: p25, description: 'Entry level' },
-              { label: '75th Percentile', value: p75, description: 'Experienced' },
-              { label: '90th Percentile', value: p90, description: 'Top earners' },
-            ].map(({ label, value, description }) => (
-              <div key={label} className="bg-[#0A0F1E] px-8 py-10 flex flex-col gap-2 border-t border-white/5">
-                <p className="text-xs uppercase tracking-widest text-[#374151] font-semibold">{label}</p>
-                <div className="flex items-end gap-1.5 mt-1">
-                  <p className="text-5xl font-bold text-white tracking-tight">
-                    ${value.toLocaleString()}
-                  </p>
-                  <span className="text-[#374151] text-base mb-1.5">/hr</span>
+          <div className="relative z-10">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <div className="mb-3 flex items-center gap-2 text-sm text-[#8B99A8]">
+                  <Link href="/hospitals" className="transition hover:text-[#071633]">
+                    Hospitals
+                  </Link>
+                  <span>/</span>
+                  <span className="text-[#071633]">{hospital}</span>
                 </div>
-                <p className="text-xs text-[#374151]">{description}</p>
+
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8B99A8]">
+                  Compare salaries at this hospital
+                </p>
+
+                <h1 className="mt-2 max-w-4xl font-serif text-3xl font-medium leading-tight tracking-[-0.03em] text-[#071633] md:text-5xl">
+                  {hospital} Salaries
+                </h1>
+
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-[#64748B] md:text-base">
+                  See what healthcare workers are reporting at this facility across roles,
+                  departments, experience levels, and locations.
+                </p>
+
+                {location && (
+                  <p className="mt-3 text-sm font-medium text-[#8B99A8]">
+                    {location}
+                  </p>
+                )}
               </div>
-            ))}
-          </div>
 
-        </div>
-      </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="rounded-full border border-[#DFE8F0] bg-white/80 px-4 py-2 text-sm font-medium text-[#64748B] shadow-sm">
+                  {count} {count === 1 ? 'submission' : 'submissions'}
+                </div>
 
-      <section className="px-8 py-12">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-[#0A0F1E]">Recent Submissions</h2>
-            <span className="text-sm text-[#9CA3AF]">{count} total</span>
-          </div>
-          {submissions.length > 0 ? (
-            <DataTable columns={columns} data={submissions} />
-          ) : (
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-16 text-center shadow-sm">
-              <p className="text-[#9CA3AF] text-base mb-4">No submissions yet for this hospital.</p>
-              <Link
-                href="/submit"
-                className="inline-block bg-[#0D9488] hover:bg-[#0F766E] text-white px-6 py-3 rounded-full font-semibold text-sm transition-colors duration-200"
-              >
-                Be the first to submit →
-              </Link>
+                <Link
+                  href="/submit"
+                  className="inline-flex items-center justify-center rounded-full bg-[#071633] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(7,22,51,0.14)] transition hover:-translate-y-0.5 hover:bg-[#13284F]"
+                >
+                  Submit salary
+                </Link>
+              </div>
             </div>
-          )}
+
+            <div className="mt-6 rounded-[1.5rem] border border-[#E1E8EF] bg-white/78 p-5 shadow-[0_14px_40px_rgba(15,23,42,0.04)] backdrop-blur md:p-6">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">
+                    Reported pay range
+                  </p>
+
+                  <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <p className="font-serif text-2xl font-semibold tracking-[-0.03em] text-[#071633] md:text-3xl">
+                      {hasSalaryData
+                        ? `${formatMoney(rangeMin)}–${formatMoney(rangeMax)}/hr`
+                        : '$0/hr'}
+                    </p>
+
+                    <p className="text-sm text-[#94A3B8]">
+                      based on base hourly rates
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 lg:min-w-[420px]">
+                  {stats.map(({ label, value, tone, yearly }) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl bg-[#F8FAFC] px-3 py-3 text-center"
+                    >
+                      <p className={`text-xs font-semibold uppercase tracking-[0.12em] ${tone}`}>
+                        {label}
+                      </p>
+
+                      <p className="mt-1 font-serif text-xl font-semibold tracking-[-0.03em] text-[#071633] md:text-2xl">
+                        {formatMoney(value)}
+                        <span className="text-sm">/hr</span>
+                      </p>
+
+                      <p className="mt-0.5 text-xs text-[#94A3B8]">
+                        {formatMoney(Math.round(yearly / 1000))}k/yr
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 px-1">
+                <div className="relative h-20">
+                  <div className="absolute left-0 right-0 top-8 h-2.5 rounded-full bg-[#E8EEF2]" />
+
+                  {hasSalaryData && (
+                    <div
+                      className="absolute top-8 h-2.5 rounded-full bg-gradient-to-r from-[#B8E3DE] via-[#CAD8EF] to-[#EAD8B5]"
+                      style={{
+                        left: `${p25Position}%`,
+                        width: `${Math.max(p90Position - p25Position, 5)}%`,
+                      }}
+                    />
+                  )}
+
+                  {hasSalaryData &&
+                    stats.map(({ label, tone, dot, position }) => (
+                      <div
+                        key={label}
+                        className="absolute top-5 -translate-x-1/2"
+                        style={{ left: `${position}%` }}
+                      >
+                        <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-[0_8px_20px_rgba(15,23,42,0.10)]">
+                          <div className={`h-4 w-4 rounded-full ${dot}`} />
+                        </div>
+
+                        <p className={`mt-1 text-center text-xs font-semibold ${tone}`}>
+                          {label}
+                        </p>
+                      </div>
+                    ))}
+
+                  <div className="absolute left-0 top-14 text-xs text-[#94A3B8]">
+                    {hasSalaryData ? formatMoney(rangeMin) : '$0'}
+                  </div>
+
+                  <div className="absolute left-1/2 top-14 -translate-x-1/2 text-xs text-[#94A3B8]">
+                    {hasSalaryData ? formatMoney(middleRange) : '$0'}
+                  </div>
+
+                  <div className="absolute right-0 top-14 text-xs text-[#94A3B8]">
+                    {hasSalaryData ? formatMoney(rangeMax) : '$0'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
+      <section className="mx-auto max-w-7xl px-1 py-5 md:py-6">
+        <div className="relative overflow-hidden rounded-[1.75rem] border border-[#E1E8EF] bg-white p-5 shadow-[0_12px_36px_rgba(15,23,42,0.04)] md:p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-[#0F766E]">
+                100% anonymous always
+              </p>
+
+              <h2 className="mt-1 font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                Help grow the {hospital} salary database.
+              </h2>
+
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#64748B]">
+                The more data we have, the easier it is for healthcare workers to compare pay by facility, role, and location with confidence.
+              </p>
+            </div>
+
+            <Link
+              href="/submit"
+              className="inline-flex w-fit items-center justify-center rounded-full bg-[#071633] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#13284F]"
+            >
+              Submit
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-1 pb-20">
+        <TableWithFilters
+          submissions={submissions}
+          count={count}
+          hideFilters={['hospital', 'city', 'state']}
+          emptyMessage={`Be the first to share pay information for ${hospital}.`}
+        />
+      </section>
     </main>
   )
 }
