@@ -32,14 +32,31 @@ function getPercentPosition(value: number, min: number, max: number) {
 }
 
 async function getProfessionData(slug: string) {
+  const { data: sampleRole } = await supabase
+    .from('role')
+    .select('profession')
+    .or(`slug.eq.${slug},slug.ilike.${slug}-%`)
+    .limit(1)
+
+  const profession = sampleRole?.[0]?.profession
+  if (!profession) {
+    return { submissions: [], p25: 0, p75: 0, p90: 0, minRate: 0, maxRate: 0, count: 0 }
+  }
+
+  const { data: roles } = await supabase
+    .from('role')
+    .select('roleid')
+    .eq('profession', profession)
+
+  const roleids = roles?.map(r => r.roleid) ?? []
+  if (!roleids.length) {
+    return { submissions: [], p25: 0, p75: 0, p90: 0, minRate: 0, maxRate: 0, count: 0 }
+  }
+
   const { data, error } = await supabase
     .from('submission')
-    .select(`
-      *,
-      role!inner (profession, department, slug),
-      hospital (name, city, state)
-    `)
-    .eq('role.slug', slug)
+    .select('*, role (profession, department, slug), hospital (name, city, state)')
+    .in('roleid', roleids)
     .order('submitted_at', { ascending: false })
 
   if (error || !data) {
