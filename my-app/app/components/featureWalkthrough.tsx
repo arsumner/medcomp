@@ -196,7 +196,7 @@ export default function FeatureWalkthrough() {
             <div className="max-w-2xl text-center lg:text-left">
               <p className="mb-3 font-serif text-[13px] italic text-[#9AA7B5] sm:mb-4">how it works</p>
               <h2 className="font-serif text-3xl font-normal leading-[1.1] tracking-[-0.03em] text-[#071A3D] sm:text-4xl md:text-5xl lg:text-6xl">
-                Pay transparency shouldn't require a union rep or a friend in HR.
+                Pay transparency shouldn't be taboo.
               </h2>
               <p className="mt-4 text-[15px] leading-relaxed text-[#667085] sm:mt-6 sm:text-[17px]">
                 Here's what you can do with MedComp.

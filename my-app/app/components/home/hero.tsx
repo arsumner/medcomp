@@ -265,7 +265,7 @@ export default function Hero({ totalReports }: HeroProps) {
       <div className="relative mx-auto flex max-w-7xl flex-col items-center px-5 pb-16 pt-24 text-center sm:px-6 lg:pt-28">
         <div className="mx-auto max-w-5xl">
           <p className="mx-auto mb-4 text-sm font-bold uppercase tracking-[0.08em] text-[#5E6B7A]">
-            Built by a nurse. Free for everyone.
+            Built by healthcare people, free for everyone.
           </p>
 
           <h1 className="font-serif text-[46px] font-normal leading-[1.02] tracking-[-0.055em] text-[#07152F] sm:text-[64px] lg:text-[70px]">
@@ -377,7 +377,7 @@ export default function Hero({ totalReports }: HeroProps) {
         </div>
 
         <div className="relative z-20 mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-semibold text-[#4B5C6F]">
-          <span>Real pay, not estimates</span>
+          <span>Real pay from real healthcare workers</span>
           <span className="h-1 w-1 rounded-full bg-[#8FA1B3]" />
           <span>No account needed</span>
           <span className="h-1 w-1 rounded-full bg-[#8FA1B3]" />
@@ -393,7 +393,7 @@ export default function Hero({ totalReports }: HeroProps) {
           </Link>
 
           <p className="max-w-md text-sm font-medium leading-6 text-[#536579]">
-            We strive to un-gatekeep healthcare pay and need your help. All of our data comes from real humans, like you!
+            All of our data comes from real humans, like you! Add your salary info today to help build our community and help others find their next role.
           </p>
         </div>
       </div>
