@@ -78,7 +78,7 @@ function ProfessionVisual() {
         alt="MedComp mascot"
         width={140}
         height={140}
-        className="pointer-events-none absolute -bottom-8 -right-6 hidden w-24 select-none object-contain drop-shadow-xl sm:-bottom-12 sm:-right-10 sm:block sm:w-auto"
+        className="pointer-events-none absolute -bottom-7 -right-5 w-16 select-none object-contain drop-shadow-xl sm:-bottom-12 sm:-right-10 sm:w-auto"
       />
     </div>
   )
@@ -203,7 +203,7 @@ export default function FeatureWalkthrough() {
               </p>
             </div>
 
-            <div className="hidden shrink-0 lg:block">
+            <div className="w-32 shrink-0 sm:w-40 lg:w-auto">
               <Image
                 src={mascotImg2}
                 alt="MedComp mascot"
@@ -224,10 +224,6 @@ export default function FeatureWalkthrough() {
                 key={step.eyebrow}
                 className="relative grid grid-cols-1 items-center gap-8 sm:gap-16 lg:grid-cols-2 lg:gap-32"
               >
-                <div className="absolute -top-7 left-1/2 flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full border border-[#D7E4E6] bg-[#F5F4F1] text-[11px] font-semibold text-[#178C85] shadow-sm sm:-top-10 sm:h-8 sm:w-8 sm:text-[12px]">
-                  {index + 1}
-                </div>
-
                 <div className={`relative mx-auto w-full max-w-[580px] ${visualFirst ? 'lg:order-1' : 'lg:order-2'}`}>
                   <StepVisual type={step.visual} />
                 </div>
