@@ -203,7 +203,7 @@ export default function FeatureWalkthrough() {
               </p>
             </div>
 
-            <div className="w-32 shrink-0 sm:w-40 lg:w-auto">
+            <div className="hidden shrink-0 sm:block sm:w-40 lg:w-auto">
               <Image
                 src={mascotImg2}
                 alt="MedComp mascot"
@@ -222,7 +222,7 @@ export default function FeatureWalkthrough() {
             return (
               <div
                 key={step.eyebrow}
-                className="relative grid grid-cols-1 items-center gap-8 sm:gap-16 lg:grid-cols-2 lg:gap-32"
+                className="grid grid-cols-1 items-center gap-8 sm:gap-16 lg:grid-cols-2 lg:gap-32"
               >
                 <div className={`relative mx-auto w-full max-w-[580px] ${visualFirst ? 'lg:order-1' : 'lg:order-2'}`}>
                   <StepVisual type={step.visual} />
