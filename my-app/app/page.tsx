@@ -1,7 +1,7 @@
 import Link from "next/link"
 import Hero from "./components/home/hero"
 import { columns } from "./components/table/columns"
-import DataTable from "./components/table/homeTable"
+import HomeTable from "./components/table/homeTable"
 import { supabase } from "../src/lib/supabase"
 import FeatureWalkthrough from "./components/featureWalkthrough"
 
@@ -74,7 +74,7 @@ export default async function Home() {
           </div>
 
           <div className="relative">
-            <DataTable columns={columns} data={data} />
+            <HomeTable columns={columns} data={data} />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#F5F4F1] to-transparent" />
           </div>
 
