@@ -14,92 +14,6 @@ type Props = {
 
 const PAGE_SIZE = 15
 
-function formatPay(rate: number, type: string) {
-  if (!rate) return '—'
-
-  if (type === 'salary') return `$${rate.toLocaleString()}/yr`
-  if (type === 'travel') return `$${rate.toLocaleString()}/wk`
-
-  return `$${rate.toLocaleString()}/hr`
-}
-
-function getSubmittedLabel(submittedAt: string) {
-  const date = new Date(submittedAt)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-  const diffDays = Math.floor(diffHours / 24)
-  const diffMonths = Math.floor(diffDays / 30)
-  const diffYears = Math.floor(diffDays / 365)
-
-  if (diffHours < 1) return 'Just now'
-  if (diffHours < 24) return `${diffHours}h ago`
-  if (diffDays < 30) return `${diffDays}d ago`
-  if (diffMonths < 12) return `${diffMonths}mo ago`
-  
-  return `${diffYears}y ago`
-}
-
-function getDiffs(row: any) {
-  return [
-    { label: 'Night', value: row.night_diff },
-    { label: 'Evening', value: row.evening_diff },
-    { label: 'Charge', value: row.charge_diff },
-    { label: 'Preceptor', value: row.preceptor_pay },
-    { label: 'Cert', value: row.certification_pay },
-  ].filter((d) => d.value)
-}
-
-function MobileReportCard({ report }: { report: any }) {
-  const diffs = getDiffs(report)
-  const cityState = [report.hospital?.city, report.hospital?.state]
-    .filter(Boolean)
-    .join(', ')
-
-  return (
-    <article className="rounded-[1.35rem] border border-[#D8E5E8] bg-white p-4 shadow-[0_12px_30px_rgba(7,17,38,0.045)]">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm font-semibold leading-5 text-[#071126]">{report.role?.profession}</p>
-          <p className="mt-0.5 text-xs leading-4 text-[#728391]">{report.role?.department || 'Department not listed'}</p>
-        </div>
-        <p className="shrink-0 font-serif text-2xl font-medium tracking-[-0.04em] text-[#071126]">
-          {formatPay(report.base_rate, report.pay_type)}
-        </p>
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[#EDF3F4] pt-4">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#90A0AD]">Hospital</p>
-          <p className="mt-1 text-sm font-medium leading-5 text-[#253449]">{report.hospital?.name || 'Not listed'}</p>
-          <p className="mt-0.5 text-xs text-[#728391]">{cityState || '—'}</p>
-        </div>
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#90A0AD]">Experience</p>
-          <p className="mt-1 text-sm font-medium text-[#253449]">{report.years_experience ?? 0} years</p>
-          <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#90A0AD]">Added</p>
-          <p className="mt-1 text-sm font-medium text-[#253449]">{getSubmittedLabel(report.submitted_at)}</p>
-        </div>
-      </div>
-
-      <div className="mt-4 border-t border-[#EDF3F4] pt-4">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#90A0AD]">Differentials</p>
-        {diffs.length > 0 ? (
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {diffs.map((d) => (
-              <span key={d.label} className="inline-flex items-center rounded-full border border-[#C9DDE2] bg-[#F4FAFA] px-2.5 py-1 text-xs font-semibold text-[#405263]">
-                {d.label} +${d.value}
-              </span>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-1 text-sm text-[#728391]">None reported</p>
-        )}
-      </div>
-    </article>
-  )
-}
-
 export default function TableWithFilters({
   submissions,
   count,
@@ -342,15 +256,7 @@ export default function TableWithFilters({
 
       {sorted.length > 0 ? (
         <>
-          <div className="hidden md:block">
-            <DataTable columns={columns} data={paginated} />
-          </div>
-
-          <div className="grid gap-3 bg-[#F5FAF9] p-3 md:hidden">
-            {paginated.map((report) => (
-              <MobileReportCard key={report.submissionid} report={report} />
-            ))}
-          </div>
+          <DataTable columns={columns} data={paginated} />
 
           {totalPages > 1 && (
             <div className="flex flex-col gap-3 border-t border-[#D9E6E9] bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
