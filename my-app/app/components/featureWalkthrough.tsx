@@ -24,7 +24,7 @@ const steps = [
   },
   {
     eyebrow: 'Help us grow our database',
-    title: 'Share yours. It helps more people than you know.',
+    title: 'Share yours. Help others in your community',
     body: 'No name. No account. Just your role, your pay, and your hospital. Every submission makes this more useful for the next nurse, PT, or rad tech trying to figure out if they\'re being underpaid.',
     href: '/submit',
     cta: 'Share your salary anonymously →',
@@ -172,10 +172,6 @@ function SubmitVisual() {
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between rounded-[1.25rem] border border-[#E5ECEF] bg-white px-4 py-4 sm:mt-5 sm:rounded-[1.5rem] sm:px-5 sm:py-5">
-        <p className="text-[17px] font-semibold text-[#071A3D] sm:text-[20px]">Submit anonymously</p>
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#071A3D] text-white sm:h-10 sm:w-10">→</div>
-      </div>
     </div>
   )
 }
