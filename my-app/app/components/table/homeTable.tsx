@@ -78,7 +78,7 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <div className="relative overflow-hidden border border-[#EEF2F7] bg-white">
+      <div className="relative overflow-hidden rounded-[1.25rem] border border-[#EEF2F7] bg-white">
         <div className="hidden w-full overflow-x-auto sm:block">
           <Table>
             <TableHeader>
@@ -136,28 +136,27 @@ export default function DataTable<TData, TValue>({
           </Table>
         </div>
 
-
         <div className="w-full sm:hidden">
           {rows?.length ? (
             <table className="w-full table-fixed border-collapse">
               <colgroup>
-                <col className="w-[28%]" />
-                <col className="w-[20%]" />
-                <col className="w-[36%]" />
-                <col className="w-[16%]" />
+                <col className="w-[26%]" />
+                <col className="w-[19%]" />
+                <col className="w-[33%]" />
+                <col className="w-[22%]" />
               </colgroup>
               <thead>
                 <tr className="bg-[#071A3D]">
-                  <th className="px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
+                  <th className="whitespace-nowrap px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
                     Role
                   </th>
-                  <th className="px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
+                  <th className="whitespace-nowrap px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
                     Pay
                   </th>
-                  <th className="px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
+                  <th className="whitespace-nowrap px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
                     Hospital
                   </th>
-                  <th className="px-2 py-3.5 text-center text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
+                  <th className="whitespace-nowrap px-2 py-3.5 text-center text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
                     Details
                   </th>
                 </tr>
