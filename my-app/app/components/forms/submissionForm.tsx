@@ -20,9 +20,6 @@ const altLabelClass =
 const sectionClass =
   'border-t border-[#C7D3DC] pt-8'
 
-const stepClass =
-  'text-xs font-bold uppercase tracking-[0.15em] text-[#0B6F6A]'
-
 const headingClass =
   'mt-2 font-serif text-3xl font-normal tracking-[-0.04em] text-[#071A3D]'
 
@@ -133,9 +130,6 @@ export default function SubmissionForm() {
   return (
     <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-3xl flex-col gap-9">
       <div className="rounded-[2.5rem] bg-white/80 px-6 py-7 shadow-[0_24px_80px_rgba(7,21,47,0.10)] ring-1 ring-[#C7D3DC] backdrop-blur-md md:px-8 md:py-8">
-        <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#0B6F6A]">
-          Anonymous salary submission
-        </p>
 
         <h1 className="mt-3 font-serif text-4xl font-normal leading-[1.05] tracking-[-0.05em] text-[#071A3D] md:text-5xl">
           Share your healthcare compensation.
@@ -144,25 +138,10 @@ export default function SubmissionForm() {
         <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-[#334155]">
           Your submission helps other healthcare workers compare pay, prepare for negotiations, and understand what fair compensation looks like.
         </p>
-
-        <div className="mt-6 flex flex-wrap gap-2 text-sm font-bold text-[#334155]">
-          <span className="rounded-full bg-[#EEF3F5] px-4 py-2 ring-1 ring-[#C7D3DC]">
-            Anonymous
-          </span>
-
-          <span className="rounded-full bg-[#EEF3F5] px-4 py-2 ring-1 ring-[#C7D3DC]">
-            Takes ~2 minutes
-          </span>
-
-          <span className="rounded-full bg-[#DDF5F2] px-4 py-2 text-[#064E52] ring-1 ring-[#9FD5D0]">
-            No account needed
-          </span>
-        </div>
       </div>
 
       <div className={sectionClass}>
         <div className="mb-6">
-          <p className={stepClass}>Step 1</p>
           <h2 className={headingClass}>Role information</h2>
           <p className={descriptionClass}>
             Tell us what role and department best match your work.
@@ -226,7 +205,6 @@ export default function SubmissionForm() {
 
       <div className={sectionClass}>
         <div className="mb-6">
-          <p className={stepClass}>Step 2</p>
           <h2 className={headingClass}>Facility</h2>
           <p className={descriptionClass}>
             Search for your hospital, clinic, outpatient center, or other healthcare facility.
@@ -253,7 +231,6 @@ export default function SubmissionForm() {
 
       <div className={sectionClass}>
         <div className="mb-6">
-          <p className={stepClass}>Step 3</p>
           <h2 className={headingClass}>Base compensation</h2>
           <p className={descriptionClass}>
             Enter your base pay before optional differentials or bonuses.
@@ -293,7 +270,6 @@ export default function SubmissionForm() {
 
       <div className={sectionClass}>
         <div className="mb-6">
-          <p className={stepClass}>Step 4</p>
           <h2 className={headingClass}>
             Additional pay
             <span className="ml-2 align-middle text-sm font-bold tracking-normal text-[#475569]">
