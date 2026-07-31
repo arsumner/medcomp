@@ -60,19 +60,7 @@ export default async function Profession() {
                   so choose the role closest to your job description.
                 </p>
 
-                <div className="mt-5 flex flex-wrap items-center gap-3 text-sm font-semibold text-[#667085]">
-                  <span className="rounded-full border border-[#D7E1E7] bg-white px-4 py-2">
-                    {totalProfessions} roles listed
-                  </span>
-
-                  <span className="rounded-full border border-[#D7E1E7] bg-white px-4 py-2">
-                    Real salary reports
-                  </span>
-
-                  <span className="rounded-full border border-[#D7E1E7] bg-white px-4 py-2">
-                    Always anonymous
-                  </span>
-                </div>
+                
               </div>
             </div>
 
