@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { diffStyles } from "../table/columns"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -77,7 +78,7 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <div className="relative overflow-hidden rounded-[1.25rem] border border-[#EEF2F7] bg-white">
+      <div className="relative overflow-hidden border border-[#EEF2F7] bg-white">
         <div className="hidden w-full overflow-x-auto sm:block">
           <Table>
             <TableHeader>
@@ -134,29 +135,29 @@ export default function DataTable<TData, TValue>({
             </TableBody>
           </Table>
         </div>
-        
-        
-                <div className="w-full sm:hidden">
+
+
+        <div className="w-full sm:hidden">
           {rows?.length ? (
             <table className="w-full table-fixed border-collapse">
               <colgroup>
-                <col className="w-[27%]" />
-                <col className="w-[19%]" />
-                <col className="w-[32%]" />
-                <col className="w-[22%]" />
+                <col className="w-[28%]" />
+                <col className="w-[20%]" />
+                <col className="w-[36%]" />
+                <col className="w-[16%]" />
               </colgroup>
               <thead>
-                <tr className="border-b border-[#EEF2F7] bg-[#FAFBFD]">
-                  <th className="px-1.5 py-2 text-left text-[9.5px] font-semibold uppercase tracking-[0.05em] text-[#B0BCCE]">
+                <tr className="bg-[#071A3D]">
+                  <th className="px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
                     Role
                   </th>
-                  <th className="px-1.5 py-2 text-left text-[9.5px] font-semibold uppercase tracking-[0.05em] text-[#B0BCCE]">
+                  <th className="px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
                     Pay
                   </th>
-                  <th className="px-1.5 py-2 text-left text-[9.5px] font-semibold uppercase tracking-[0.05em] text-[#B0BCCE]">
+                  <th className="px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
                     Hospital
                   </th>
-                  <th className="px-1.5 py-2 text-left text-[9.5px] font-semibold uppercase tracking-[0.05em] text-[#B0BCCE]">
+                  <th className="px-2 py-3.5 text-center text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
                     Details
                   </th>
                 </tr>
@@ -172,41 +173,41 @@ export default function DataTable<TData, TValue>({
                       <tr
                         className={`border-t border-[#EEF2F7] ${i % 2 === 0 ? "bg-white" : "bg-[#FAFBFD]"}`}
                       >
-                        <td className="px-1.5 py-2.5 align-top">
-                          <p className="text-[11px] font-medium leading-tight text-black">
+                        <td className="px-2 py-3 align-top">
+                          <p className="text-[12px] font-medium leading-tight text-black">
                             {original.role?.profession}
                           </p>
-                          <p className="mt-0.5 text-[10px] text-[#94A3B8]">
+                          <p className="mt-1 text-[10.5px] font-medium text-[#334155]">
                             {original.years_experience} {original.years_experience === 1 ? "yr" : "yrs"}
                           </p>
-                          <div className="mt-0.5 text-[10px] text-[#94A3B8]">
+                          <div className="mt-0.5 [&>span]:text-[9px] [&>span]:font-normal [&>span]:leading-none [&>span]:text-[#94A3B8]">
                             {getCell(row, "submitted_at")}
                           </div>
                         </td>
-                        <td className="px-1.5 py-2.5 align-top">
-                          <div className="text-[11px] font-medium leading-tight text-black">
+                        <td className="px-2 py-3 align-top">
+                          <div className="text-[12px] font-medium leading-tight text-black">
                             {getCell(row, "compensation")}
                           </div>
                         </td>
-                        <td className="px-1.5 py-2.5 align-top">
-                          <p className="text-[11px] font-medium leading-tight text-black">
+                        <td className="px-2 py-3 align-top">
+                          <p className="text-[12px] font-medium leading-tight text-black">
                             {original.hospital?.name}
                           </p>
-                          <p className="mt-0.5 text-[10px] text-[#94A3B8]">
+                          <p className="mt-1 text-[10.5px] text-[#334155]">
                             {original.hospital?.city}, {original.hospital?.state}
                           </p>
                         </td>
-                        <td className="px-1.5 py-2.5 align-top">
+                        <td className="px-2 py-3 align-top">
                           <button
                             type="button"
                             onClick={() => toggleRow(row.id)}
                             aria-expanded={isOpen}
-                            className="flex items-center gap-1 text-[10px] font-medium text-[#071A3D]"
+                            aria-label="Toggle details"
+                            className="flex w-full items-center justify-center text-[#071A3D]"
                           >
-                            Details
                             <svg
-                              width="11"
-                              height="11"
+                              width="14"
+                              height="14"
                               viewBox="0 0 12 12"
                               fill="none"
                               className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -214,7 +215,7 @@ export default function DataTable<TData, TValue>({
                               <path
                                 d="M2 4L6 8L10 4"
                                 stroke="currentColor"
-                                strokeWidth="1.5"
+                                strokeWidth="1.75"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                               />
@@ -278,15 +279,23 @@ export default function DataTable<TData, TValue>({
                                   <p className="text-[13px] text-[#94A3B8]">None reported</p>
                                 ) : (
                                   <div className="flex flex-wrap gap-2">
-                                    {diffs.map((d) => (
-                                      <span
-                                        key={d.label}
-                                        className="inline-flex items-center gap-1.5 rounded-full border border-[#E5ECEF] bg-white px-3 py-1.5 text-[12px] font-medium text-[#334155]"
-                                      >
-                                        {d.label}
-                                        <span className="font-semibold text-black">+${d.value}</span>
-                                      </span>
-                                    ))}
+                                    {diffs.map((d) => {
+                                      const s = diffStyles[d.label] ?? {
+                                        bg: "bg-[#F1F5F9]",
+                                        border: "border-[#CBD5E1]",
+                                        text: "text-[#475569]",
+                                        badge: "bg-[#CBD5E1]",
+                                        badgeText: "text-[#475569]",
+                                      }
+                                      return (
+                                        <span
+                                          key={d.label}
+                                          className={`inline-flex items-center gap-1.5 rounded-full border ${s.border} ${s.bg} px-3 py-1.5 text-[12px] font-medium ${s.text}`}
+                                        >
+                                          {d.label}
+                                          <span className="font-semibold">+${d.value}</span>
+                                        </span>
+                                      )})}
                                   </div>
                                 )}
                               </div>
