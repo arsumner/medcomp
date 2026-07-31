@@ -1,4 +1,21 @@
+'use client'
+
+import { useState } from 'react'
+
 export default function ContactPage() {
+  const [copied, setCopied] = useState(false)
+  const email = 'medcompsupport@gmail.com'
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(email)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setCopied(false)
+    }
+  }
+
   const contactReasons = [
     {
       title: 'Missing profession or department',
@@ -93,22 +110,28 @@ export default function ContactPage() {
                 as possible so we can help faster.
               </p>
 
-              <a
-                href="mailto:medcompsupport@gmail.com"
-                className="mt-6 flex items-center justify-between rounded-2xl border border-[#DFE8F0] bg-white/80 px-5 py-4 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-[#C8D8E6]"
-              >
-                <div>
+              <div className="mt-6 flex items-center gap-2 rounded-2xl border border-[#DFE8F0] bg-white/80 px-5 py-4 shadow-sm backdrop-blur">
+                <a
+                  href={`mailto:${email}`}
+                  className="flex-1 transition hover:opacity-70"
+                >
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">
                     Email
                   </p>
 
                   <p className="mt-1 text-sm font-semibold text-[#071633]">
-                    medcompsupport@gmail.com
+                    {email}
                   </p>
-                </div>
+                </a>
 
-                <span className="text-[#94A3B8]">→</span>
-              </a>
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="shrink-0 rounded-full border border-[#DFE8F0] bg-white px-3 py-1.5 text-xs font-semibold text-[#071633] transition hover:bg-[#F8FAFC]"
+                >
+                  {copied ? 'Copied' : 'Copy'}
+                </button>
+              </div>
 
               <div className="mt-6 rounded-2xl border border-[#E1E8EF] bg-white/70 p-4">
                 <p className="text-sm leading-6 text-[#64748B]">
@@ -118,7 +141,7 @@ export default function ContactPage() {
               </div>
 
               <a
-                href="mailto:medcompsupport@gmail.com"
+                href={`mailto:${email}`}
                 className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[#071633] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(7,22,51,0.14)] transition hover:-translate-y-0.5 hover:bg-[#13284F]"
               >
                 Email MedComp
