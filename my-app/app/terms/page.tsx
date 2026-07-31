@@ -38,7 +38,7 @@ export default function TermsPage() {
             </p>
 
             <p className="mt-5 text-sm font-medium text-[#94A3B8]">
-              Last updated: June 2026
+              Last updated: July 2026
             </p>
           </div>
         </div>
@@ -68,7 +68,20 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                2. User-submitted salary data
+                2. Eligibility
+              </h2>
+
+              <p className="mt-3">
+                MedComp is not directed at children, and you must be at least
+                13 years old to use the site. By using MedComp, you confirm
+                that you meet this requirement and that you are legally
+                permitted to use the site in your jurisdiction.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                3. User-submitted salary data
               </h2>
 
               <p className="mt-3">
@@ -87,7 +100,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                3. Submitting information
+                4. Submitting information
               </h2>
 
               <p className="mt-3">
@@ -105,7 +118,39 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                4. Anonymous use
+                5. Ownership and license to submitted content
+              </h2>
+
+              <p className="mt-3">
+                You retain any rights you may have in the information you
+                submit. By submitting a report to MedComp, you grant MedComp a
+                worldwide, royalty-free, non-exclusive license to use, display,
+                reproduce, aggregate, and analyze that information, in whole or
+                in part, for the purpose of operating and improving the site.
+              </p>
+
+              <p className="mt-3">
+                Aside from user submissions, the MedComp name, site design, and
+                underlying software belong to MedComp and may not be copied,
+                scraped in bulk, or reused without permission.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                6. Feedback
+              </h2>
+
+              <p className="mt-3">
+                If you send us feedback, suggestions, or ideas about MedComp,
+                you agree that we may use them freely, without any obligation
+                to credit or compensate you.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                7. Anonymous use
               </h2>
 
               <p className="mt-3">
@@ -118,20 +163,45 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                5. Responsible use
+                8. Prohibited conduct
+              </h2>
+
+              <p className="mt-3">
+                In addition to the rules elsewhere in these terms, you agree
+                not to:
+              </p>
+
+              <ul className="mt-3 list-disc space-y-1.5 pl-5">
+                <li>impersonate any person or organization, or misrepresent your affiliation with one;</li>
+                <li>submit content that is unlawful, defamatory, harassing, or infringes someone else's rights;</li>
+                <li>attempt to access non-public areas of the site, other users' data, or MedComp's systems without authorization;</li>
+                <li>interfere with the site's security features, including rate limits or abuse-prevention measures;</li>
+                <li>use MedComp in any way that violates applicable law.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                9. Responsible use
               </h2>
 
               <p className="mt-3">
                 You agree not to misuse MedComp, submit false or misleading
                 information, attempt to disrupt the site, scrape or copy large
-                portions of the database without permission, or use the site in a
-                way that harms other users.
+                portions of the database without permission, or use the site in
+                a way that harms other users.
+              </p>
+
+              <p className="mt-3">
+                You also agree not to use bots, scripts, or other automated
+                tools to submit reports or access the site in a way that
+                circumvents normal usage limits or abuse-prevention measures.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                6. Content removal
+                10. Content removal and copyright complaints
               </h2>
 
               <p className="mt-3">
@@ -141,15 +211,17 @@ export default function TermsPage() {
               </p>
 
               <p className="mt-3">
-                If you believe a submission includes identifying information or
-                should be reviewed, contact MedComp through the contact method
-                provided on the site.
+                If you believe a submission includes identifying information,
+                infringes your intellectual property rights, or should be
+                reviewed for any other reason, contact MedComp through the
+                contact method provided on the site with enough detail for us
+                to locate and evaluate it.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                7. No guarantee of availability
+                11. No guarantee of availability
               </h2>
 
               <p className="mt-3">
@@ -161,32 +233,118 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                8. Limitation of liability
+                12. Termination and restricting access
               </h2>
 
               <p className="mt-3">
-                MedComp is provided as-is. To the fullest extent allowed by law,
-                MedComp is not responsible for decisions, losses, disputes, or
-                damages that may result from using or relying on information from
-                the site.
+                We may limit, throttle, suspend, or block access to MedComp,
+                including by IP address or other technical means, for anyone
+                we reasonably believe is abusing the site, submitting spam or
+                false information, or violating these terms. We may do this
+                without prior notice.
+              </p>
+
+              <p className="mt-3">
+                Sections of these terms that by their nature should survive
+                termination of your access — including ownership of
+                submitted content, limitation of liability, indemnification,
+                and governing law — will continue to apply.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                9. Changes to these terms
+                13. Third-party links
+              </h2>
+
+              <p className="mt-3">
+                MedComp may link to third-party websites or resources. We are
+                not responsible for the content, accuracy, or practices of
+                any third-party site, and linking to it does not mean we
+                endorse it.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                14. Disclaimer of warranties and limitation of liability
+              </h2>
+
+              <p className="mt-3">
+                MedComp is provided "as is" and "as available," without
+                warranties of any kind, whether express or implied, including
+                warranties of accuracy, reliability, or fitness for a
+                particular purpose.
+              </p>
+
+              <p className="mt-3">
+                To the fullest extent allowed by law, MedComp and its
+                operators are not responsible for decisions, losses,
+                disputes, or damages that may result from using or relying on
+                information from the site, including indirect, incidental,
+                or consequential damages.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                15. Indemnification
+              </h2>
+
+              <p className="mt-3">
+                You agree to indemnify and hold MedComp and its operators
+                harmless from any claims, losses, or damages, including
+                reasonable legal fees, arising out of your use of the site,
+                the content you submit, or your violation of these terms.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                16. Dispute resolution
+              </h2>
+
+              <p className="mt-3">
+                If a dispute arises between you and MedComp, we encourage you
+                to contact us first so we can try to resolve it informally.
+                If a dispute cannot be resolved informally, both you and
+                MedComp agree that any claim will be brought on an individual
+                basis only, and not as part of a class, consolidated, or
+                representative action, to the fullest extent permitted by
+                law.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                17. Governing law
+              </h2>
+
+              <p className="mt-3">
+                These terms are governed by the laws of the United States and
+                the state in which MedComp operates, without regard to
+                conflict-of-law principles. If any part of these terms is
+                found unenforceable, the remaining terms will stay in effect,
+                and our failure to enforce any part of these terms is not a
+                waiver of our right to do so later.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                18. Changes to these terms
               </h2>
 
               <p className="mt-3">
                 We may update these terms from time to time. If we do, we will
-                update the “Last updated” date on this page. Continued use of
+                update the "Last updated" date on this page. Continued use of
                 MedComp means you accept the updated terms.
               </p>
             </section>
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                10. Contact
+                19. Contact
               </h2>
 
               <p className="mt-3">

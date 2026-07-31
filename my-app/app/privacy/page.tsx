@@ -42,7 +42,7 @@ export default function PrivacyPage() {
               </p>
 
               <p className="mt-5 text-sm font-medium text-[#94A3B8]">
-                Last updated: June 2026
+                Last updated: July 2026
               </p>
             </div>
 
@@ -79,6 +79,14 @@ export default function PrivacyPage() {
                 Please do not include personally identifying information in
                 open-text fields.
               </p>
+
+              <p className="mt-3">
+                We also automatically see basic technical information as part
+                of normal website operation, like your IP address. This is
+                mainly used by our rate-limiting tool to prevent spam and
+                repeated automated submissions, and is not linked to or
+                displayed alongside salary data.
+              </p>
             </section>
 
             <section>
@@ -101,7 +109,7 @@ export default function PrivacyPage() {
 
               <p className="mt-3">
                 Salary submissions are intended to be anonymous. MedComp does not
-                publicly display a submitter’s name or contact information
+                publicly display a submitter's name or contact information
                 alongside salary data.
               </p>
 
@@ -114,14 +122,43 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
-                Analytics and site usage
+                Cookies and analytics
               </h2>
 
               <p className="mt-3">
-                We may use basic analytics to understand how visitors use the
-                site, monitor performance, and improve pages or features. This
-                may include general information like browser type, device type,
-                pages visited, and usage patterns.
+                Our hosting provider may collect basic, aggregate usage
+                information, like general location, browser type, and pages
+                visited, to help us understand site performance. This isn't
+                used to build individual profiles of visitors.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                The tools we use
+              </h2>
+
+              <p className="mt-3">
+                MedComp is a small, independently run site. We rely on a
+                handful of standard third-party tools to keep it running:
+                Supabase for our database, Vercel for hosting the site, and
+                Upstash to help limit spam and repeated automated
+                submissions. Each of these providers may process basic
+                technical data, like IP addresses, as part of doing their
+                job. We haven't built any custom tracking or analytics beyond
+                what these tools provide by default.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                Data retention
+              </h2>
+
+              <p className="mt-3">
+                Submitted salary data is retained to maintain the usefulness of
+                the database over time. If you would like a submission removed,
+                see "Your rights and choices" below.
               </p>
             </section>
 
@@ -131,9 +168,10 @@ export default function PrivacyPage() {
               </h2>
 
               <p className="mt-3">
-                We do not sell personal information. MedComp is designed around
-                anonymous pay transparency, not selling individual user
-                identities or personal profiles.
+                We do not sell or share personal information for
+                advertising. MedComp is designed around anonymous pay
+                transparency, not selling individual user identities or
+                personal profiles.
               </p>
             </section>
 
@@ -147,6 +185,52 @@ export default function PrivacyPage() {
                 every submission is complete, current, or accurate. We take
                 reasonable steps to protect submitted information, but no website
                 or database can be guaranteed completely secure.
+              </p>
+
+              <p className="mt-3">
+                If something happens that puts your information at risk in a
+                way we're required to tell you about, we will let you know.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                Your rights and choices
+              </h2>
+
+              <p className="mt-3">
+                Depending on where you live, you may have rights to know
+                what information we hold, or to have it corrected or
+                deleted. Because MedComp does not require accounts or
+                collect names, we're not able to look up or verify which
+                submission belongs to a specific person. If you believe one
+                of your own submissions should be corrected or removed,
+                contact us with enough detail (such as approximate date,
+                role, and hospital) for us to locate it, and we'll make a
+                reasonable effort to do so.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                Children's privacy
+              </h2>
+
+              <p className="mt-3">
+                MedComp is not directed at children, and we do not knowingly
+                collect information from anyone under 13 years old.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl font-medium tracking-[-0.03em] text-[#071633]">
+                Changes to this policy
+              </h2>
+
+              <p className="mt-3">
+                We may update this policy from time to time as the site
+                evolves. The "Last updated" date at the top of this page will
+                reflect the most recent version.
               </p>
             </section>
 
