@@ -78,7 +78,7 @@ function ProfessionVisual() {
         alt="MedComp mascot"
         width={140}
         height={140}
-        className="pointer-events-none absolute -bottom-7 -right-5 w-16 select-none object-contain drop-shadow-xl sm:-bottom-12 sm:-right-10 sm:w-auto"
+        className="pointer-events-none absolute -bottom-12 -right-10 hidden select-none object-contain drop-shadow-xl sm:block"
       />
     </div>
   )
