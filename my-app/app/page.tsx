@@ -3,7 +3,7 @@ import Hero from "./components/home/hero"
 import { columns } from "./components/table/columns"
 import HomeTable from "./components/table/homeTable"
 import { supabase } from "../src/lib/supabase"
-import FeatureWalkthrough from "./components/featureWalkthrough"
+import FeatureWalkthrough from "./components/home/featureWalkthrough"
 
 
 export const dynamic = "force-dynamic"
