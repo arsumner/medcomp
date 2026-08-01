@@ -67,8 +67,8 @@ export const columns: ColumnDef<UserEntry>[] = [
       const department = row.original.role?.department
       return (
         <div>
-          <p className="text-sm font-medium text-black">{profession}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">{department}</p>
+          <p className="text-sm font-medium text-[#071633]">{profession}</p>
+          <p className="text-xs text-[#64748B] mt-0.5">{department}</p>
         </div>
       )
     }
@@ -84,46 +84,8 @@ export const columns: ColumnDef<UserEntry>[] = [
         : type === 'travel'
         ? `$${rate.toLocaleString()}/wk`
         : `$${rate.toLocaleString()}/hr`
-      return <span className="font-medium">{formatted}</span>
+      return <span className="font-serif font-semibold text-[#071633]">{formatted}</span>
     }
-  },
-  {
-    id: "differentials",
-    header: "Differentials",
-    cell: ({ row }) => {
-      const diffs = getDifferentialsList(row.original)
-
-      if (diffs.length === 0) {
-        return <span className="text-sm text-[#94A3B8]">None</span>
-      }
-
-      return (
-        <div className="flex max-w-xs flex-wrap gap-1.5">
-          {diffs.map(d => {
-            const s = diffStyles[d.label] ?? {
-              bg: "bg-[#F1F5F9]", border: "border-[#CBD5E1]", text: "text-[#475569]",
-              badge: "bg-[#CBD5E1]", badgeText: "text-[#475569]",
-            }
-            return (
-              <span
-                key={d.label}
-                className={`inline-flex items-center gap-1.5 rounded-full border ${s.border} ${s.bg} px-2.5 py-1 text-xs font-medium ${s.text}`}
-              >
-                <span className={`flex h-4 w-4 items-center justify-center rounded-full ${s.badge} text-[10px] font-semibold ${s.badgeText}`}>
-                  +
-                </span>
-                <span>{d.label}</span>
-                <span className="font-semibold">${d.value}</span>
-              </span>
-            )
-          })}
-        </div>
-      )
-    }
-  },
-  {
-    accessorKey: "years_experience",
-    header: "Exp.",
   },
   {
     id: "hospital",
@@ -134,18 +96,22 @@ export const columns: ColumnDef<UserEntry>[] = [
       const state = row.original.hospital?.state
       return (
         <div>
-          <p className="text-sm font-medium text-black">{name}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">{city}, {state}</p>
+          <p className="text-sm font-medium text-[#071633]">{name}</p>
+          <p className="text-xs text-[#64748B] mt-0.5">{city}, {state}</p>
         </div>
       )
     }
+  },
+  {
+    accessorKey: "years_experience",
+    header: "Exp.",
   },
   {
     id: "submitted_at",
     header: "Submitted",
     cell: ({ row }) => {
       const label = formatSubmittedLabel(row.original.submitted_at)
-      return <span className="text-sm text-[#6B7280]">{label}</span>
+      return <span className="text-sm text-[#64748B]">{label}</span>
     }
   }
 ]
