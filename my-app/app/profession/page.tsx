@@ -123,7 +123,6 @@ export default async function Profession() {
               </div>
             </nav>
 
-            {/* Main content */}
             <div className="space-y-14">
               {Object.entries(professions).map(([group, members]) => (
                 <div key={group} id={toAnchor(group)} className="scroll-mt-24">
