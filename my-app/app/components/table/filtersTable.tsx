@@ -121,23 +121,23 @@ export default function TableWithFilters({
   const hospitalGate = showState ? stateFilter !== 'All' : true
 
   return (
-    <div className="overflow-hidden rounded-[2rem] border border-[#C5D8DE] bg-white shadow-[0_24px_70px_rgba(7,17,38,0.07)]">
-      <div className="border-b border-[#D9E6E9] bg-[linear-gradient(135deg,#FFFFFF_0%,#F3FAFA_100%)] px-4 py-5 md:px-6">
+    <div className="overflow-hidden rounded-lg border border-[#E1E8EF] bg-white">
+      <div className="border-b border-[#E1E8EF] bg-[#FAFBFD] px-4 py-5 md:px-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h2 className="mt-3 font-serif text-3xl font-medium tracking-[-0.04em] text-[#071126] md:text-4xl">
+            <h2 className="font-serif text-3xl font-medium tracking-[-0.03em] text-[#071633] md:text-4xl">
               Salaries submitted by our healthcare community
             </h2>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <div className="rounded-2xl border border-[#D4E4E8] bg-white px-4 py-2 shadow-sm">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#90A0AD]">Showing</p>
-              <p className="mt-0.5 text-sm font-semibold text-[#071126]">
+            <div className="rounded-md border border-[#E1E8EF] bg-white px-4 py-2">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Showing</p>
+              <p className="mt-0.5 font-mono text-sm font-semibold tabular-nums text-[#071633]">
                 {paginated.length ? start + 1 : 0}–{Math.min(start + PAGE_SIZE, sorted.length)} of {sorted.length}
               </p>
             </div>
-            <Link href="/submit" className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#06183A] px-5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(6,24,58,0.16)] transition hover:-translate-y-0.5 hover:bg-[#0A214C]">
+            <Link href="/submit" className="inline-flex h-11 items-center justify-center rounded-md bg-[#071633] px-5 text-sm font-semibold text-white transition hover:bg-[#13284F]">
               Add your pay
             </Link>
           </div>
@@ -145,47 +145,47 @@ export default function TableWithFilters({
 
         {hasActiveFilters && (
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="rounded-full border border-[#BFD3DA] bg-[#EEF7F7] px-3 py-1.5 text-xs font-semibold text-[#405263]">Filtered view</span>
-            {professionFilter !== 'All' && <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">Role: {professionFilter}</span>}
-            {stateFilter !== 'All' && <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">State: {stateFilter}</span>}
-            {cityFilter !== 'All' && <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">City: {cityFilter}</span>}
-            {hospitalFilter !== 'All' && <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">Hospital: {hospitalFilter}</span>}
-            {minExperience !== '' && <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">Min exp: {minExperience}</span>}
-            {maxExperience !== '' && <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">Max exp: {maxExperience}</span>}
-            {sort !== 'newest' && <span className="rounded-full border border-[#D8E5E8] bg-white px-3 py-1.5 text-xs font-medium text-[#5F7182]">Sorted</span>}
-            <button type="button" onClick={clearFilters} className="rounded-full border border-[#C5D8DE] bg-white px-3 py-1.5 text-xs font-semibold text-[#071126] shadow-sm transition hover:bg-[#F6FAFA]">
+            <span className="rounded-md border border-[#BFE0DB] bg-[#EEF7F5] px-2.5 py-1 text-xs font-semibold text-[#0F766E]">Filtered view</span>
+            {professionFilter !== 'All' && <span className="rounded-md border border-[#E1E8EF] bg-white px-2.5 py-1 text-xs font-medium text-[#64748B]">Role: {professionFilter}</span>}
+            {stateFilter !== 'All' && <span className="rounded-md border border-[#E1E8EF] bg-white px-2.5 py-1 text-xs font-medium text-[#64748B]">State: {stateFilter}</span>}
+            {cityFilter !== 'All' && <span className="rounded-md border border-[#E1E8EF] bg-white px-2.5 py-1 text-xs font-medium text-[#64748B]">City: {cityFilter}</span>}
+            {hospitalFilter !== 'All' && <span className="rounded-md border border-[#E1E8EF] bg-white px-2.5 py-1 text-xs font-medium text-[#64748B]">Hospital: {hospitalFilter}</span>}
+            {minExperience !== '' && <span className="rounded-md border border-[#E1E8EF] bg-white px-2.5 py-1 text-xs font-medium text-[#64748B]">Min exp: {minExperience}</span>}
+            {maxExperience !== '' && <span className="rounded-md border border-[#E1E8EF] bg-white px-2.5 py-1 text-xs font-medium text-[#64748B]">Max exp: {maxExperience}</span>}
+            {sort !== 'newest' && <span className="rounded-md border border-[#E1E8EF] bg-white px-2.5 py-1 text-xs font-medium text-[#64748B]">Sorted</span>}
+            <button type="button" onClick={clearFilters} className="rounded-md border border-[#E1E8EF] bg-white px-2.5 py-1 text-xs font-semibold text-[#071633] transition hover:bg-[#FAFBFD]">
               Clear all
             </button>
           </div>
         )}
       </div>
 
-      <div className="border-b border-[#D9E6E9] bg-[#F6FAFA] px-4 py-4 md:px-6">
+      <div className="border-b border-[#E1E8EF] bg-[#FAFBFD] px-4 py-4 md:px-6">
         <div className="mb-3 flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-[#071126]">Don't see your city, state, facility or role? Be the first to contribute!</p>
-            <p className="mt-1 text-xs leading-5 text-[#657686]">
+            <p className="text-sm font-semibold text-[#071633]">Don't see your city, state, facility or role? Be the first to contribute!</p>
+            <p className="mt-1 text-xs leading-5 text-[#64748B]">
               {showState
                 ? 'Filter by state first, then city and workplace will update automatically.'
                 : 'Filter by role, city, or experience level.'}
             </p>
           </div>
           {hasActiveFilters && (
-            <button type="button" onClick={clearFilters} className="hidden text-sm font-semibold text-[#256D83] transition hover:text-[#071126] sm:inline">
+            <button type="button" onClick={clearFilters} className="hidden text-sm font-semibold text-[#0F766E] transition hover:text-[#071633] sm:inline">
               Reset filters
             </button>
           )}
         </div>
 
-        <div className="rounded-[1.5rem] border border-[#D4E4E8] bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_10px_28px_rgba(7,17,38,0.035)]">
+        <div className="rounded-md border border-[#E1E8EF] bg-white p-3">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
 
             {showState && (
               <div>
-                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">State</label>
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">State</label>
                 <select value={stateFilter}
                   onChange={(e) => { setStateFilter(e.target.value); setCityFilter('All'); setHospitalFilter('All'); resetPage() }}
-                  className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10">
+                  className="h-10 w-full rounded-md border border-[#E1E8EF] bg-[#FAFBFD] px-3 text-sm font-semibold text-[#071633] outline-none transition focus:border-[#071633] focus:bg-white focus:ring-2 focus:ring-[#071633]/10">
                   {states.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
@@ -193,10 +193,10 @@ export default function TableWithFilters({
 
             {showCity && cityGate && cities.length > 1 && (
               <div>
-                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">City</label>
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">City</label>
                 <select value={cityFilter}
                   onChange={(e) => { setCityFilter(e.target.value); setHospitalFilter('All'); resetPage() }}
-                  className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10">
+                  className="h-10 w-full rounded-md border border-[#E1E8EF] bg-[#FAFBFD] px-3 text-sm font-semibold text-[#071633] outline-none transition focus:border-[#071633] focus:bg-white focus:ring-2 focus:ring-[#071633]/10">
                   {cities.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
@@ -204,10 +204,10 @@ export default function TableWithFilters({
 
             {showHospital && hospitalGate && hospitals.length > 1 && (
               <div className="lg:col-span-2">
-                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">Hospital</label>
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Hospital</label>
                 <select value={hospitalFilter}
                   onChange={(e) => { setHospitalFilter(e.target.value); resetPage() }}
-                  className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10">
+                  className="h-10 w-full rounded-md border border-[#E1E8EF] bg-[#FAFBFD] px-3 text-sm font-semibold text-[#071633] outline-none transition focus:border-[#071633] focus:bg-white focus:ring-2 focus:ring-[#071633]/10">
                   {hospitals.map((h) => <option key={h} value={h}>{h}</option>)}
                 </select>
               </div>
@@ -215,33 +215,33 @@ export default function TableWithFilters({
 
             {showProfession && professions.length > 1 && (
               <div>
-                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">Role</label>
+                <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Role</label>
                 <select value={professionFilter}
                   onChange={(e) => { setProfessionFilter(e.target.value); resetPage() }}
-                  className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10">
+                  className="h-10 w-full rounded-md border border-[#E1E8EF] bg-[#FAFBFD] px-3 text-sm font-semibold text-[#071633] outline-none transition focus:border-[#071633] focus:bg-white focus:ring-2 focus:ring-[#071633]/10">
                   {professions.map((p) => <option key={p} value={p}>{p}</option>)}
                 </select>
               </div>
             )}
 
             <div>
-              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">Min exp</label>
+              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Min exp</label>
               <input value={minExperience} onChange={(e) => { setMinExperience(e.target.value); resetPage() }}
                 type="number" min="0" placeholder="0"
-                className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition placeholder:text-[#8FA0AA] focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10" />
+                className="h-10 w-full rounded-md border border-[#E1E8EF] bg-[#FAFBFD] px-3 text-sm font-semibold text-[#071633] outline-none transition placeholder:text-[#94A3B8] focus:border-[#071633] focus:bg-white focus:ring-2 focus:ring-[#071633]/10" />
             </div>
 
             <div>
-              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">Max exp</label>
+              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Max exp</label>
               <input value={maxExperience} onChange={(e) => { setMaxExperience(e.target.value); resetPage() }}
                 type="number" min="0" placeholder="20"
-                className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition placeholder:text-[#8FA0AA] focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10" />
+                className="h-10 w-full rounded-md border border-[#E1E8EF] bg-[#FAFBFD] px-3 text-sm font-semibold text-[#071633] outline-none transition placeholder:text-[#94A3B8] focus:border-[#071633] focus:bg-white focus:ring-2 focus:ring-[#071633]/10" />
             </div>
 
             <div>
-              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6F8290]">Sort by</label>
+              <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Sort by</label>
               <select value={sort} onChange={(e) => { setSort(e.target.value); resetPage() }}
-                className="h-10 w-full rounded-xl border border-[#BFD3DA] bg-[#FBFDFD] px-3 text-sm font-semibold text-[#071126] outline-none transition focus:border-[#06183A] focus:bg-white focus:ring-2 focus:ring-[#06183A]/10">
+                className="h-10 w-full rounded-md border border-[#E1E8EF] bg-[#FAFBFD] px-3 text-sm font-semibold text-[#071633] outline-none transition focus:border-[#071633] focus:bg-white focus:ring-2 focus:ring-[#071633]/10">
                 <option value="newest">Newest reports</option>
                 <option value="oldest">Oldest reports</option>
                 <option value="highest">Highest base pay</option>
@@ -259,15 +259,15 @@ export default function TableWithFilters({
           <DataTable columns={columns} data={paginated} />
 
           {totalPages > 1 && (
-            <div className="flex flex-col gap-3 border-t border-[#D9E6E9] bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
-              <p className="text-sm font-medium text-[#5F7182]">Page {page} of {totalPages}</p>
+            <div className="flex flex-col gap-3 border-t border-[#E1E8EF] bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
+              <p className="text-sm font-medium text-[#64748B]">Page {page} of {totalPages}</p>
               <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center">
                 <button type="button" onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}
-                  className="h-10 rounded-xl border border-[#BFD3DA] bg-white px-4 text-sm font-semibold text-[#405263] transition hover:bg-[#F8FCFB] disabled:cursor-not-allowed disabled:opacity-40">
+                  className="h-10 rounded-md border border-[#E1E8EF] bg-white px-4 text-sm font-semibold text-[#334155] transition hover:bg-[#FAFBFD] disabled:cursor-not-allowed disabled:opacity-40">
                   Previous
                 </button>
                 <button type="button" onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))} disabled={page === totalPages}
-                  className="h-10 rounded-xl border border-[#BFD3DA] bg-white px-4 text-sm font-semibold text-[#405263] transition hover:bg-[#F8FCFB] disabled:cursor-not-allowed disabled:opacity-40">
+                  className="h-10 rounded-md border border-[#E1E8EF] bg-white px-4 text-sm font-semibold text-[#334155] transition hover:bg-[#FAFBFD] disabled:cursor-not-allowed disabled:opacity-40">
                   Next
                 </button>
               </div>
@@ -275,21 +275,21 @@ export default function TableWithFilters({
           )}
         </>
       ) : (
-        <div className="bg-[#F5FAF9] px-4 py-12 text-center md:px-6">
-          <p className="text-sm font-semibold text-[#256D83]">No salaries reported yet</p>
-          <h3 className="mt-2 font-serif text-3xl font-medium tracking-[-0.035em] text-[#071126]">
+        <div className="bg-[#FAFBFD] px-4 py-12 text-center md:px-6">
+          <p className="text-sm font-semibold text-[#0F766E]">No salaries reported yet</p>
+          <h3 className="mt-2 font-serif text-3xl font-medium tracking-[-0.035em] text-[#071633]">
             Be the first to contribute to this portion of the community.
           </h3>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#667788]">
+          <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#64748B]">
             {emptyMessage ?? 'Remove a workplace, state, or experience filter to see more reports. There may not be enough submissions in this exact slice yet.'}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {hasActiveFilters && (
-              <button type="button" onClick={clearFilters} className="inline-flex h-11 items-center justify-center rounded-xl border border-[#BFD3DA] bg-white px-5 text-sm font-semibold text-[#405263] transition hover:bg-[#F8FCFB]">
+              <button type="button" onClick={clearFilters} className="inline-flex h-11 items-center justify-center rounded-md border border-[#E1E8EF] bg-white px-5 text-sm font-semibold text-[#334155] transition hover:bg-[#FAFBFD]">
                 Reset filters
               </button>
             )}
-            <Link href="/submit" className="inline-flex h-11 items-center justify-center rounded-xl bg-[#06183A] px-5 text-sm font-semibold text-white transition hover:bg-[#0A214C]">
+            <Link href="/submit" className="inline-flex h-11 items-center justify-center rounded-md bg-[#071633] px-5 text-sm font-semibold text-white transition hover:bg-[#13284F]">
               Add your pay
             </Link>
           </div>
