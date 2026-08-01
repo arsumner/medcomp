@@ -81,7 +81,7 @@ export default async function Profession() {
                   Search by Profession
                 </p>
 
-                <h1 className="mt-2 font-serif text-4xl font-normal tracking-[-0.03em] text-[#071633] md:text-5xl">
+                <h1 className="mt-2 font-serif text-3xl font-normal tracking-[-0.03em] text-[#071633] sm:text-4xl md:text-5xl">
                   Pick your role to compare
                 </h1>
 
@@ -105,7 +105,7 @@ export default async function Profession() {
             Median pay is calculated from real, active submissions.
           </p>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-[220px_1fr]">
+          <div className="mt-8 grid gap-8 sm:mt-10 sm:gap-10 lg:grid-cols-[220px_1fr]">
             <nav className="hidden lg:block">
               <div className="sticky top-24 space-y-1">
                 <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">
@@ -123,11 +123,11 @@ export default async function Profession() {
               </div>
             </nav>
 
-            <div className="space-y-14">
+            <div className="space-y-10 sm:space-y-14">
               {Object.entries(professions).map(([group, members]) => (
                 <div key={group} id={toAnchor(group)} className="scroll-mt-24">
                   <div className="flex items-baseline justify-between gap-4 border-b-2 border-[#071633] pb-3">
-                    <h2 className="font-serif text-3xl font-medium tracking-[-0.02em] text-[#071633]">
+                    <h2 className="font-serif text-2xl font-medium tracking-[-0.02em] text-[#071633] sm:text-3xl">
                       {formatGroupName(group)}
                     </h2>
                     <span className="shrink-0 text-sm text-[#94A3B8]">
@@ -177,7 +177,7 @@ export default async function Profession() {
           </div>
 
           <div className="mt-16 border-t border-[#E1E8EF] pt-10 text-center">
-            <h3 className="font-serif text-3xl font-normal tracking-[-0.03em] text-[#071633] md:text-4xl">
+            <h3 className="font-serif text-2xl font-normal tracking-[-0.03em] text-[#071633] sm:text-3xl md:text-4xl">
               Don&apos;t see your salary in here yet?
             </h3>
 
