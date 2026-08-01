@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { supabase } from "@/lib/supabase"
 import { professions } from "../data/professions"
 import mascotImg from "../../src/assets/advancedPracticePill.png"
 
@@ -7,123 +8,188 @@ function toSlug(profession: string) {
   return profession.toLowerCase().replace(/\s+/g, "-").replace(/[()]/g, "")
 }
 
+function toAnchor(key: string) {
+  return key.replace(/([A-Z])/g, "-$1").toLowerCase().replace(/^-/, "")
+}
+
 function formatGroupName(key: string) {
   return key.replace(/([A-Z])/g, " $1").trim()
 }
 
+function median(values: number[]) {
+  if (!values.length) return 0
+  const sorted = [...values].sort((a, b) => a - b)
+  const mid = Math.floor(sorted.length / 2)
+  return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
+}
+
+function annualize(hourly: number) {
+  return hourly * 2080
+}
+
+function formatCompact(value: number) {
+  if (!value) return null
+  return `$${Math.round(value / 1000).toLocaleString()}k`
+}
+
+async function getMedianPayByProfession() {
+  const { data, error } = await supabase
+    .from("submission")
+    .select("base_rate, role (profession)")
+    .eq("is_active", true)
+
+  if (error || !data) return {}
+
+  const rateMap = new Map<string, number[]>()
+
+  for (const row of data as any[]) {
+    const profession = row.role?.profession
+    const rate = Number(row.base_rate)
+    if (!profession || Number.isNaN(rate) || rate <= 0) continue
+
+    if (!rateMap.has(profession)) rateMap.set(profession, [])
+    rateMap.get(profession)!.push(rate)
+  }
+
+  const medians: Record<string, number | null> = {}
+  for (const [profession, rates] of rateMap.entries()) {
+    medians[profession] = annualize(median(rates))
+  }
+
+  return medians
+}
+
 export default async function Profession() {
   const totalProfessions = Object.values(professions).flat().length
+  const medianPay = await getMedianPayByProfession()
 
   return (
-    <main className="min-h-screen bg-[#F5F4F1] text-[#071A3D]">
-      <section className="px-6 pb-16 pt-20 md:px-8 md:pb-20 md:pt-24">
+    <main className="min-h-screen bg-[#F6F9FC] text-[#071633]">
+      <section className="px-6 pb-16 pt-16 md:px-8 md:pb-20 md:pt-20">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div className="flex items-start gap-4 md:gap-5">
-              <div className="hidden shrink-0 sm:block">
-                <div className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] border border-[#E2E8EF] bg-white shadow-[0_14px_36px_rgba(7,17,38,0.06)] md:h-28 md:w-28">
-                  <Image
-                    src={mascotImg}
-                    alt="MedComp mascot"
-                    className="h-20 w-20 object-contain md:h-24 md:w-24"
-                    priority
-                  />
-                </div>
-              </div>
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="flex items-start gap-5">
+              <Image
+                src={mascotImg}
+                alt="MedComp mascot"
+                className="hidden h-24 w-24 shrink-0 object-contain sm:block md:h-28 md:w-28"
+                priority
+              />
 
               <div>
-                <div className="flex items-center gap-3 sm:hidden">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[#E2E8EF] bg-white shadow-[0_10px_24px_rgba(7,17,38,0.05)]">
-                    <Image
-                      src={mascotImg}
-                      alt="MedComp mascot"
-                      className="h-12 w-12 object-contain"
-                      priority
-                    />
-                  </div>
-
-                  <p className="text-lg font-semibold text-[#178C85]">
-                    Search by Profession
-                  </p>
-                </div>
-
-                <p className="hidden text-lg font-semibold text-[#178C85] sm:block">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#0F766E]">
                   Search by Profession
                 </p>
 
-                <h1 className="mt-2 font-serif text-4xl font-normal tracking-[-0.03em] text-[#071A3D] md:text-5xl">
+                <h1 className="mt-2 font-serif text-4xl font-normal tracking-[-0.03em] text-[#071633] md:text-5xl">
                   Pick your role to compare
                 </h1>
 
-                <p className="mt-3 max-w-2xl text-base leading-7 text-[#667085]">
+                <p className="mt-3 max-w-2xl text-base leading-7 text-[#64748B]">
                   Don&apos;t see an exact match? Some hospitals have different names for roles,
                   so choose the role closest to your job description.
                 </p>
-
-                
               </div>
             </div>
 
             <Link
               href="/submit"
-              className="inline-flex h-12 w-fit items-center justify-center rounded-full bg-[#071A3D] px-6 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(7,26,61,0.18)] transition hover:-translate-y-0.5 hover:bg-[#102A5C]"
+              className="inline-flex h-12 w-fit items-center justify-center rounded-full bg-[#071633] px-6 text-sm font-semibold text-white transition hover:bg-[#13284F]"
             >
               Share what you make
             </Link>
           </div>
 
-          <div className="grid gap-5">
-            {Object.entries(professions).map(([group, members]) => (
-              <section
-                key={group}
-                className="overflow-hidden rounded-[2rem] border border-[#E2E8EF] bg-white shadow-[0_18px_60px_rgba(7,17,38,0.05)]"
-              >
-                <div className="grid gap-0 lg:grid-cols-[280px_1fr]">
-                  <div className="border-b border-[#EEF2F5] bg-[#F8F7F4] p-6 lg:border-b-0 lg:border-r">
-                    <h2 className="font-serif text-3xl font-normal leading-tight tracking-[-0.03em] text-[#071A3D]">
+          <p className="mt-6 text-sm text-[#64748B]">
+            {totalProfessions} roles across {Object.keys(professions).length} specialty areas.
+            Median pay is calculated from real, active submissions.
+          </p>
+
+          <div className="mt-10 grid gap-10 lg:grid-cols-[220px_1fr]">
+            <nav className="hidden lg:block">
+              <div className="sticky top-24 space-y-1">
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">
+                  Jump to
+                </p>
+                {Object.keys(professions).map((group) => (
+                  <a
+                    key={group}
+                    href={`#${toAnchor(group)}`}
+                    className="block rounded-md px-2 py-1.5 text-sm font-medium text-[#64748B] transition hover:bg-white hover:text-[#071633]"
+                  >
+                    {formatGroupName(group)}
+                  </a>
+                ))}
+              </div>
+            </nav>
+
+            {/* Main content */}
+            <div className="space-y-14">
+              {Object.entries(professions).map(([group, members]) => (
+                <div key={group} id={toAnchor(group)} className="scroll-mt-24">
+                  <div className="flex items-baseline justify-between gap-4 border-b-2 border-[#071633] pb-3">
+                    <h2 className="font-serif text-3xl font-medium tracking-[-0.02em] text-[#071633]">
                       {formatGroupName(group)}
                     </h2>
-
-                    <p className="mt-3 text-sm leading-6 text-[#8D9AA7]">
+                    <span className="shrink-0 text-sm text-[#94A3B8]">
                       {(members as string[]).length} roles
-                    </p>
+                    </span>
                   </div>
 
-                  <div className="p-4 md:p-5">
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
-                      {(members as string[]).map((profession) => (
+                  <div className="mt-2 flex items-center justify-between px-1 pt-3">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">
+                      Role
+                    </span>
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">
+                      Median Pay
+                    </span>
+                  </div>
+
+                  <div className="mt-1 divide-y divide-[#E1E8EF]">
+                    {(members as string[]).map((profession) => {
+                      const yearly = medianPay[profession]
+                      const compact = yearly ? formatCompact(yearly) : null
+
+                      return (
                         <Link
                           key={profession}
                           href={`/profession/${toSlug(profession)}`}
-                          className="group flex min-h-[58px] items-center justify-between gap-4 rounded-2xl border border-transparent bg-[#F8F7F4] px-4 py-3 text-sm font-semibold text-[#253449] transition hover:border-[#D7E1E7] hover:bg-white hover:shadow-[0_12px_30px_rgba(7,17,38,0.06)]"
+                          className="group flex flex-nowrap items-center justify-between gap-4 px-1 py-4 transition hover:bg-white"
                         >
-                          <span className="leading-5">{profession}</span>
+                          <span className="min-w-0 flex-1 truncate text-base font-medium text-[#071633]">
+                            {profession}
+                          </span>
 
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#D7E1E7] bg-white text-[#8D9AA7] transition group-hover:border-[#071A3D] group-hover:bg-[#071A3D] group-hover:text-white">
-                            →
+                          <span className="flex shrink-0 items-center gap-3 whitespace-nowrap">
+                            <span className="font-mono text-base tabular-nums text-[#64748B]">
+                              {compact ?? "No data"}
+                            </span>
+                            <span className="text-[#94A3B8] transition group-hover:translate-x-0.5 group-hover:text-[#071633]">
+                              →
+                            </span>
                           </span>
                         </Link>
-                      ))}
-                    </div>
+                      )
+                    })}
                   </div>
                 </div>
-              </section>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div className="mt-12 rounded-[2rem] border border-[#E2E8EF] bg-white p-8 text-center shadow-[0_18px_60px_rgba(7,17,38,0.05)] md:p-12">
-            <h3 className="font-serif text-3xl font-normal tracking-[-0.03em] text-[#071A3D] md:text-4xl">
+          <div className="mt-16 border-t border-[#E1E8EF] pt-10 text-center">
+            <h3 className="font-serif text-3xl font-normal tracking-[-0.03em] text-[#071633] md:text-4xl">
               Don&apos;t see your salary in here yet?
             </h3>
 
-            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#667085]">
+            <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#64748B]">
               Every submission makes this more useful for everyone. It takes under two minutes,
               nothing identifies you, and you don&apos;t need an account.
             </p>
 
             <Link
               href="/submit"
-              className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[#071A3D] px-8 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(7,26,61,0.18)] transition hover:-translate-y-0.5 hover:bg-[#102A5C]"
+              className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[#071633] px-8 text-sm font-semibold text-white transition hover:bg-[#13284F]"
             >
               Add your salary anonymously
             </Link>
