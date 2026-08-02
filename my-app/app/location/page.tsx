@@ -58,14 +58,13 @@ async function getLocationsData() {
 export default async function LocationsPage() {
   const { 
     submissions, 
-    totalSubmissions, 
     totalStates, 
     totalCities 
   } = await getLocationsData()
 
   return (
     <main className="min-h-screen bg-[#F6F9FC] text-[#071633]">
-      <section className="px-6 pb-10 pt-16 md:px-8 md:pb-12 md:pt-20">
+      <section className="px-4 pb-8 pt-10 sm:px-6 sm:pb-10 sm:pt-16 md:px-8 md:pb-12 md:pt-20">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="flex items-start gap-5">
@@ -81,28 +80,26 @@ export default async function LocationsPage() {
                   Search by Location
                 </p>
 
-                <h1 className="mt-2 max-w-4xl font-serif text-4xl font-normal leading-tight tracking-[-0.03em] text-[#071633] md:text-5xl">
+                <h1 className="mt-2 max-w-4xl font-serif text-2xl font-normal leading-tight tracking-[-0.03em] text-[#071633] sm:text-4xl md:text-5xl">
                   Compare healthcare pay by state and city
                 </h1>
 
-                <p className="mt-3 max-w-2xl text-base leading-7 text-[#64748B]">
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-[#64748B] sm:text-base sm:leading-7">
                   The same role can pay very differently depending on where you work.
                   Filter by profession to see where it pays best.
                 </p>
 
-                <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-[#64748B]">
+                <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs font-medium text-[#64748B] sm:mt-5 sm:gap-x-4 sm:gap-y-2 sm:text-sm">
                   <span>{totalStates} states tracked</span>
                   <span className="h-1 w-1 rounded-full bg-[#94A3B8]" />
                   <span>{totalCities} cities tracked</span>
-                  <span className="h-1 w-1 rounded-full bg-[#94A3B8]" />
-                  <span>{totalSubmissions} anonymous submissions</span>
                 </div>
               </div>
             </div>
 
             <Link
               href="/submit"
-              className="inline-flex h-12 w-fit items-center justify-center rounded-full bg-[#071633] px-6 text-sm font-semibold text-white transition hover:bg-[#13284F]"
+              className="inline-flex h-11 w-fit items-center justify-center rounded-full bg-[#071633] px-5 text-sm font-semibold text-white transition hover:bg-[#13284F] sm:h-12 sm:px-6"
             >
               Share what you make
             </Link>
@@ -110,7 +107,7 @@ export default async function LocationsPage() {
         </div>
       </section>
 
-      <section className="px-6 pb-24 md:px-8">
+      <section className="px-4 pb-16 sm:px-6 sm:pb-24 md:px-8">
         <div className="mx-auto max-w-7xl">
           <LocationsClient submissions={submissions} />
         </div>
