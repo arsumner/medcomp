@@ -190,7 +190,8 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <div className="relative overflow-hidden rounded-lg border border-[#E1E8EF] bg-white">
+      <div className="relative overflow-hidden">
+
         <div className="hidden w-full overflow-x-auto sm:block">
           <Table>
             <TableHeader>
@@ -224,6 +225,7 @@ export default function DataTable<TData, TValue>({
                 rows.map((row, i) => {
                   const original = row.original as UserEntry
                   const isOpen = expandedRows.has(row.id)
+
                   return (
                     <React.Fragment key={row.id}>
                       <TableRow
@@ -277,17 +279,17 @@ export default function DataTable<TData, TValue>({
                 <col className="w-[22%]" />
               </colgroup>
               <thead>
-                <tr className="bg-[#071633]">
-                  <th className="whitespace-nowrap px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
+                <tr className="border-b border-[#E1E8EF] bg-[#FAFBFD]">
+                  <th className="whitespace-nowrap px-2 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
                     Role
                   </th>
-                  <th className="whitespace-nowrap px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
+                  <th className="whitespace-nowrap px-2 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
                     Pay
                   </th>
-                  <th className="whitespace-nowrap px-2 py-3.5 text-left text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
+                  <th className="whitespace-nowrap px-2 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
                     Hospital
                   </th>
-                  <th className="whitespace-nowrap px-2 py-3.5 text-center text-[13px] font-semibold uppercase tracking-[0.04em] text-white">
+                  <th className="whitespace-nowrap px-2 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">
                     Details
                   </th>
                 </tr>
@@ -403,7 +405,8 @@ export default function DataTable<TData, TValue>({
                                           {d.label}
                                           <span className="font-semibold">+${d.value}</span>
                                         </span>
-                                      )})}
+                                      )
+                                    })}
                                   </div>
                                 )}
                               </div>
