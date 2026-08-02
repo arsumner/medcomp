@@ -29,6 +29,7 @@ function annualize(hourly: number) {
 function getPercentPosition(value: number, min: number, max: number) {
   if (!value || !min || !max || min === max) return 0
   return Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100))
+}
 
 function markerTransform(position: number) {
   if (position <= 8) return 'translateX(0%)'
