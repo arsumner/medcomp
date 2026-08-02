@@ -276,36 +276,37 @@ export default function Hero({ totalReports }: HeroProps) {
             Let&apos;s talk about <br /> pay in healthcare.
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-8 text-[#425166] sm:text-[18px]">
+          <p className="mx-auto mt-6 hidden max-w-2xl text-[17px] leading-8 text-[#425166] sm:block sm:text-[18px]">
             We&apos;re all curious, but none of us talk about it. So we built a place where healthcare workers
             can anonymously share what they earn. No names, no accounts, no strings attached.
           </p>
         </div>
 
         <div ref={inputRef} className="relative z-30 mt-10 w-full max-w-4xl">
-          <div className="rounded-[2rem] bg-white/90 p-2 shadow-[0_24px_80px_rgba(7,21,47,0.14)] ring-1 ring-[#D4E0E8] backdrop-blur-md">
-            <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
-              <div className="flex shrink-0 rounded-full bg-[#E8EEF2] p-1">
-                {searchOptions.map(option => {
-                  const isActive = option.value === category
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => handleCategoryChange(option.value)}
-                      className={`rounded-full px-4 py-2 text-sm font-bold transition sm:px-5 ${
-                        isActive
-                          ? 'bg-[#07152F] text-white shadow-sm'
-                          : 'text-[#4B5C6F] hover:bg-white hover:text-[#07152F]'
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  )
-                })}
-              </div>
+          <div className="flex items-center justify-center gap-6 sm:gap-8">
+            {searchOptions.map(option => {
+              const isActive = option.value === category
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleCategoryChange(option.value)}
+                  className={`relative pb-2 text-sm font-bold transition ${
+                    isActive ? 'text-[#07152F]' : 'text-[#8FA1B3] hover:text-[#4B5C6F]'
+                  }`}
+                >
+                  {option.label}
+                  {isActive && (
+                    <span className="absolute inset-x-0 -bottom-0.5 h-[2.5px] rounded-full bg-[#07152F]" />
+                  )}
+                </button>
+              )
+            })}
+          </div>
 
-              <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[1.5rem] bg-white px-4 py-2 ring-1 ring-[#D7E2E9] transition focus-within:ring-2 focus-within:ring-[#4A9EA6]">
+          <div className="mt-4 rounded-lg border border-[#D7E2E9] bg-white">
+            <div className="flex flex-col gap-2 p-2 lg:flex-row lg:items-center">
+              <div className="flex min-w-0 flex-1 items-center gap-3 px-3 py-1">
                 <svg
                   width="20"
                   height="20"
@@ -343,7 +344,7 @@ export default function Hero({ totalReports }: HeroProps) {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="hidden shrink-0 rounded-full bg-[#07152F] px-6 py-3 text-sm font-bold text-white shadow-[0_10px_24px_rgba(7,21,47,0.22)] transition hover:bg-[#122A56] focus:outline-none focus:ring-4 focus:ring-[#C9D9FF] sm:inline-flex"
+                  className="hidden shrink-0 rounded-md bg-[#07152F] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#122A56] focus:outline-none focus:ring-2 focus:ring-[#07152F]/20 sm:inline-flex"
                 >
                   Search
                 </button>
@@ -352,7 +353,7 @@ export default function Hero({ totalReports }: HeroProps) {
               <button
                 type="button"
                 onClick={handleSearch}
-                className="rounded-full bg-[#07152F] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(7,21,47,0.22)] transition hover:bg-[#122A56] focus:outline-none focus:ring-4 focus:ring-[#C9D9FF] sm:hidden"
+                className="rounded-md bg-[#07152F] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#122A56] focus:outline-none focus:ring-2 focus:ring-[#07152F]/20 sm:hidden"
               >
                 Search
               </button>
@@ -360,18 +361,18 @@ export default function Hero({ totalReports }: HeroProps) {
           </div>
 
           {error && (
-            <p className="mt-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-left text-sm font-semibold text-red-700">
+            <p className="mt-3 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-left text-sm font-semibold text-red-700">
               {error}
             </p>
           )}
 
           {showDropdown && currentSuggestions.length > 0 && (
-            <ul className="absolute z-50 mt-3 max-h-72 w-full overflow-auto rounded-[1.5rem] border border-[#D4E0E8] bg-white/95 p-2 text-left shadow-[0_24px_70px_rgba(15,23,42,0.16)] backdrop-blur-md">
+            <ul className="absolute z-50 mt-2 max-h-72 w-full overflow-auto rounded-md border border-[#D4E0E8] bg-white p-2 text-left">
               {currentSuggestions.map((suggestion) => (
                 <li
                   key={suggestion.key}
                   onClick={() => handleSelect(suggestion)}
-                  className="cursor-pointer rounded-2xl px-4 py-3 text-sm font-semibold text-[#243447] transition hover:bg-[#EEF7F8] hover:text-[#07152F]"
+                  className="cursor-pointer rounded-md px-4 py-3 text-sm font-semibold text-[#243447] transition hover:bg-[#EEF7F8] hover:text-[#07152F]"
                 >
                   {suggestion.label}
                 </li>
@@ -391,12 +392,12 @@ export default function Hero({ totalReports }: HeroProps) {
         <div className="relative z-20 mt-6 flex flex-col items-center gap-3 sm:flex-row">
           <Link
             href="/submit"
-            className="inline-flex items-center justify-center rounded-full border border-[#B7C7D4] bg-white px-6 py-3 text-sm font-bold text-[#07152F] shadow-sm transition hover:border-[#8FA5B7] hover:bg-[#F8FBFD] focus:outline-none focus:ring-4 focus:ring-[#D4E3FF]"
+            className="inline-flex items-center justify-center rounded-full border border-[#B7C7D4] bg-white px-6 py-3 text-sm font-bold text-[#07152F] transition hover:border-[#8FA5B7] hover:bg-[#F8FBFD] focus:outline-none focus:ring-2 focus:ring-[#07152F]/15"
           >
             Share your pay
           </Link>
 
-          <p className="max-w-md text-sm font-medium leading-6 text-[#536579]">
+          <p className="hidden max-w-md text-sm font-medium leading-6 text-[#536579] sm:block">
             All of our data comes from real humans, like you! Add your salary info today to help build our community and help others find their next role.
           </p>
         </div>
