@@ -123,7 +123,7 @@ export default async function Profession() {
               </div>
             </nav>
 
-            <div className="space-y-10 sm:space-y-14">
+            <div className="min-w-0 space-y-10 sm:space-y-14">
               {Object.entries(professions).map(([group, members]) => (
                 <div key={group} id={toAnchor(group)} className="scroll-mt-24">
                   <div className="flex items-baseline justify-between gap-4 border-b-2 border-[#071633] pb-3">
