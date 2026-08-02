@@ -8,6 +8,7 @@ import { professions } from '../../data/professions'
 import { usePlacesAutocomplete } from '../../hooks/usePlacesAutocomplete'
 
 const allProfessions = Object.values(professions).flat()
+const SUBMISSION_GOAL = 1000
 
 function toSlug(s: string) {
   return s
@@ -260,6 +261,9 @@ export default function Hero({ totalReports }: HeroProps) {
 
   const currentSuggestions = getSuggestions()
 
+  const goalReached = totalReports >= SUBMISSION_GOAL
+  const progressPercent = Math.min(100, (totalReports / SUBMISSION_GOAL) * 100)
+
   return (
     <section className="bg-[#F5F4F1]">
       <div className="relative mx-auto flex max-w-7xl flex-col items-center px-5 pb-16 pt-24 text-center sm:px-6 lg:pt-28">
@@ -395,6 +399,28 @@ export default function Hero({ totalReports }: HeroProps) {
           <p className="max-w-md text-sm font-medium leading-6 text-[#536579]">
             All of our data comes from real humans, like you! Add your salary info today to help build our community and help others find their next role.
           </p>
+        </div>
+
+        <div className="relative z-20 mt-8 w-full max-w-md">
+          <div className="flex items-baseline justify-between text-xs font-bold text-[#4B5C6F]">
+            <span>{totalReports.toLocaleString()} anonymous submissions</span>
+            <span className="text-[#8FA1B3]">
+              {goalReached ? 'Goal reached 🎉' : `Goal: ${SUBMISSION_GOAL.toLocaleString()}`}
+            </span>
+          </div>
+
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[#E8EEF2]">
+            <div
+              className="h-full rounded-full bg-[#07152F] transition-all duration-500"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+
+          {!goalReached && (
+            <p className="mt-2 text-xs font-medium text-[#8FA1B3]">
+              Help us reach {SUBMISSION_GOAL.toLocaleString()}! Every submission makes the data more useful.
+            </p>
+          )}
         </div>
       </div>
     </section>
