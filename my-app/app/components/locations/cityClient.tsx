@@ -33,6 +33,12 @@ function getPercentPosition(value: number, min: number, max: number) {
   return Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100))
 }
 
+function markerTransform(position: number) {
+  if (position <= 8) return 'translateX(0%)'
+  if (position >= 92) return 'translateX(-100%)'
+  return 'translateX(-50%)'
+}
+
 function toSlug(value: string) {
   return value.toLowerCase().replace(/\s+/g, '-')
 }
@@ -166,29 +172,26 @@ export default function CityClient({ submissions, city, parentCity, state, alias
               </div>
 
               <div className="mt-12">
-                <div className="relative h-16">
-                  <div className="absolute left-0 right-0 top-8 h-1.5 rounded-full bg-[#EEF1F5]" />
+                <div className="relative h-12">
+                  <div className="absolute left-0 right-0 top-5 h-1.5 rounded-full bg-[#EEF1F5]" />
 
                   <div
-                    className="absolute top-8 h-1.5 rounded-full bg-gradient-to-r from-[#BFE0DB] via-[#C9D9F0] to-[#EAD9B0]"
+                    className="absolute top-5 h-1.5 rounded-full bg-gradient-to-r from-[#BFE0DB] via-[#C9D9F0] to-[#EAD9B0]"
                     style={{
                       left: `${p25Position}%`,
                       width: `${Math.max(p90Position - p25Position, 4)}%`,
                     }}
                   />
 
-                  {stats.map(({ label, yearly, position, tone, dot }) => (
+                  {stats.map(({ label, position, tone, dot }) => (
                     <div
                       key={label}
-                      className="absolute top-0 flex -translate-x-1/2 flex-col items-center"
-                      style={{ left: `${position}%` }}
+                      className="absolute top-3 flex flex-col items-center"
+                      style={{ left: `${position}%`, transform: markerTransform(position) }}
                     >
-                      <p className="whitespace-nowrap font-mono text-xs font-semibold tabular-nums text-[#071633]">
-                        {formatMoney(Math.round(yearly))}
-                      </p>
-                      <div className={`mt-1.5 h-3.5 w-3.5 rounded-full border-[3px] border-white shadow-sm ${dot}`} />
-                      <p className={`mt-1.5 whitespace-nowrap text-[11px] font-semibold ${tone}`}>
-                        {label}
+                      <div className={`h-3.5 w-3.5 rounded-full border-[3px] border-white shadow-sm ${dot}`} />
+                      <p className={`mt-1.5 whitespace-nowrap text-[10px] font-semibold ${tone}`}>
+                        {label.replace(' percentile', '')}
                       </p>
                     </div>
                   ))}
