@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
 
@@ -30,11 +31,12 @@ type Props = {
   stateMap: Record<string, StateData>
   min: number
   max: number
-  onHover: (tooltip: { name: string; avg: number; x: number; y: number } | null) => void
+  onHover: (tooltip: { name: string; avg: number } | null) => void
 }
 
 export default function UsMap({ stateMap, min, max, onHover }: Props) {
   const router = useRouter()
+  const [armedState, setArmedState] = useState<string | null>(null)
 
   function toSlug(s: string) {
     return s.toLowerCase().replace(/\s+/g, '-')
@@ -62,19 +64,24 @@ export default function UsMap({ stateMap, min, max, onHover }: Props) {
                   fill={color}
                   stroke="#F6F9FC"
                   strokeWidth={1.2}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={() => {
                     if (hasData) {
-                      onHover({
-                        name: stateName,
-                        avg: stateData.avg,
-                        x: e.clientX,
-                        y: e.clientY,
-                      })
+                      setArmedState(stateName)
+                      onHover({ name: stateName, avg: stateData.avg })
                     }
                   }}
-                  onMouseLeave={() => onHover(null)}
+                  onMouseLeave={() => {
+                    setArmedState(null)
+                    onHover(null)
+                  }}
                   onClick={() => {
-                    if (stateName) router.push(`/state/${toSlug(stateName)}`)
+                    if (!hasData) return
+                    if (armedState === stateName) {
+                      router.push(`/state/${toSlug(stateName)}`)
+                    } else {
+                      setArmedState(stateName)
+                      onHover({ name: stateName, avg: stateData.avg })
+                    }
                   }}
                   style={{
                     default: {
@@ -98,19 +105,19 @@ export default function UsMap({ stateMap, min, max, onHover }: Props) {
         </Geographies>
       </ComposableMap>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-        <div className="flex items-center gap-3 rounded bg-white/85 px-3 py-1.5 backdrop-blur-sm">
-          <span className="text-xs font-medium text-[#94A3B8]">${min.toFixed(0)}/hr</span>
+      <div className="absolute inset-x-2 bottom-3 flex justify-center sm:inset-x-auto sm:bottom-4 sm:left-1/2 sm:-translate-x-1/2">
+        <div className="flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded bg-white/85 px-2.5 py-1.5 text-[10px] backdrop-blur-sm sm:gap-3 sm:px-3 sm:text-xs">
+          <span className="font-medium text-[#94A3B8]">${min.toFixed(0)}/hr</span>
 
           <div
-            className="h-1.5 w-20 rounded-full"
+            className="h-1.5 w-12 shrink-0 rounded-full sm:w-20"
             style={{ background: 'linear-gradient(to right, rgb(191,224,219), rgb(15,118,110))' }}
           />
 
-          <span className="text-xs font-medium text-[#94A3B8]">${max.toFixed(0)}/hr</span>
+          <span className="font-medium text-[#94A3B8]">${max.toFixed(0)}/hr</span>
 
-          <span className="ml-1 flex items-center gap-1.5 border-l border-[#E1E8EF] pl-3 text-xs font-medium text-[#94A3B8]">
-            <span className="h-1.5 w-1.5 bg-[#E8EAED]" />
+          <span className="flex items-center gap-1.5 border-l border-[#E1E8EF] pl-2 font-medium text-[#94A3B8] sm:ml-1 sm:pl-3">
+            <span className="h-1.5 w-1.5 shrink-0 bg-[#E8EAED]" />
             No reports
           </span>
         </div>

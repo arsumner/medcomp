@@ -8,7 +8,7 @@ import { professions } from '../../data/professions'
 import dynamic from 'next/dynamic'
 import type { SubmissionRow } from '../../location/page.tsx'
 
-const UsMap = dynamic(() => import('../map/UsMap'), { ssr: false })
+const UsMap = dynamic(() => import('../../components/map/UsMap'), { ssr: false })
 
 const allProfessions = ['All Professions', ...Object.values(professions).flat()]
 
@@ -66,7 +66,7 @@ export default function LocationsClient({ submissions }: Props) {
   const [rankingTab, setRankingTab] = useState<'states' | 'cities'>('states')
   const [showDropdown, setShowDropdown] = useState(false)
   const [placeSuggestions, setPlaceSuggestions] = useState<{ name: string; fullText: string }[]>([])
-  const [tooltip, setTooltip] = useState<{ name: string; avg: number; x: number; y: number } | null>(null)
+  const [tooltip, setTooltip] = useState<{ name: string; avg: number } | null>(null)
 
   const router = useRouter()
   const inputRef = useRef<HTMLDivElement>(null)
@@ -214,30 +214,26 @@ export default function LocationsClient({ submissions }: Props) {
   return (
     <div>
 
-      <div className="flex flex-col gap-6 border-b border-[#E1E8EF] pb-8 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
+      <div className="flex flex-col gap-5 border-b border-[#E1E8EF] pb-6 sm:gap-6 sm:pb-8 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
 
         <div className="lg:max-w-xs lg:shrink-0">
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-[#94A3B8]">
+          <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[#94A3B8] sm:mb-2 sm:text-xs">
             Filter by profession
           </label>
           <select
             value={selectedProfession}
             onChange={e => setSelectedProfession(e.target.value)}
-            className="w-full border-b border-[#071633] bg-transparent pb-2 text-xl font-semibold text-[#071633] outline-none"
+            className="w-full border-b border-[#071633] bg-transparent pb-1.5 text-base font-semibold text-[#071633] outline-none sm:pb-2 sm:text-xl"
           >
             {allProfessions.map(p => <option key={p} value={p}>{p}</option>)}
           </select>
-          <p className="mt-2 text-sm text-[#64748B]">
+          <p className="mt-1.5 text-xs text-[#64748B] sm:mt-2 sm:text-sm">
             {filtered.length} matching {filtered.length === 1 ? 'submission' : 'submissions'}
           </p>
         </div>
 
         <div ref={inputRef} className="relative flex-1">
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-[#94A3B8]">
-            Search a state or city
-          </label>
-
-          <div className="mb-3 flex items-center gap-6">
+          <div className="mb-2.5 flex items-center gap-6 sm:mb-3">
             {(['states', 'cities'] as const).map(type => {
               const isActive = searchType === type
               return (
@@ -258,14 +254,14 @@ export default function LocationsClient({ submissions }: Props) {
             })}
           </div>
 
-          <div className="flex items-center gap-3 border-b border-[#E1E8EF] py-2.5">
+          <div className="flex items-center gap-2.5 border-b border-[#E1E8EF] py-2 sm:gap-3 sm:py-2.5">
             <svg
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
-              className="shrink-0 text-[#64748B]"
+              className="shrink-0 text-[#64748B] sm:h-5 sm:w-5"
             >
               <path
                 d="M10.75 18.5a7.75 7.75 0 1 1 0-15.5 7.75 7.75 0 0 1 0 15.5Z"
@@ -281,7 +277,7 @@ export default function LocationsClient({ submissions }: Props) {
               onKeyDown={handleKeyDown}
               onFocus={() => setShowDropdown(true)}
               placeholder={searchType === 'states' ? 'Search a state, like New York' : 'Search a city, like Brooklyn or Miami'}
-              className="min-w-0 flex-1 bg-transparent text-lg font-semibold text-[#071633] outline-none placeholder:text-[#94A3B8]"
+              className="min-w-0 flex-1 bg-transparent text-base font-semibold text-[#071633] outline-none placeholder:text-[#94A3B8] sm:text-lg"
             />
 
             <button
@@ -350,78 +346,82 @@ export default function LocationsClient({ submissions }: Props) {
         </div>
       </div>
 
-      <div className="pt-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">
+      <div className="pt-6 sm:pt-10">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8] sm:text-xs sm:tracking-[0.16em]">
           National snapshot
         </p>
 
-        <p className="mt-2 font-serif text-5xl font-semibold tracking-[-0.02em] text-[#071633] md:text-6xl">
+        <p className="mt-1.5 font-serif text-2xl font-semibold tracking-[-0.02em] text-[#071633] sm:mt-2 sm:text-5xl md:text-6xl">
           {formatMoney(nationalMedian)}
-          <span className="ml-2 text-xl font-normal text-[#94A3B8]">/hr median{selectedProfession !== 'All Professions' ? '' : ' nationwide'}</span>
+          <span className="ml-1.5 block text-xs font-normal text-[#94A3B8] sm:ml-2 sm:inline sm:text-xl">/hr median{selectedProfession !== 'All Professions' ? '' : ' nationwide'}</span>
         </p>
 
-        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
+        <div className="mt-5 grid grid-cols-2 gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-8">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.1em] text-[#0F766E]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#0F766E] sm:text-sm">
               Highest paying state
             </p>
-            <p className="mt-1.5 font-serif text-3xl font-semibold text-[#071633]">
+            <p className="mt-1 font-serif text-lg font-semibold text-[#071633] sm:mt-1.5 sm:text-3xl">
               {highestPayState?.state ?? '—'}
             </p>
-            <p className="mt-1 font-mono text-base tabular-nums text-[#64748B]">
-              {highestPayState ? `${formatMoney(highestPayState.median)}/hr median` : 'No data yet'}
+            <p className="mt-0.5 font-mono text-xs tabular-nums text-[#64748B] sm:mt-1 sm:text-base">
+              {highestPayState ? `${formatMoney(highestPayState.median)}/hr` : 'No data yet'}
             </p>
           </div>
 
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.1em] text-[#2F5EA8]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#2F5EA8] sm:text-sm">
               Most reports
             </p>
-            <p className="mt-1.5 font-serif text-3xl font-semibold text-[#071633]">
+            <p className="mt-1 font-serif text-lg font-semibold text-[#071633] sm:mt-1.5 sm:text-3xl">
               {mostReportedState?.state ?? '—'}
             </p>
-            <p className="mt-1 font-mono text-base tabular-nums text-[#64748B]">
+            <p className="mt-0.5 font-mono text-xs tabular-nums text-[#64748B] sm:mt-1 sm:text-base">
               {mostReportedState ? `${mostReportedState.count} submissions` : 'No data yet'}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="mt-16 border-t border-[#E1E8EF] pt-12">
-        <div className="mb-6">
-          <p className="text-base font-semibold text-[#0F766E]">Interactive map</p>
-          <h2 className="mt-2 font-serif text-3xl font-medium tracking-[-0.02em] text-[#071633] md:text-4xl">
+      <div className="mt-10 border-t border-[#E1E8EF] pt-8 sm:mt-16 sm:pt-12">
+        <div className="mb-4 sm:mb-6">
+          <p className="text-sm font-semibold text-[#0F766E]">Interactive map</p>
+          <h2 className="mt-1.5 font-serif text-xl font-medium tracking-[-0.02em] text-[#071633] sm:mt-2 sm:text-3xl md:text-4xl">
             Median pay by state
           </h2>
-          <p className="mt-2 max-w-2xl text-base leading-7 text-[#64748B]">
-            Hover a state for the median reported pay
-            {selectedProfession !== 'All Professions' ? ` for ${selectedProfession}` : ''}. Click to see the full breakdown.
+          <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[#64748B] sm:mt-2 sm:text-base sm:leading-7">
+            Tap a state for its median pay
+            {selectedProfession !== 'All Professions' ? ` for ${selectedProfession}` : ''}. Tap it again to see the full breakdown.
           </p>
         </div>
 
-        <div className="relative h-[380px] sm:h-[460px] lg:h-[580px]">
-          {tooltip && (
-            <div
-              className="pointer-events-none fixed z-50 rounded-md border border-[#E1E8EF] bg-white px-4 py-3 text-sm"
-              style={{ left: tooltip.x + 16, top: tooltip.y - 60 }}
-            >
-              <p className="font-semibold text-[#071633]">{tooltip.name}</p>
-              <p className="mt-1 font-semibold text-[#0F766E]">{formatMoney(tooltip.avg)}/hr median</p>
+        {tooltip ? (
+          <div className="mb-3 flex min-h-[60px] items-center justify-between rounded-md border border-[#E1E8EF] bg-white px-4 py-3">
+            <div>
+              <p className="text-sm font-semibold text-[#071633]">{tooltip.name}</p>
+              <p className="text-sm font-semibold text-[#0F766E]">{formatMoney(tooltip.avg)}/hr median</p>
             </div>
-          )}
+            <p className="text-xs text-[#94A3B8]">Tap the state again for full details →</p>
+          </div>
+        ) : (
+          <div className="mb-3 flex min-h-[60px] items-center rounded-md border border-[#E1E8EF] bg-white px-4 py-3">
+            <p className="truncate whitespace-nowrap text-sm text-[#94A3B8]">Hover or tap a state to preview its median pay.</p>
+          </div>
+        )}
 
+        <div className="relative h-[280px] sm:h-[460px] lg:h-[580px]">
           <UsMap stateMap={stateMap} min={min} max={max} onHover={setTooltip} />
         </div>
       </div>
 
-      <div className="mt-16 border-t border-[#E1E8EF] pt-12">
-        <div className="mb-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mt-10 border-t border-[#E1E8EF] pt-8 sm:mt-16 sm:pt-12">
+        <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
           <div>
-            <p className="text-base font-semibold text-[#0F766E]">Location rankings</p>
-            <h2 className="mt-2 font-serif text-3xl font-medium tracking-[-0.02em] text-[#071633] md:text-4xl">
+            <p className="text-sm font-semibold text-[#0F766E]">Location rankings</p>
+            <h2 className="mt-1.5 font-serif text-xl font-medium tracking-[-0.02em] text-[#071633] sm:mt-2 sm:text-3xl md:text-4xl">
               {rankingTab === 'states' ? 'Highest paying states' : 'Highest paying cities'}
             </h2>
-            <p className="mt-2 max-w-2xl text-base leading-7 text-[#64748B]">
+            <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[#64748B] sm:mt-2 sm:text-base sm:leading-7">
               {rankingTab === 'states'
                 ? 'Ranked by median reported pay.'
                 : `Ranked by median pay, within the top ${TOP_STATE_COUNT} highest-paying states above.`}
@@ -436,7 +436,7 @@ export default function LocationsClient({ submissions }: Props) {
                   key={t}
                   type="button"
                   onClick={() => setRankingTab(t)}
-                  className={`relative pb-2 text-base font-bold transition ${
+                  className={`relative pb-2 text-sm font-bold transition ${
                     isActive ? 'text-[#071633]' : 'text-[#94A3B8] hover:text-[#64748B]'
                   }`}
                 >
@@ -450,11 +450,11 @@ export default function LocationsClient({ submissions }: Props) {
           </div>
         </div>
 
-        <div className="mt-8 flex items-center justify-between border-b border-[#E1E8EF] px-1 pb-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">
-            Rank &amp; Location
+        <div className="mt-6 flex items-center justify-between border-b border-[#E1E8EF] px-1 pb-2 sm:mt-8">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#94A3B8] sm:text-xs">
+            Location
           </span>
-          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#94A3B8] sm:text-xs">
             Median /hr
           </span>
         </div>
@@ -481,10 +481,10 @@ export default function LocationsClient({ submissions }: Props) {
               <Link
                 key={isState ? label : `${label}-${(item as CityStat).state}`}
                 href={href}
-                className="group flex flex-col gap-3 py-5 transition hover:bg-white sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                className="group block py-4 transition hover:bg-white sm:py-5"
               >
-                <div className="flex items-start gap-4">
-                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base font-semibold ${
+                <div className="flex items-center gap-3">
+                  <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold sm:h-10 sm:w-10 sm:text-base ${
                     i === 0 ? 'bg-[#E8F5F2] text-[#0F766E]'
                     : i === 1 ? 'bg-[#EAF0F8] text-[#2F5EA8]'
                     : i === 2 ? 'bg-[#F5F0E8] text-[#B8791A]'
@@ -493,28 +493,26 @@ export default function LocationsClient({ submissions }: Props) {
                     {i + 1}
                   </span>
 
-                  <div>
-                    <p className="text-lg font-medium text-[#071633] transition group-hover:text-[#0F766E]">
-                      {label}
-                    </p>
-                    <p className="mt-0.5 text-sm text-[#94A3B8]">
-                      {sublabel}
-                    </p>
-                    {tiers && (
-                      <p className="mt-1.5 font-mono text-xs tabular-nums text-[#94A3B8]">
-                        {tiers}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex shrink-0 items-center gap-3 self-end sm:self-auto">
-                  <span className="font-mono text-base tabular-nums text-[#64748B]">
+                  <p className="min-w-0 flex-1 truncate text-base font-medium text-[#071633] transition group-hover:text-[#0F766E] sm:text-lg">
+                    {label}
+                  </p>
+                  <span className="shrink-0 font-mono text-sm tabular-nums text-[#64748B] sm:text-base">
                     {formatMoney(item.median)}
                   </span>
-                  <span className="text-[#94A3B8] transition group-hover:translate-x-0.5 group-hover:text-[#071633]">
+                  <span className="shrink-0 text-[#94A3B8] transition group-hover:translate-x-0.5 group-hover:text-[#071633]">
                     →
                   </span>
+                </div>
+
+                <div className="mt-1 pl-11 sm:pl-[52px]">
+                  <p className="text-xs text-[#94A3B8] sm:text-sm">
+                    {sublabel}
+                  </p>
+                  {tiers && (
+                    <p className="mt-1 font-mono text-[10px] tabular-nums text-[#94A3B8] sm:text-xs">
+                      {tiers}
+                    </p>
+                  )}
                 </div>
               </Link>
             )
